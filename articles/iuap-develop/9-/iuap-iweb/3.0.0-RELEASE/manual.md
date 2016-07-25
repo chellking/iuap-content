@@ -1,17 +1,28 @@
 # UI后端框架 #
 
-## 简介 ##
-此组件是iUAP前端框架的后端适配组件，和spring MVC配合，接收并处理前端UI datatable发送的数据，拥有独立的上下文处理和序列化框架，对事件、多语、异常、参数传递等做了封装，方便了开发者对前后端数据的对接。
+
+## 业务需求
+
+接收并处理前端datatable发送的数据，拥有独立的上下文处理，能够处理前端后端交互过程中的、参数事件、多语、异常，简化开发过程。
+
+
+## 解决方案 ##
+此组件是iUAP前端框架的后端适配组件，和spring MVC配合，接收并处理前端UI datatable发送的数据，拥有独立的上下文处理和序列化框架，方便了开发者对前后端数据的对接。
 
 Datatable控制器是一个特殊的spring MVC 控制器，与普通的Spring MVC控制器的区别有两点：
 
-- 可以通过参数来获取Datatable 相关的信息，如Event、EventRequest，EventResponse，Datatable 。
+功能说明
 
-- 输出类型必须是JSON，返回对象必须是EventResponse.
+1. 通过Datatable获取数据和向前台输出数据
+2. 获取前台发送的参数
+3. 向前台输出数据
 
-## 配置和使用方式 ##
+# 整体设计
 
-**1:maven工程的配置文件pom.xml中加入对iweb组件的依赖**
+
+## 依赖环境
+
+ 组件采用Maven进行编译和打包发布，其对外提供的依赖方式如下：
 
 	<dependency>
             <groupId>com.yonyou.iuap</groupId>
@@ -29,427 +40,208 @@ Datatable控制器是一个特殊的spring MVC 控制器，与普通的Spring MV
             </exclusions>
         </dependency>
 
-${iuap.modules.version} 为平台在maven私服上发布的组件的version,项目上应该在pom.xml中定义，如3.0.0-RELEASE。
+${iuap.modules.version} 为平台在maven私服上发布的组件的version 
 
-**2:在工程的web.xml中配置filter**
-
-	<filter>
-	    <filter-name>IWebPlatformFilter</filter-name>
-	    <filter-class>com.yonyou.iuap.iweb.platform.IWebPlatformFilter</filter-class>
-	</filter>
-	<filter-mapping>
-	    <filter-name>IWebPlatformFilter</filter-name>
-	    <servlet-name>springServlet</servlet-name>
-	</filter-mapping>
-
-**3:在工程的spring MVC的配置文件中加入mvc:annotation-driven配置，示例如下：**
-
-	<mvc:annotation-driven>
-		<mvc:message-converters register-defaults="true">
-			<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
-			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
-		    	<constructor-arg value="UTF-8" />
-			</bean>
-			<!-- 将Jackson2HttpMessageConverter的默认格式化输出设为true -->
-			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-                <property name="prettyPrint" value="true"/>
-            </bean>			
-  		</mvc:message-converters>
-  		<mvc:argument-resolvers>
-  			<bean class="com.yonyou.iuap.iweb.datatable.handler.IWebHandlerMethodArgumentResolver"/>
-  		</mvc:argument-resolvers>
-	</mvc:annotation-driven>
-
-    <bean id="iwebExceptionHandler" class="com.yonyou.iuap.iweb.exception.WebExceptionHandler"/>
-
-**4:spring MVC的controller类的方法中，对接前台发送的数据**
-
-	@RequestMapping(value = "/page", method = RequestMethod.GET)
-	public EventResponse loadData(@IWebParameter(id = "dataTable1") DataTable<GoodJdbcDemo> dataTable1, @IWebParameter() EventResponse response) {
-		try {
-			int pageNumber = 0;
-			Map<String, Object> parameters = IWebViewContext.getEventParameter();
-			if (parameters.get("pageIndex") != null) {
-				pageNumber = (Integer) parameters.get("pageIndex");
-			}
-			int pageSize = dataTable1.getPageSize();
-			pageNumber = dataTable1.getPageIndex();
-
-			// 构造查询条件等
-			Map<String, Object> searchParams = new HashMap<String, Object>();
-			PageRequest pageRequest = ... ...
+# 使用说明
 
 
-			Page<GoodJdbcDemo> categoryPage = goodService.getDemoPage(searchParams, pageRequest);
-			
-			//设置返回数据
-			dataTable1.remove(dataTable1.getAllRow());
-			dataTable1.set(categoryPage.getContent().toArray(new GoodJdbcDemo[0]));
+## 属性配置
 
-			int totalPages = categoryPage.getTotalPages();
-			dataTable1.setPageIndex(pageNumber);
-			dataTable1.setTotalPages(totalPages);
+1. 在工程的web.xml中配置filter
 
-			... ... ... ... 
-		} catch (Exception e) {
-			logger.error("查询数据失败!", e);
-			throw new WebRuntimeException("查询数据失败!");
-		}
-		return response;
-	}
+		
+		<filter>
+		    <filter-name>IWebPlatformFilter</filter-name>
+		    <filter-class>com.yonyou.iuap.iweb.platform.IWebPlatformFilter</filter-class>
+		</filter>
+		<filter-mapping>
+		    <filter-name>IWebPlatformFilter</filter-name>
+		    <servlet-name>springServlet</servlet-name>
+		</filter-mapping>
 
-**5:前端对应的发送数据的方式如下:**
+2. 在工程的spring MVC的配置文件中加入mvc:annotation-driven配置
 
-	app.serverEvent().addDataTable("dataTable1", "current").fire({
+		<mvc:annotation-driven>
+			<mvc:message-converters register-defaults="true">
+				<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+			    	<constructor-arg value="UTF-8" />
+				</bean>
+				<!-- 将Jackson2HttpMessageConverter的默认格式化输出设为true -->
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	                <property name="prettyPrint" value="true"/>
+	            </bean>			
+	  		</mvc:message-converters>
+	  		<mvc:argument-resolvers>
+	  			<bean class="com.yonyou.iuap.iweb.datatable.handler.IWebHandlerMethodArgumentResolver"/>
+	  		</mvc:argument-resolvers>
+		</mvc:annotation-driven>
 	
-	    url : ctx+'/goods/page',
+	    <bean id="iwebExceptionHandler" class="com.yonyou.iuap.iweb.exception.WebExceptionHandler"/>
+## 使用API接口完成请求
+
+## API接口
+
+### Datatable
+
+描述
+
+DataTable作为前后台数据传输的载体，它有着和前端相对应的模型体信息，如：行（Row）、列（Field）、列描述（FieldDesc）、分页；同时它具有和业务bean信息透明穿透的能力；也维护了自身状态和行为的变化。
+
+Datatable属性
+
+<table style="border-collapse:collapse;border-color:#e1e1e1">
+	<thead><tr>
+		<td>属性</td>
+		<td>描述</td>
+		<td>类型</td>
+	</tr></thead>
+	<tbody>
+		<tr><td>id</td><td>datable的编码id（一次请求中唯一）</td><td>String</td></tr>
+		<tr><td>rows</td><td>当前数据集中的行记录</td><td>List</td></tr>
+		<tr><td>cls</td><td>对应的实体class</td><td>String</td></tr>
+		<tr><td>select</td><td>选中行索引</td><td>Integer[]</td></tr>
+		<tr><td>focus</td><td>聚焦行索引</td><td>Integer</td></tr>
+		<tr><td>pageIndex</td><td>当前页号</td><td>Integer</td></tr>
+		<tr><td>pageSize</td><td>每页记录数</td><td>Integer</td></tr>
+		<tr><td>totalPages</td><td>总页数</td><td>Integer</td></tr>
+		<tr><td>totalRow</td><td>总行数</td><td>Long</td></tr>
+		<tr><td>isBread</td><td>是否面包屑（携带描述信息不带数据）</td><td>boolean</td></tr>
+		<tr><td>meta</td><td>entity描述信息</td><td>Map&lt;String,FieldDesc&gt;</td></tr>
+		<tr><td>changedObj</td><td>变化项集,供前端界面更新</td><td>Map&lt;String, Object&gt;</td></tr>
+		<tr><td>params</td><td>业务参数扩展</td><td>Map&lt;String, Object&gt;</td></tr>
+    </tbody>
+</table>
+
+方法：
+
+<table style="border-collapse:collapse;border-color:#e1e1e1">
+	<thead><tr>
+		<td>方法</td>
+		<td>描述</td>
+		<td>参数</td>
+		<td>参数描述</td>
+		<td>返回值</td>
+	</tr></thead>
+	<tbody>
+		<tr><td>
+	<a onclick="toggle('getRow')">getRow</a></td>
+         <td>根据行号获取行</td><td>String rowid</td><td>行号</td><td>行</td></tr>
+
+	<tr><td><a onclick="toggle('getSelectedRow')">getSelectedRow</a></td><td>获得选中的行</td><td>——</td><td>——</td><td>选中的行</td></tr>
+
+	<tr><td><a onclick="toggle('getFocusRow')">getFocusRow</a></td><td>获得聚焦行</td><td>——</td><td>——</td><td>聚焦行</td></tr>
+
+	<tr><td><a onclick="toggle('createEmptyRow')">createEmptyRow</a></td><td>创建一个新行，由cls生成列信息</td><td>——</td><td>——</td><td>空行</td></tr>
+	<tr><td><a onclick="toggle('addRow')">addRow</a></td><td>添加一行记录</td><td>Row row</td><td>一行</td><td>——</td></tr>
+
+	<tr><td><a onclick="toggle('addRows')">addRows</a></td><td>添加多行记录</td><td>List<Row> rows</td><td>多行</td><td>——</td></tr>
+
+	<tr><td><a onclick="toggle('getAll')">getAll</a></td><td>获得所有业务bean集</td><td>——</td><td>——</td><td>POJO对象列表</td></tr>
+
+
+
+	<tr><td><a onclick="toggle('updateMeta')">updateMeta</a></td><td>更新元数据描述信息</td><td>String fieldid,String descName,String descValue</td><td>fieldid：列id；descName：描述名称（如：default）；descValue：描述值</td><td>--</td></tr>
+
+	<tr><td><a onclick="toggle('add')">add</a></td><td>添加业务bean</td><td>&lt;T> t</td><td>业务实体bean</td><td>--</td></tr>
+
+	<tr><td><a onclick="toggle('add')">add</a></td><td>添加多个业务bean</td><td>&lt;T>[] t</td><td>多个业务实体bean</td><td>--</td></tr>
+
+	<tr><td><a onclick="toggle('add')">add</a></td><td>添加多个业务bean,并增加添加前后业务处理逻辑</td><td>T[] objs,IAddRowHandler addrowHandler</td><td>objs：多个业务实体bean；addrowHandler：前后处理服务</td><td>--</td></tr>
+
+	<tr><td><a onclick="toggle('getT')">getT</a></td><td>根据row生成包装业务bean</td><td>Row row</td><td>row：一行记录</td><td>POJO对象</td></tr>
+
+	<tr><td><a onclick="toggle('toBean')">toBean</a></td><td>根据row生成bean</td><td>Row row</td><td>row：一行记录</td><td>POJO对象</td></tr>
+
+	<tr><td><a onclick="toggle('toBean')">toBean</a></td><td>为包装bean绑定数据</td><td>T t</td><td>t：包装bean</td><td>POJO对象</td></tr>
 	
-	    type:'GET',
-	
-	    success: function(){
-	
-	        ... ...
-	
-	    }
-	);
+	<tr><td><a onclick="toggle('breed')">breed</a></td><td>在事件请求上下文里添加一个新的不带数据的datable</td><td>String nid</td><td>nid：datatble编码</td><td>新的datatble</td></tr>
 
-**6：前后端完成示例如下：**
+    </tbody>
+</table>
 
-- java示例
 
-		
-		/**
-		 * spring MVC控制类示例，开发者需要在此基础上进行修改，适应项目的需求
-		 */
-		@RestController
-		@RequestMapping(value = "/goods")
-		public class GoodJdbcDemoController {
-			private final Logger logger = LoggerFactory.getLogger(getClass());
-			
-			@Autowired
-			private GoodJdbcDemoService goodService;
-			
-			@RequestMapping(value="/page", method= RequestMethod.GET)
-			public EventResponse loadData(@IWebParameter(id="dataTable1") DataTable<GoodJdbcDemo> dataTable1, @IWebParameter()
-			EventResponse response) {
-				try {
-					int pageNumber = 0;
-					Map<String, Object> parameters = IWebViewContext.getEventParameter();
-					if (parameters.get("pageIndex") != null) {
-						pageNumber = (Integer) parameters.get("pageIndex");
-					}
-					int pageSize = dataTable1.getPageSize();
-					pageNumber = dataTable1.getPageIndex();
-		
-					// 构造查询条件等
-					Map<String, Object> searchParams = new HashMap<String, Object>();
-					PageRequest pageRequest = ...
-		
-		
-					Page<GoodJdbcDemo> categoryPage = goodService.getDemoPage(searchParams, pageRequest);
-					
-					//设置返回数据
-					dataTable1.remove(dataTable1.getAllRow());
-					dataTable1.set(categoryPage.getContent().toArray(new GoodJdbcDemo[0]));
-		
-					int totalPages = categoryPage.getTotalPages();
-					dataTable1.setPageIndex(pageNumber);
-					dataTable1.setTotalPages(totalPages);
-		
-					... ... ... ... 
-				} catch (Exception e) {
-					logger.error("查询数据失败!", e);
-					throw new WebRuntimeException("查询数据失败!");
-				}
-				return response;
-			}
-			
-					
-		
-			@RequestMapping(value="/update", method= RequestMethod.POST)
-			public EventResponse update(@IWebParameter(id="dataTable1") DataTable<GoodJdbcDemo> dataTable1, @IWebParameter()
-			EventResponse response) {
-				dataTable1.setCls("com.yonyou.iuap.example.entity.GoodJdbcDemo");
-				try {
-                    /*
-					查找出需要保存或者更新的行,根据datatable的api，例如getCurrentRow或者getSelectedRow类似，获取到需要修改的行，使用toBean方法将Row对象转换成demoEntity。
-                    */
+### 获取请求参数
 
-					... ... 
+描述
 
-					GoodJdbcDemo entity = goodService.saveEntity(demoEntity);
-					
-					... ...
+获取前端发送过来的参数
 
-					JSONObject json = new JSONObject();
-					json.put("flag", "success");
-					json.put("msg", "保存成功!");
-					IWebViewContext.getResponse().write(json.toString());
-				} catch (Exception e) {
-					logger.error("保存失败!",e);
-					throw new WebRuntimeException("保存失败!", e);
-				}
-				return response;
-			}
-			
-			@RequestMapping(value="/del", method= RequestMethod.POST)
-			public EventResponse del(@IWebParameter(id="dataTable1") DataTable<GoodJdbcDemo> dataTable1, @IWebParameter()
-			EventResponse response) {
-				try {
-					Row[] rows = dataTable1.getSelectRow();
-					Iterator<Row> it = Arrays.asList(rows).iterator();
-					while (it.hasNext()) {
-						Row r = it.next();
-						
-						String productid = (String) r.getField("productid").getValue();
-						if (productid!=null) {
-							//此处只为示例，应该考虑批量删除
-							goodService.deleteById(productid);
-						}
-					}
-					dataTable1.remove(rows);
-					
-					dataTable1.setSelect(new Integer[]{});
-					dataTable1.setTotalRow(goodService.getAllCount());
-				} catch (Exception e) {
-					logger.error("删除报错失败!",e);
-					throw new WebRuntimeException("删除失败!",e);
-				}
-				return response;
-			}
-			
-			private Map<String, Object> createSearchParamsStartingWith(DataTable dataTable1,String prefix) {
-				Map<String, Object> params = new HashMap<String, Object>();
-				Map<String, Object> m = dataTable1.getParams();
-				Set<Entry<String, Object>> set = m.entrySet();
-				for (Entry<String, Object> entry : set) {
-					String key = entry.getKey();
-					if (key.startsWith(prefix)) {
-						String unprefixed = key.substring(prefix.length());
-						params.put(unprefixed, entry.getValue().toString());
-					}
-				}
-				return params;
-			}
-			
-			/**
-			 * 创建分页请求.
-			 */
-			private PageRequest buildPageRequest(int pageNumber, int pagzSize, String sortType) {
-				Sort sort = null;
-				if ("auto".equals(sortType)) {
-					sort = new Sort(Direction.DESC, "ts");
-				} else if ("productname".equals(sortType)) {
-					sort = new Sort(Direction.ASC, "productname");
-				}
-				return new PageRequest(pageNumber, pagzSize, sort);
-			}
-		}
 
-- js示例,请根据具体业务需求修改
+请求方法
 
-		define(['jquery', 'knockout', 'text!pages/goods/page.html', 'uui'], function($, ko, template) {
-		
-			var app, viewModel, datas;
-			viewModel = {
-				md: document.querySelector('#demo-mdlayout'),
-				editoradd: '',
-				dataTable1: new u.DataTable({
-					meta: {
-						'productid':{
-							type:'string'
-						},
-						'productName': {
-							type: 'string'
-						},
-						'productNum': {
-							type: 'integer'
-						},
-						'price': {
-							type: 'float'
-						},
-						'supplier': {
-							type: 'string'
-						}, //供应商
-						'proDate': {
-							type: 'date'
-						}, //生成日期
-						'orgin': {
-							type: 'string'
-						} //原产地
-					},
-					pageSize: 10
-				}),
-				infodata: new u.DataTable({
-					meta: {
-						'productid':{
-							type:'string'
-						},
-						'productName': {
-							type: 'string'
-						},
-						'productNum': {
-							type: 'integer',
-							precision: 0,
-							min: 0
-						},
-						'price': {
-							type: 'float',
-							precision: 2,
-							min: 0
-						},
-						'supplier': {
-							//供应商
-							type: 'string'
-						},
-						'proDate': {
-							//生成日期
-							type: 'date'
-						}, 
-						'orgin': {
-							//原产地
-							type: 'string'
-						} 
-					}
-				}),
-				
-			
-				menuEvents: {
-					afterAdd:function(element, index, data){
-			            if (element.nodeType === 1) {
-			                u.compMgr.updateComp(element);
-			            }
-			        },
-					goBack: function() {
-						viewModel.md['u.MDLayout'].dBack();
-					},
-					goPage: function(pathStr) {
-						viewModel.md['u.MDLayout'].dGo(pathStr);
-					},
-					beforeAdd: function() {
-						viewModel.editoradd = 'add';
-						viewModel.infodata.clear();
-						viewModel.infodata.createEmptyRow();
-						viewModel.infodata.setRowSelect(0);
-						viewModel.md['u.MDLayout'].dGo('addPage');
-					},
-					addRow: function() {
-						var self = this;
-						var _meta = this.dataTable1.meta;
-						var addInfo = this.infodata.getAllRows();
-						if (this.editoradd === 'add') {
-							this.dataTable1.addSimpleData( this.infodata.getSimpleData(),'new');
-						} else {
-							var curRow = viewModel.dataTable1.getCurrentRow();
-							curRow.setSimpleData(viewModel.infodata.getCurrentRow().getSimpleData(), 'upd');
-						}
-						
-						app.serverEvent().addDataTable("dataTable1", "current").fire({
-							url : ctx+'/goods/update'
-							})
-						viewModel.md['u.MDLayout'].dBack();
-						u.compMgr.updateComp();
-					},
-					
-					beforeEdit: function(id) {
-						viewModel.dataTable1.setRowSelect(id);
-						viewModel.infodata.setSimpleData(viewModel.dataTable1.getSimpleData({
-							type: 'select'
-						}));
-						viewModel.editoradd = 'edit';
-						viewModel.md['u.MDLayout'].dGo('addPage');
-					},
-					
-					delRow: function() {
-						var selectArray = viewModel.dataTable1.selectedIndices();
-						if (selectArray.length < 1) {
-							u.messageDialog({
-								msg: "请选择要删除的行!",
-								title: "提示",
-								btnText: "OK"
-							});
-							return;
-						}
-						
-						app.serverEvent().addDataTable("dataTable1", "current").fire({
-							url : ctx+'/goods/del',
-							success:function(){
-								viewModel.comp.update({totalPages: viewModel.dataTable1.totalPages(),pageSize:viewModel.dataTable1.pageSize(),currentPage:viewModel.dataTable1.pageIndex()+1,totalCount:viewModel.dataTable1.totalRow()});
-							}
-						});
-					},
-					viewRow: function(id) {
-						//如果样式列表不含有checkbox说明不是第一列
-						if (event.target.classList.toString().indexOf('checkbox') < 0) { 
-							viewModel.dataTable1.setRowFocus(id);
-							viewModel.md['u.MDLayout'].dGo('showPage');
-						}
-					}
-				}
-		
-			}
-		
-			var init = function(params) {
-				app = u.createApp({
-					el: '#content',
-					model: viewModel
-				});
-				viewModel.md = document.querySelector('#demo-mdlayout');
-				app.serverEvent().addDataTable("dataTable1", "current").fire({
-					url : ctx+'/goods/page',
-					type:'GET',
-					success: function(){
-						viewModel.comp.update({totalPages: viewModel.dataTable1.totalPages(),pageSize:viewModel.dataTable1.pageSize(),currentPage:viewModel.dataTable1.pageIndex()+1,totalCount:viewModel.dataTable1.totalRow()});
-					}
-						
-				});
-				
-				var r = viewModel.infodata.createEmptyRow();
-				viewModel.infodata.setRowSelect(0);
-				//分页
-				var element = document.getElementById('pagination');
-			    var comp = new u.pagination({el:element,jumppage:true});
-			    viewModel.comp=comp;
-			    //更新分页的配置
-			    comp.update({totalPages: 5,pageSize:2,currentPage:1,totalCount:35,});
-			
-			    comp.on('pageChange', function (pageIndex) {
-			        //console.log('新的页号为' + pageIndex);
-			        viewModel.dataTable1.pageIndex(pageIndex)
-			        app.serverEvent().addDataTable("dataTable1", "current").fire({
-						url : ctx+'/goods/page',
-						type:'GET',
-						success: function(){
-							viewModel.comp.update({totalPages: viewModel.dataTable1.totalPages(),pageSize:viewModel.dataTable1.pageSize(),currentPage:pageIndex+1,totalCount:viewModel.dataTable1.totalRow()});
-						}
-							
-					});
-			    });
-			
-			    comp.on('sizeChange', function (arg) {
-			        //console.log('每页显示条数为' + arg[0]);
-			        viewModel.dataTable1.pageSize(arg[0]);
-			        app.serverEvent().addDataTable("dataTable1", "current").fire({
-						url : ctx+'/goods/page',
-						type:'GET',
-						success: function(){
-							viewModel.comp.update({totalPages: viewModel.dataTable1.totalPages(),pageSize:arg[0],currentPage:viewModel.dataTable1.pageIndex()+1,totalCount:viewModel.dataTable1.totalRow()});
-						}
-					});
-			    });
-				
-				window.viewModel = viewModel;
-				u.compMgr.updateComp();
-		
-			}
-		
-			return {
-				'model': viewModel,
-				'template': template,
-				'init': init
-			};
-		});
+	IWebViewContext.getEventParameter(key)
 
-- 注意：上述示例代码只作为参考，项目上需要按照自身要求修改。
+请求方式
 
-**7：更加详细的使用方法，请参考前端技术相关的使用手册**
+方法调用
+
+请求参数说明
+
+| 参数字段      |    必选 | 类型  |说明  |
+| :-------- | --------:|--------:| :--: |
+| key  | true |  字符串   |参数key |
+
+
+返回值
+
+参数的值
+
+
+### 获取Datatable
+
+描述
+
+获取前端发送过来的Datatable
+
+
+请求方法
+
+	IWebViewContext.getRequest().getDataTable(key)
+
+请求方式
+
+方法调用
+
+请求参数说明
+
+| 参数字段      |    必选 | 类型  |说明  |
+| :-------- | --------:|--------:| :--: |
+| key  | true |  字符串   |datatable 的ID |
+
+
+返回值
+
+datatable对象
+
+
+### 向前端输出数据
+
+描述
+
+向前端输出数据
+
+
+请求方法
+
+	IWebViewContext.getResponse().getWriter().write(value)
+
+请求方式
+
+方法调用
+
+请求参数说明
+
+| 参数字段      |    必选 | 类型  |说明  |
+| :-------- | --------:|--------:| :--: |
+| value  | true |  字符串   |输出内容 |
+
+
+返回值
+
+无
+
+
+
+
+

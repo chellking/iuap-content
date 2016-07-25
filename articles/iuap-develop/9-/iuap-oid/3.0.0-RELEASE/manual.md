@@ -1,14 +1,26 @@
 # 对象OID组件概述 #
 
-## 组件简介 ##
+## 业务需求 ##
 
-在数据持久化时，需要生成全局唯一的对象标识ID，传统的UUID能保证唯一性，但是数据量超大之后，查询效率会下降，所以需要一种保证全局唯一的对象标识生成方案。应用在进行扩展时，需要集群部署，多个JVM中生成的唯一标识需要保证不冲突，全局唯一。
+在数据持久化时，业务上通常需要生成全局唯一的对象标识ID，在应用水平扩展时，多个JVM中生成的唯一标识保证不冲突。传统的UUID能保证唯一性，但在数据量很大之后，数据查询效率会下降，所以需要一种能保证全局唯一并且可以保证读写效率的对象标识生成方案。
 
 ## 解决方案 ##
 
-iuap-oid组件提供对实体唯一标识生成的统一封装，包含普通的UUID、基于Redis的自增ID、和snowflake、uapoid算法等。组件提供统一接口对OID进行生成，通过配置的方式实现对几种策略的切换。同时支持对自定义ID生成方案的扩展。
+iuap的对象OID组件提供唯一标识生成的统一封装，包括普通的UUID、基于Redis的自增ID、基于Snowflake算法和UAPOID算法的唯一ID。组件提供统一接口对OID进行生成，通过配置的方式实现ID生成策略的切换，同时可以扩展自定义的ID生成方案。
 
-采用Redis自增方式，支持为不同模块设置不同的起始值。
+在基于Redis自增时，支持为不同模块设置不同的ID起始值；基于Snowflake算法通过日期、机器信息、顺序号等共同组成一个唯一ID；基于UAPOID算法通过Schema、顺序号（包括0-9和a-z）等生成唯一ID，同时利用本地缓存和数据库机制实现高效和高可用。
+
+
+## 功能说明 ##
+
+1.	支持对象唯一ID的多种生成策略：
+	- UUID；
+	- 基于Redis的自增ID；
+	- 基于Snowflake算法的自增ID；
+	- 基于UAPOID算法的自增ID；
+<br>
+2.	支持扩展自定义ID生成策略；
+
 
 # 整体设计 #
 
@@ -31,31 +43,31 @@ iuap-oid组件支持多种ID生成方式，如UUID、Redis自增、snowflake，U
 
 # 使用说明 #
 
-## 配置和使用方式 ##
+## 配置方式 ##
 
-**1:在工程的pom.xml文件中加入对oid组件的依赖**
-```
+###配置maven依赖###
 	<dependency>
 		<groupId>com.yonyou.iuap</groupId>
 		<artifactId>iuap-oid</artifactId>
 		<version>${iuap.modules.version}</version>
 	</dependency>
-```
+
 ${iuap.modules.version} 为在pom.xml中定义的需要引入组件的version。
 
-**2:在属性配置文件中，加入oid的使用类型配置**
+###配置属性文件###
 
-```
+**在属性配置文件中，加入oid的使用类型配置**
+
 	#idtype=uuid
 	#idtype=redis
 	#idtype=snowflake
 	idtype=uapoid
 	#idproviderclass=com.yonyou.iuap.persistence.oid.CustomIdProvider
 
-	//idtype为需要使用的ID生成类型，目前包括UUID、redis自增、snowflake、uapoid几种类型
-```
+idtype为需要使用的ID生成类型，目前包括UUID、redis自增、snowflake、uapoid几种类型
 
-**3:使用redis自增主键时候，需要配置redis对应的文件，请参考cache组件**
+###redis自增主键###
+**使用redis自增主键时候，需要配置redis对应的文件，请参考cache组件**
 
 	<bean id="redisPool" class="com.yonyou.iuap.cache.redis.RedisPoolFactory"
 		scope="prototype" factory-method="createJedisPool">
@@ -76,10 +88,11 @@ ${iuap.modules.version} 为在pom.xml中定义的需要引入组件的version。
 	#可以设置特殊模块自增起始值
 	IUAP_PRIMARY_MYMODULE_START_VALUE=10000
 
-**4:使用uapoid类型时候，连接数据库，并初始化数据表，stepSize可根据项目指定，为每次取到本地JVM中自增ID的范围**
+###UAPOID方式###
+**使用uapoid类型时候，连接数据库，并初始化数据表，stepSize可根据项目指定，为每次取到本地JVM中自增ID的范围**
 
  	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-	<property name="dataSource" ref="dataSource"></property>
+		<property name="dataSource" ref="dataSource"></property>
     </bean>	
 
     <bean id="uapOidJdbcService" class="com.yonyou.iuap.persistence.oid.UapOidJdbcService">
@@ -106,7 +119,7 @@ ${iuap.modules.version} 为在pom.xml中定义的需要引入组件的version。
 	
 		@Id
 	    @Column(name = "productid")
-	    @GeneratedValue(strategy=Stragegy.UUID,moudle="example_demo")
+	    @GeneratedValue(strategy=Stragegy.UAPOID,moudle="example_demo")
 	    private String productid;
 	
 		... ...
@@ -114,7 +127,9 @@ ${iuap.modules.version} 为在pom.xml中定义的需要引入组件的version。
 
 其中的strategy为id的生成策略，请参考Stragegy的枚举值，和idtype基本保持一致。
 
-**5:使用snowflake的方式，需要保证workerid一致**
+###snowflake方式###
+
+**使用snowflake的方式，需要保证workerid一致**
 
 此种方式使用有限制，需要在启动Tomcat时候指定系统属性，ID生成时候会使用到系统属性，如下：
 
@@ -124,9 +139,36 @@ ${iuap.modules.version} 为在pom.xml中定义的需要引入组件的version。
     }
 注意，此场景适用在同一台机器或同一个docker容器中启动单个Tomcat或Java应用，否则可能无法保证workerid不唯一。
 
-**6:代码调用ID生成示例**
+###custom方式###
 
-	//参数根据选择的不同ID生成类型意义不同，请根据项目需求判断，其中redis的为自增模块号，uapoid为对应的数据库的schema名
-	IDGenerator.generateObjectID(param);
+组件支持以扩展的方式生成自定义的主键，需要自行实现IOidProvider，配置方式如下：
+
+	idtype=custom
+	idproviderclass=com.yonyou.iuap.persistence.oid.CustomIdProvider
+
+**更多API操作和配置方式，请参考对应的示例工程(DevTool/examples/example\_iuap\_oid)**
+
+##API接口##
+
+- IDGenerator
+
+<table style="border-collapse:collapse">
+	<tr>
+		<th>方法名</th>
+		<th>参数说明</th>
+		<th>返回值</th>
+		<th>功能说明</th>
+	</tr>
+
+	<tr>
+		<td>generateObjectID</td>
+		<td>String param（参数根据选择的不同ID生成类型意义不同，请根据项目需求判断，其中redis的为自增模块号，uapoid为对应的数据库的schema名）</td>
+		<td>String pk（使用算法生成的主键）</td>
+		<td>以指定的主键策略生成主键</td>
+	</tr>
+
+</table>
+
+
+
 	
-**7:更多API操作和配置方式，请参考对应的示例工程(DevTool/examples/example\_iuap\_oid)**

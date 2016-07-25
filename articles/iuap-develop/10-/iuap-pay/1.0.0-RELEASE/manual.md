@@ -637,24 +637,28 @@ pay\_fail.jsp、pay\_success.jsp：分别对应支付成功和支付失败之后
 4. 发送HTTP请求到RESTful服务接口
 在前端页面可以通过aJax请求或者提交form表单等方式，通过POST请求，把数据发送到pay/bill，参数格式参见**5.3 API接口**，组件将会引导用户完成支付。  
 一个简单的前台发起支付请求的例子：  
- 
-		<script type="text/javascript">
-			function doPay() {
-				$.ajax({
-					cache : true,
-					type : "POST",
-					url : "/pay/bill", 
-					data : $('#payOrderForm').serialize(),
-					async : false,
-					error : function(request) {
-						alert("发送请求失败！");
-					},
-					success : function(data) {
-						//alert("发送成功！");
-					}
-				});
-			}
-		</script>
+
+```
+	<form name="payment_form" action="<%=path%>/pay/bill" method="post" target="_self">
+			<div id="form_body" >
+				<dl class="content">
+					<div>
+						<dt nowrap><label class="red-star">*</label>支付金额（元）：</dt>
+						<dd nowrap><strong><input type="text" name="total_fee" value="0.01" /></strong></dd>
+					</d
+					<div>
+						<dt nowrap>订单标题：</dt>
+						<dd nowrap><strong><input type="text" name="order_name" value="配备Retina显示屏的新一代MacBook" /></strong></dd>
+					</div>
+					<div>
+						<dt nowrap>订单号：</dt>
+						<dd nowrap><strong><input type="text" name="out_trade_no" value="2016-01-26-002" /></strong></dd>
+					</div>
+	......
+	</form>
+```å
+
+
 其中，payOrderForm是一个支付表单，内容为各支付渠道的参数，具体各支付渠道需要传入哪些参数，请参考**5.3 API接口**
 5. 处理支付结果  
 接口com.yonyou.uap.ieop.pay.service.PayService提供了getPayResult(HttpServletRequest request)方法，用户可以通过实现此接口来完成对支付结果的获取，然后对支付结果进行下一步的业务逻辑处理。

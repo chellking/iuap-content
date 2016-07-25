@@ -1,6 +1,5 @@
-# 免费试用
+# 下载
 
-是的，免费！此升级优惠为您提供完整版开发平台，而不是试用版。需要 2GB 下载空间；可能产生 Internet 接入费用。要享受此免费优惠并且对问题需要获取支持和帮助，您可以加入本文档所在的仓库地址：[GitHub](https://github.com/chellking/iuap-content/issues)上，提出相应的问题描述说明。
 
 ## 升级您的开发工具
 
@@ -16,8 +15,10 @@
 ## 获取开发平台版本
 
 
-寻找企业应用解决方案提供开发工具，即刻开始体验[iUAP开发工具](http://iuap.yonyou.com/webpage/developer/ieop/views/download-center.html)；
+寻找企业应用解决方案提供开发工具，即刻开始体验[iuap开发工具](http://iuap.yonyou.com/webpage/developer/ieop/views/download-center.html)
 
-加入开发平台预览体验计划，保持消息灵通；
+## 文档获取
+开发平台对应文档形式为在线文档。对应文档地址 [iuap 开发平台](http://iuap.yonyou.com/webpage/developer/platform3/index.html#/platform3/articles/iuap-develop/1-/readme.html)
 
-帮助我们为数以万计的人们塑造开发体验。加入开发平台预览体验计划，与全国各地数万开发专家和技术专业人员一起帮助塑造强大的开发平台。
+
+文档问题需要获取支持和帮助，您可以加入本文档所在的仓库地址：[GitHub](https://github.com/chellking/iuap-content/issues)上，提出相应的问题描述说明。

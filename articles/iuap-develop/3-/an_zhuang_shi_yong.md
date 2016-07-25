@@ -15,7 +15,7 @@
 
 1. 解压后放到d盘根目录，若之前运行过老版本的本开发环境，删除时候注意备份对应的workspace下的工程，以免误删除！
 2. 建议运行环境win7 64位 4g内存 具有vc2010运行库。
-3. 如有更多问题可访问http://iuap.yonyou.com/获取支持。
+3. 如有更多问题可访问 [iuap开发平台](http://iuap.yonyou.com/) 获取支持。
 
 开发模式：
 按照需求启动bin目录下的startpgsql.bat、startredis.bat、startsolr.bat、startzookeeper.bat 完成开发启动准备，启动根目录下的startDevTool.bat可以打开默认的开发工具，examples下内置了工程的示例代码，开发人员可以直接调试和查看代码，根据官网文档的指导快速介入。

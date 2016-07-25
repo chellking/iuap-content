@@ -20,5 +20,5 @@
 ![互联网部署图](../image/image1.png)
 在技术选型上，使用以下技术：
 
-![技术选型](../image/image2.jpg)
+![技术选型](../image/img-toollist.png)
  

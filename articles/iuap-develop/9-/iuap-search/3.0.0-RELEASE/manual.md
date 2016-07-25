@@ -1,22 +1,22 @@
 # 搜索组件 #
 
-## 组件介绍 ##
+## 业务需求 ##
 
-搜索功能在门户社区中对提高用户体验有着重要的作用，在门户社区中涉及了大量需要搜索的功能。在门户社区中大多基于Solr实现站内搜索，主要是因为Solr的封装及扩展性较好，并且提供了较为完备的解决方案。
+在互联网应用中，全文检索功能必不可少，随着用户的输入可以输出联想词汇，并根据用户最终输入搜索出所有相关的内容，对于提高用户体验和减轻数据库查询压力有着重要的作用。
 
-在选择用Solr提供搜索引擎服务的前提下，iUAP的搜索组件提供了访问搜索服务（solr）的功能。
+## 解决方案 ##
+iuap的搜索组件选择Solr作为全文检索的中间件来提供搜索服务功能，实现对站内数据或者表单数据的全文检索。Solr的封装及扩展性较好，通过集群方式可以实现索引容量的动态扩展和主从节点的故障自动切换。本组件对Solrj做了轻量封装，解耦了索引的修改和检索操作，索引检索执行同步操作，索引修改执行异步操作，避免索引修改使用同步所造成的响应时间延长。
 
-iUAP平台采用iuap-search-solr作为全文检索的中间件，实现对对站内数据或者表单数据的全文检索。本组件对solrj做了轻量封装，屏蔽solrj的语法复杂性，提供流式api。解耦索引的修改和检索操作，索引检索执行同步操作，索引修改异步操作，避免索引修改同步操作造成的响应时间。
+##功能说明##
+1.	屏蔽Solrj的语法复杂性，提供流式API；
+2.	支持索引的增加、删除操作；
+3.	对索引的更新操作提供异步接口，可以自由对接各种中间件；
+4.	增加中文分词API；
+5.	支持应用自定义词库。
 
-支持如下特征：
+# 使用说明 #
 
-1. 屏蔽solrj的语法复杂性，提供流式api。
-
-2. 解耦索引的增加和检索操作，对索引的修改操作提供异步接口，可以自由对接各种中间件。
-
-3. 增加中文分词API，支持应用自定义词库。
-
-## 相关依赖 ##
+## Maven配置 ##
 
 搜索组件内部依赖solrj的5.5.0和org.apache.lucene组下的相关4.10.4组件，项目上依赖iuap-search组件即可。
 
@@ -29,8 +29,6 @@ iUAP平台采用iuap-search-solr作为全文检索的中间件，实现对对站
 	</dependency>
 
 ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
-
-# 使用说明 #
 
 ## 示例准备 ##
 1. 在solr example下collection1中的schema.xml添加以下内容
@@ -86,7 +84,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 		}
 
 
-## 索引查询
+## 索引查询 ##
 ### 普通检索 ###
 
 **solr 的query界面参数和Criteria API对应表**
@@ -179,3 +177,46 @@ iuap search组件提供了索引修改的异步接口。解耦应用数据修改
 	    </bean>
 
 **更多API操作和配置方式，请参考对应的示例工程(DevTool/examples/example\_iuap_search)**
+
+## 配置中文分词 ##
+
+- 修改对应的core的config文件夹下的schema.xml,添加ik分词配置：
+
+	    <!-- IKAnalyzer 中文分词--> 
+	    <fieldType name="text_ik" class="solr.TextField">
+			<analyzer type="index" isMaxWordLength="false" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+			<analyzer type="query" isMaxWordLength="true" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+		</fieldType>
+		<field name="ik" type="text_ik" indexed="true" stored="true" multiValued="false" />  
+
+- 在声明字段时，指定类型为text_ik
+
+		<field name="title" type="text_ik" indexed="true" stored="true" multiValued="false"/>
+
+- 将IKAnalyzer相关的jar包（IKAnalyzer2012FF_u1.jar）放在solr/WEB-INF/lib下
+- 添加新的索引后，title字段的查询即支持中文分词，可以用solr控制台的分析工具查看分词效果
+	
+	![](../images/analysis.png)
+
+## 启用停用词功能和扩展词典 ##
+
+- 将stopword.dic和IKAnalyzer.cfg.xml复制到classes根目录
+
+		<?xml version="1.0" encoding="UTF-8"?>
+		<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+		<properties>
+			<comment>IK Analyzer 扩展配置</comment>
+			<!--用户可以在这里配置自己的扩展字典 -->
+			<entry key="ext_dict">ext.dic;</entry>
+			<!--用户可以在这里配置自己的扩展停止词字典-->
+			<entry key="ext_stopwords">stopword.dic;</entry>
+		</properties>
+
+	ext.dic 为自定义词语，stopword.dic为会屏蔽掉的词语。
+
+- 扩展词典示例，修改ext.dic
+
+	在ext.dic中添加"我去",分词效果如下图：
+
+	![](../images/extdic.png)
+

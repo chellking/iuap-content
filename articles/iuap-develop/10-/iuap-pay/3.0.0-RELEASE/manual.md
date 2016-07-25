@@ -5,29 +5,23 @@
 通过此组件提供的REST服务，用户可以通过支付宝即时转账、扫码支付、网银支付，微信扫码，畅捷支付渠道来完成支付。   
 支持的支付渠道如下:  
 
-**支付宝快捷支付功能：**
+## 功能说明 ##
 
-付款方需要登录支付宝账户，通过支付宝即时转账功能，来完成支付。
+1. 支付宝快捷支付功能：付款方需要登录支付宝账户，通过支付宝即时转账功能，来完成支付。
 
-**支付宝扫码支付功能：**
+2. 支付宝扫码支付功能：付款方通过支付宝客户端，扫描支付页面显示的二维码完成支付。
 
-付款方通过支付宝客户端，扫描支付页面显示的二维码完成支付。
+3. 支付宝网银支付功能： 付款方通过登录支付宝支持的网上银行完成支付。  
 
-**支付宝网银支付功能：**
+4. 支付宝担保支付功能：付款方可以选择担保支付的功能来完成网上购物。 
 
-付款方通过登录支付宝支持的网上银行完成支付。  
+5. 微信扫码支付功能：付款方通过微信移动客户端，扫描支付页面的二维码来完成支付。
 
-**支付宝担保支付功能：**
+6. 畅捷支付功能：付款方选择畅捷支付方式之后，由畅捷支付引导用户完成支付。
 
-付款方可以选择担保支付的功能来完成网上购物。 
+7. 支持调用支付服务前检查
 
-**微信扫码支付功能：**
-
-付款方通过微信移动客户端，扫描支付页面的二维码来完成支付。
-
-**畅捷支付功能：**
-
-付款方选择畅捷支付方式之后，由畅捷支付引导用户完成支付。
+8. 支持支付宝支付退款功能
 
 
 > 注：以上服务，需要商家购买对应支付平台的支付业务服务
@@ -331,12 +325,12 @@ HTTP POST
   </tr>
 </table>
 
-### 微信扫码支付接口 ###
+### 支付宝担保交易接口 ###
 
 **描述**  
-通过微信的扫码支付渠道，完成支付功能  
+用户开通支付宝担保交易服务之后，通过此服务，完成担保交易  
 **请求方法**  
-/pay/bill?pay\_type=WX\_SCAN&key=vaule  
+/pay/bill?pay\_type=ALI\_GU&key=vaule  
 **请求方式**  
 HTTP POST  
 **请求参数说明**  
@@ -352,29 +346,113 @@ HTTP POST
     <td><br>  out_trade_no<br>  </td>
     <td><br>  True<br>  </td>
     <td><br>  String<br>  </td>
-    <td><br>  32<br>  </td>
+    <td><br>  64<br>  </td>
     <td><br>  商户网站唯一订单号<br>  </td>
   </tr>
   <tr>
-    <td><br>  goods_des<br>  </td>
+    <td><br>  order_name<br>  </td>
     <td><br>  True<br>  </td>
     <td><br>  String<br>  </td>
-    <td><br>  32<br>  </td>
+    <td><br>  256<br>  </td>
     <td><br>  商品或支付单简要描述。<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  order_name<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  256<br>  </td>
+    <td><br>  商品或支付单简要描述。<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  logistics_type <br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  256<br>  </td>
+    <td><br>  物流类型。例如：EMS<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  logistics_fee <br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  9<br>  </td>
+    <td><br>  物流费用。单位为：RMB Yuan。精确到小数点后两位。缺省值为0元。<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  logistics_payment<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  256<br>  </td>
+    <td><br>  物流支付类型。例如：BUYER_PAY <br>  </td>
   </tr>
   <tr>
     <td><br>  total_fee<br>  </td>
     <td><br>  True<br>  </td>
     <td><br>  Number<br>  </td>
     <td><br>  9<br>  </td>
-    <td><br>  单笔交易金总额，单位为RMB-Yuan。取值范围为[0.01，1000000.00]，精确到小数点后两位<br>  </td>
+    <td><br>  商品单价。单位为：RMB Yuan。取值范围为[0.01，1000000.00]，精确到小数点后两位。<br>  </td>
   </tr>
   <tr>
     <td><br>  pay_type<br>  </td>
     <td><br>  True<br>  </td>
     <td><br>  String<br>  </td>
     <td><br>  10<br>  </td>
-    <td><br>  支付类型。<br>  此处是微信扫码支付，为” WX_SCAN”<br>  </td>
+    <td><br>  支付类型。<br>  此处是支付宝担保交易，为” ALI_GU”<br>  </td>
+  </tr>
+</table>
+
+### 支付宝批量退款接口 ###
+
+**描述**  
+通过微信的扫码支付渠道，完成支付功能  
+**请求方法**  
+/refund/bill?refund_type=ALI&key=vaule  
+**请求方式**  
+HTTP POST  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  batch_no<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  <br>  </td>
+    <td><br>  必填，格式为：退款日期（8位）+流水号（3～24位）。不可重复，且退款日期必须是当天日期。流水号可以接受数字或英文字符，建议使用数字，但不可接受“000”。<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  batch_num<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  <br>  </td>
+    <td><br>  必填(值为您退款的笔数,取值1~1000间的整数)。<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  detail_data<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  9<br>  </td>
+    <td><br> <b> 单笔数据集参数说明</b>
+<br>  1.单笔数据集格式为：第一笔交易退款数据集#第二笔交易退款数据集#第三笔交易退款数据集…#第N笔交易退款数据集；
+<br>  2.交易退款数据集的格式为：原付款支付宝交易号^退款总金额^退款理由；
+<br>  3.不支持退分润功能。
+<br> <b>单笔数据集（detail_data）注意事项</b>
+<br>  1.detail_data中的退款笔数总和要等于参数batch_num的值；
+<br>  2.“退款理由”长度不能大于256字节，“退款理由”中不能有“^”、“|”、“$”、“#”等影响detail_data格式的特殊字符；
+<br>  3.detail_data中退款总金额不能大于交易总金额；
+<br>  4.一笔交易可以多次退款，退款次数最多不能超过99次，需要遵守多次退款的总金额不超过该笔交易付款金额的原则。
+<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  notify_url<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  10<br>  </td>
+    <td><br>  http://iuap.yonyou.com/notify_url.jsp<br>  </td>
   </tr>
 </table>
 			
@@ -667,7 +745,9 @@ ReceiverAccountInfo.properties：收款方账户信息，需要将组件支持�
 aliPay.jsp、chanjetPay.jsp、wxscanPay.jsp：分别是支付宝、微信扫码、畅捷支付对应的支付引导JSP，一般存放在系统的WEB-INF目录下，为了便于管理和层次清晰，建议统一放在pay\_page文件夹中，JSP内容不需要修改  
 notify\_url.jsp、return\_url.jsp：这两个页面分别对应支付参数中的notify\_url和return\_url，页面内容可以作为参考  
 pay\_fail.jsp、pay\_success.jsp：分别对应支付成功和支付失败之后的逻辑处理页面，仅供参考  
-2. 配置扫描路径，确保com.yonyou.uap.ieop.pay 路径下的controller被扫描到  
+
+2. 配置扫描路径，确保com.yonyou.uap.ieop.pay 路径下的controller被扫描到 
+   
 ```
 		<context:component-scan base-package=" com.yonyou.uap.ieop.pay">
 			<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
@@ -676,32 +756,38 @@ pay\_fail.jsp、pay\_success.jsp：分别对应支付成功和支付失败之后
 
 3. 发送HTTP请求到RESTful服务接口
 在前端页面可以通过aJax请求或者提交form表单等方式，通过POST请求，把数据发送到pay/bill，参数格式参见**5.3 API接口**，组件将会引导用户完成支付。  
-一个简单的前台发起支付请求的例子：  
- ```
-		<script type="text/javascript">
-			function doPay() {
-				$.ajax({
-					cache : true,
-					type : "POST",
-					url : "/pay/bill", 
-					data : $('#payOrderForm').serialize(),
-					async : false,
-					error : function(request) {
-						alert("发送请求失败！");
-					},
-					success : function(data) {
-						//alert("发送成功！");
-					}
-				});
-			}
-		</script>
+一个简单的前台发起支付请求的例： 
+ 
+```
+	<form name="payment_form" action="<%=path%>/pay/bill" method="post" target="_self">
+			<div id="form_body" >
+				<dl class="content">
+					<div>
+						<dt nowrap><label class="red-star">*</label>支付金额（元）：</dt>
+						<dd nowrap><strong><input type="text" name="total_fee" value="0.01" /></strong></dd>
+					</d
+					<div>
+						<dt nowrap>订单标题：</dt>
+						<dd nowrap><strong><input type="text" name="order_name" value="配备Retina显示屏的新一代MacBook" /></strong></dd>
+					</div>
+					<div>
+						<dt nowrap>订单号：</dt>
+						<dd nowrap><strong><input type="text" name="out_trade_no" value="2016-01-26-002" /></strong></dd>
+					</div>
+	......
+	</form>
 ```
 
 其中，payOrderForm是一个支付表单，内容为各支付渠道的参数，具体各支付渠道需要传入哪些参数，请参考**5.3 API接口**
 
-4. 处理支付结果  
+4. 支付前校验
+支付校验需要实现接口com.yonyou.uap.ieop.pay.service.IOrderPayValidateService
+退款校验需要实现接口com.yonyou.uap.ieop.pay.service.IOrderRefundValidateService
+用户可在实现类validate方法中对支付参数进行校验，保证支付订单的正确性。
+实现类需要使用@service注解或者在spring中注入该实现类，具体参考示例工程
+
+
+5. 处理支付结果  
 接口com.yonyou.uap.ieop.pay.service.PayService提供了getPayResult(HttpServletRequest request)方法，用户可以通过实现此接口来完成对支付结果的获取，然后对支付结果进行下一步的业务逻辑处理。
 
-## 扩展机制 ##
-无
 

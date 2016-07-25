@@ -2,13 +2,19 @@
 
 ## 业务需求 ##
 
-在业务应用持久化工作中，有时会选用MyBatis作为持久化支持。MyBatis的sql写在xml里，便于统一管理和优化，并且将sql语句与程序代码解耦。另外MyBatis还提供了强大的动态sql功能，提高了持久化开发工作的效率。
+在业务应用的持久化工作中，有时会选用MyBatis作为持久化框架支持。MyBatis的Sql语句写在XML配置文件里，将Sql语句与程序代码解耦，便于统一管理和优化。但是MyBatis并没有完善的分页支持，需要业务自己来实现。
 
 ## 解决方案 ##
 
-iuap平台使用iuap-mybatis作为MyBatis持久化的支持。iuap-mybatis提供了统一的Spring扫描注解和分页插件。
+iuap平台使用iuap-mybatis作为MyBatis持久化的支持并提供了统一的Spring扫描注解和分页插件来支持分页的实现。
 
-在iuap-persistence组件中已经对mybatis的基础使用做了说明，iuap-persistence中依赖了基础的spring data jpa和mybatis相关，如果项目上明确使用Mybatis，则不需要引入iuap-persistence组件，直接依赖iuap-mybatis组件即可，注意要和iuap其他组件的版本保持一致。
+在前面的iuap-persistence组件中已经对Mybatis的基础使用做了介绍说明，iuap-persistence同时依赖了基础的Spring Data JPA和Mybatis，如果项目上明确只使用Mybatis，则不需要引入iuap-persistence组件，直接依赖iuap-mybatis组件即可，注意要和iuap其他组件的版本保持一致。
+
+
+## 功能说明 ##
+1.	提供统一的Spring扫描注解；
+2.	提供Mybatis分页插件;
+
 
 # 整体设计 #
 
