@@ -65,7 +65,6 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 **3:使用数据库时需要拷贝的文件**
 
-	执行示例工程中src\main\resources\db\busilog.sql数据库脚本
 	拷贝src\main\resources\mybatis目录到busilog-applicationContext.xml同级目录
 	同时增加配置文件中
 	busilog-applicationContext.xml
@@ -90,21 +89,8 @@ maven私服上发布的有示例工程，用户可将示例工程下载下来，
 ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 2. 执行数据库脚本  
-如果用户需要将业务日志持久化到数据库中的话：（for mysql） 
- 
-		drop table if exists busilog_saas;
-		
-		CREATE TABLE busilog_saas( 
-		    id VARCHAR(40) NOT NULL, 
-     		clientip VARCHAR(18),/*IP*/
-     		operuser VARCHAR(40),/*用户*/ 
-	 		logcategory  VARCHAR(40),/*日志分类*/ 
-	 		logcontent  VARCHAR(500),/*日志内容*/ 
-	 		sysid VARCHAR(40),/* 应用id*/
-	 		tenantid VARCHAR(40),/* 租户id*/
-     		logdate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-     		PRIMARY KEY (id)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+依次执行examples项目下sql目录中的dll.sql、index.sql、dml.sql建立数据库并初始化数据。
 
 3. spring集成（配置文件参见组件的示例工程example-iuap-busilog）  
 需要添加的配置文件及存放目录示意图：  

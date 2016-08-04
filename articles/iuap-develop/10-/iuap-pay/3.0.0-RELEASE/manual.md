@@ -736,7 +736,8 @@ bgUrl=&notifyUrl=&businessId=&platIdtfy=&merchantId=&orderId=&orderDate=&bankTyp
 
 ## 开发步骤 ##
 
-1. 将配置文件和相应JSP文件放到指定目录  
+** 1. 将配置文件和相应JSP文件放到指定目录  **
+
 ![img002](img/image002.jpg)  
 ![img003](img/image003.jpg)  
 配置文件说明：  
@@ -746,7 +747,7 @@ aliPay.jsp、chanjetPay.jsp、wxscanPay.jsp：分别是支付宝、微信扫码�
 notify\_url.jsp、return\_url.jsp：这两个页面分别对应支付参数中的notify\_url和return\_url，页面内容可以作为参考  
 pay\_fail.jsp、pay\_success.jsp：分别对应支付成功和支付失败之后的逻辑处理页面，仅供参考  
 
-2. 配置扫描路径，确保com.yonyou.uap.ieop.pay 路径下的controller被扫描到 
+** 2. 配置扫描路径，确保com.yonyou.uap.ieop.pay 路径下的controller被扫描到 **
    
 ```
 		<context:component-scan base-package=" com.yonyou.uap.ieop.pay">
@@ -754,8 +755,9 @@ pay\_fail.jsp、pay\_success.jsp：分别对应支付成功和支付失败之后
 			<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/></context:component-scan>
 ```
 
-3. 发送HTTP请求到RESTful服务接口
-在前端页面可以通过aJax请求或者提交form表单等方式，通过POST请求，把数据发送到pay/bill，参数格式参见**5.3 API接口**，组件将会引导用户完成支付。  
+** 3. 发送HTTP请求到RESTful服务接口 **
+
+在前端页面可以通过aJax请求或者提交form表单等方式，通过POST请求，把数据发送到pay/bill，参数格式参见**API接口**，组件将会引导用户完成支付。  
 一个简单的前台发起支付请求的例： 
  
 ```
@@ -778,16 +780,18 @@ pay\_fail.jsp、pay\_success.jsp：分别对应支付成功和支付失败之后
 	</form>
 ```
 
-其中，payOrderForm是一个支付表单，内容为各支付渠道的参数，具体各支付渠道需要传入哪些参数，请参考**5.3 API接口**
+其中，payOrderForm是一个支付表单，内容为各支付渠道的参数，具体各支付渠道需要传入哪些参数，请参考**API接口**
 
-4. 支付前校验
+** 4. 支付前校验 **
+
 支付校验需要实现接口com.yonyou.uap.ieop.pay.service.IOrderPayValidateService
 退款校验需要实现接口com.yonyou.uap.ieop.pay.service.IOrderRefundValidateService
 用户可在实现类validate方法中对支付参数进行校验，保证支付订单的正确性。
 实现类需要使用@service注解或者在spring中注入该实现类，具体参考示例工程
 
 
-5. 处理支付结果  
+** 5. 处理支付结果  **
+
 接口com.yonyou.uap.ieop.pay.service.PayService提供了getPayResult(HttpServletRequest request)方法，用户可以通过实现此接口来完成对支付结果的获取，然后对支付结果进行下一步的业务逻辑处理。
 
 

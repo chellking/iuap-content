@@ -1,10 +1,12 @@
 #元数据服务组件概述#
 
 ## 业务需求 ##
+
 业务系统在进行模型驱动开发时，系统一开始我们就首先确立实体模型Entity Model，以及它们之间的关系，进而可以交由程序员分别实现表现层、业务服务层和持久层，通过使用元数据设计器，结合NC的现状，注重实效，尽可能提高NC产品的整合力度，减少开发人员的重复、琐碎劳动，提高开发效率，使开发人员能在自己熟悉的应用领域发挥更多的作用，减少技术上的纠缠，从而正确无误地、且快速高质量地完成一个软件开发过程。
 
 
 ## 解决方案##
+
 iuap-mdpersistence和iuap-mdspi组件提供高性能的基于mybatis的元数据模型信息发布、查询、删除和修改功能，提供基于BMF文件的发布方式，对元数据模型信息持久化到数据库中。支持带缓存的查询模型信息，并提供无状态的方式与iuap-mdjdbc组件继承，实现元数据和业务数据的管理。
 
 ## 功能说明 ##
@@ -19,7 +21,7 @@ iuap-mdpersistence和iuap-mdspi组件提供高性能的基于mybatis的元数据
 
 ## 依赖环境 ##
 
-组件采用Maven进行编译和打包发布，依赖MyBatis框架,引入了shiro.shiro-spring的1.2.3版本和iUAP平台的一些基础组件如iuap-log和iuap-mybatis，和SaaS平台的组件如iuap-saas-dynamicds、iuap-saas-cache，以及基础的数据库连接组件如postgresql、mysql-connector-java。其对外提供的依赖方式如下：
+组件采用Maven进行编译和打包发布，依赖MyBatis框架,引入了shiro.shiro-spring的1.2.3版本和iuap平台的一些基础组件如iuap-log和iuap-mybatis，和SaaS平台的组件如iuap-saas-dynamicds、iuap-saas-cache，以及基础的数据库连接组件如postgresql、mysql-connector-java。其对外提供的依赖方式如下：
 
 	<dependency>
 	  <groupId>com.yonyou.iuap</groupId>
@@ -55,7 +57,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 # 使用说明 #
 
 ## 组件包说明 ##
-iUAP平台提供元数据服务以实现元数据的查询、发布、删除和修改等操作。实现了统一的业务模型信息抽取，提供了一套模型驱动的需求、设计、代码概念一致性的解决方案.
+iuap平台提供元数据服务以实现元数据的查询、发布、删除和修改等操作。实现了统一的业务模型信息抽取，提供了一套模型驱动的需求、设计、代码概念一致性的解决方案.
 
 ##组件配置##
 
@@ -219,7 +221,7 @@ iUAP平台提供元数据服务以实现元数据的查询、发布、删除和�
 
 <img src="/images/metadata_example.jpg"/>
 
-开发工具包DevTool中携带了对元数据服务的示例工程，位置位于DevTool/examples/example\_iuap\_metadata下，在IUAP_STUDIO中导入已有的Maven工程，可以将示例工程导入到工作区。示例工程中有较为完整的对iuap-mdpersistence和mdspi组件的使用示例代码。
+开发工具包DevTool中携带了对元数据服务的示例工程，位置位于DevTool/examples/example\_iuap\_metadata下，在iuap Studio中导入已有的Maven工程，可以将示例工程导入到工作区。示例工程中有较为完整的对iuap-mdpersistence和mdspi组件的使用示例代码。
 
 ## 开发步骤 ##
 
@@ -301,6 +303,7 @@ iUAP平台提供元数据服务以实现元数据的查询、发布、删除和�
 
 - MetadataService
 
+<table style="border-collapse:collapse">
 <tr>
 <th class="colFirst" scope="col">限定符和类型</th>
 <th class="colLast" scope="col">方法和说明</th>

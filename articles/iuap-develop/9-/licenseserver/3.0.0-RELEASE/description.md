@@ -1,0 +1,1 @@
+设计License Server是为了解决当用户购买了多套UAP产品需要重复注册的问题,有了License Server用户只需要注册一次,从软件厂商处一次获得所有的许可权限,用户可自由部署UAP产品,将产品登陆到License Server即可使用.

@@ -196,7 +196,7 @@ iuap search组件提供了索引修改的异步接口。解耦应用数据修改
 - 将IKAnalyzer相关的jar包（IKAnalyzer2012FF_u1.jar）放在solr/WEB-INF/lib下
 - 添加新的索引后，title字段的查询即支持中文分词，可以用solr控制台的分析工具查看分词效果
 	
-	![](../images/analysis.png)
+	![](./images/analysis.png)
 
 ## 启用停用词功能和扩展词典 ##
 
@@ -218,5 +218,5 @@ iuap search组件提供了索引修改的异步接口。解耦应用数据修改
 
 	在ext.dic中添加"我去",分词效果如下图：
 
-	![](../images/extdic.png)
+	![](./images/extdic.png)
 

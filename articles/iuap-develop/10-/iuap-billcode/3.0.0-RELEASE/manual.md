@@ -45,7 +45,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 3.  在保存服务中调用提交预取的前编码单据编码接口，然后保存数据。
 4.  如果界面直接取消保存时，调用回滚预取单据号口。
 3.	如果上下文为前编码规则时，界面编码字段默认为空。
-4.	在保存服务中，调用获取编码规则API，获取编码规则填充到数据对象中保存。 
+4.	在保存服务中，调用获取编码规则API，获取编码规则填充到数据对象中保存。
 5.	删除数据时，调用删除单据时回退单据号接口进行退号操作。
 
 # 使用说明 #
@@ -55,103 +55,10 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 可参见具体的示例工程：
 
+
 ### 执行数据库脚本 ###
 
-（for mysql）
-
-	
-    SET FOREIGN_KEY_CHECKS=0;
-
-    -- ----------------------------
-    -- Table structure for `pub_bcr_elem`
-    -- ----------------------------
-    DROP TABLE IF EXISTS `pub_bcr_elem`;
-    CREATE TABLE `pub_bcr_elem` (
-      `pk_billcodeelem` varchar(40) NOT NULL,
-      `pk_billcodebase` varchar(40) NOT NULL,
-      `elemtype` smallint(6) DEFAULT NULL,
-      `elemvalue` varchar(100) DEFAULT NULL,
-      `elemlenth` smallint(6) DEFAULT NULL,
-      `isrefer` smallint(6) DEFAULT NULL,
-      `eorder` smallint(6) DEFAULT NULL,
-      `fillstyle` smallint(6) DEFAULT NULL,
-      `datedisplayformat` varchar(16) DEFAULT NULL,
-      `fillsign` varchar(4) DEFAULT NULL,
-      `createdate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-      PRIMARY KEY (`pk_billcodeelem`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-    -- ----------------------------
-    -- Table structure for `pub_bcr_precode`
-    -- ----------------------------
-    DROP TABLE IF EXISTS `pub_bcr_precode`;
-    CREATE TABLE `pub_bcr_precode` (
-      `pk_precode` varchar(40) NOT NULL,
-      `pk_rulebase` varchar(40) NOT NULL,
-      `markstr` varchar(100) DEFAULT NULL,
-      `billcode` varchar(100) DEFAULT NULL,
-      `lastsn` varchar(10) DEFAULT NULL,
-      `markstrdesc` varchar(100) DEFAULT NULL,
-      PRIMARY KEY (`pk_precode`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-    -- ----------------------------
-    -- Records of pub_bcr_precode
-    -- ----------------------------
-
-    -- ----------------------------
-    -- Table structure for `pub_bcr_return`
-    -- ----------------------------
-    DROP TABLE IF EXISTS `pub_bcr_return`;
-    CREATE TABLE `pub_bcr_return` (
-      `pk_billcodertn` varchar(40) NOT NULL,
-      `pk_billcodebase` varchar(40) NOT NULL,
-      `markstr` varchar(100) DEFAULT NULL,
-      `rtnsn` varchar(10) DEFAULT NULL,
-      `markstrdesc` varchar(100) DEFAULT NULL,
-      PRIMARY KEY (`pk_billcodertn`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-    -- ----------------------------
-    -- Records of pub_bcr_return
-    -- ----------------------------
-
-    -- ----------------------------
-    -- Table structure for `pub_bcr_rulebase`
-    -- ----------------------------
-    DROP TABLE IF EXISTS `pub_bcr_rulebase`;
-    CREATE TABLE `pub_bcr_rulebase` (
-      `pk_billcodebase` varchar(40) NOT NULL,
-      `rulecode` varchar(100) DEFAULT NULL,
-      `rulename` varchar(300) DEFAULT NULL,
-      `codemode` varchar(10) DEFAULT NULL,
-      `iseditable` char(1) DEFAULT NULL,
-      `isautofill` char(1) DEFAULT NULL,
-      `format` varchar(20) DEFAULT NULL,
-      `isdefault` char(1) DEFAULT NULL,
-      `isused` char(1) DEFAULT NULL,
-      `islenvar` char(1) DEFAULT NULL,
-      `isgetpk` char(1) DEFAULT NULL,
-      `renterid` varchar(40) DEFAULT NULL,
-      `sysid` varchar(40) DEFAULT NULL,
-      `createdate` timestamp NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-      PRIMARY KEY (`pk_billcodebase`),
-      UNIQUE KEY `rulecode` (`rulecode`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-    -- ----------------------------
-    -- Table structure for `pub_bcr_sn`
-    -- ----------------------------
-    DROP TABLE IF EXISTS `pub_bcr_sn`;
-    CREATE TABLE `pub_bcr_sn` (
-      `pk_billcodesn` varchar(40) NOT NULL,
-      `pk_billcodebase` varchar(40) NOT NULL,
-      `markstr` varchar(100) DEFAULT NULL,
-      `lastsn` varchar(10) DEFAULT NULL,
-      `markstrdesc` varchar(100) DEFAULT NULL,
-      PRIMARY KEY (`pk_billcodesn`),
-      KEY `idx_pub_bcr_sn` (`pk_billcodebase`,`markstr`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+依次执行examples项目下sql目录中的dll.sql、index.sql、dml.sql建立数据库并初始化数据。
 
 
 ### spring集成 ###
@@ -404,13 +311,17 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 ### 获取编码规则API ###
 
 **描述**  
+
 根据编码规则编码查询编码规则  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.BillCodeRuleMgrService.getBillCodeRuleByRuleCode(String)  
+com.yonyou.uap.billcode.service.BillCodeRuleMgrService.getBillCodeRuleByRuleCode(String)  
 
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**
 
 <table>
@@ -431,19 +342,24 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 </table>  
 
 **返回参数说明**  
+
 `编码规则`  
 
 
 ### 删除编码规则的API ###
 
 **描述**  
+
 删除编码规则  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.BillCodeRuleMgrService.delBillCodeRule(String)  
+com.yonyou.uap.billcode.service.BillCodeRuleMgrService.delBillCodeRule(String)  
 
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -464,19 +380,24 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 </table>
 
 **返回参数说明**  
+
 无  
 
 
 ### 更新和保存编码规则的API ###
 
 **描述**  
+
 更新或保存编码规则  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.BillCodeRuleMgrService.saveBillCodeRule(BillCodeRuleVO)  
+com.yonyou.uap.billcode.service.BillCodeRuleMgrService.saveBillCodeRule(BillCodeRuleVO)  
 
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -497,19 +418,24 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 </table>
 
 **返回参数说明**  
+
 无
 
 
 ### 获取本规则所有流水依据的最大流水号的API ###
 
 **描述**  
+
 获取本规则所有流水依据的最大流水号，以管理最大流水号  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.BillCodeSNmgrService.getMaxSNsByRulePk(String)  
+com.yonyou.uap.billcode.service.BillCodeSNmgrService.getMaxSNsByRulePk(String)  
 
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -530,6 +456,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 </table>
 
 **返回参数说明**  
+
 `List<PubBcrSn>`
 
 
@@ -537,12 +464,17 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 ### 获取本规则所有返还流水号的API ###
 
 **描述**  
+
 实现业务日志的删除
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.BillCodeSNmgrService.getRtnCodesByRulePk(String)  
+com.yonyou.uap.billcode.service.BillCodeSNmgrService.getRtnCodesByRulePk(String)  
+
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -562,19 +494,26 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
   </tr>
 </table>
 
+
 **返回参数说明**  
+
 `List<PubBcrReturn>`  
 
 
 ### 删除返还号API ###
 
 **描述**  
+
 根据返还号ID删除返还号  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.BillCodeSNmgrService.delRtnCodeByID(String)  
+com.yonyou.uap.billcode.service.BillCodeSNmgrService.delRtnCodeByID(String)  
+
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -593,18 +532,25 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
     <td>返还号ID</td>
   </tr>
 </table>  
+
 **返回参数说明**  
+
 无  
 
 ### 删除最大流水号API ###
 
 **描述**  
+
 根据最大流水号id删除最大流水号  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.BillCodeSNmgrService.delMaxSNByID(String)  
+com.yonyou.uap.billcode.service.BillCodeSNmgrService.delMaxSNByID(String)  
+
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -624,17 +570,24 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
   </tr>
 </table>  
 **返回参数说明**  
-无 
+
+无
+
 
 ### 更新最大流水号API ###
 
 **描述**  
+
 更新最大流水号  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.BillCodeSNmgrService.updateMaxSNByID(String, String)  
+com.yonyou.uap.billcode.service.BillCodeSNmgrService.updateMaxSNByID(String, String)  
+
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -661,18 +614,24 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
   </tr>
 </table>  
 **返回参数说明**  
+
 无   
 
 
 ### 获取编码规则上下文API ###
 
 **描述**  
+
 获取编码规则上下文，业务单据号相应字段是否允许修改等信息  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.IBillCodeProvider.getBillCodeContext(BillCodeRuleVO)  
+com.yonyou.uap.billcode.service.IBillCodeProvider.getBillCodeContext(BillCodeRuleVO)  
+
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -691,19 +650,26 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
     <td>编码规则</td>
   </tr>
 </table>  
-**返回参数说明**  
+
+**返回参数说明**
+
 `BillCodeContext：上下文信息`  
 
 
 ### 前编码预取单据号API ###
 
 **描述**  
+
 获取前编码  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.IBillCodeProvider.getPreBillCode(BillCodeRuleVO, BillCodeElemInfo, Object)  
+com.yonyou.uap.billcode.service.IBillCodeProvider.getPreBillCode(BillCodeRuleVO, BillCodeElemInfo, Object)  
+
 **请求方式**  
+
 服务调用   
+
 **请求参数说明**  
 
 <table>
@@ -737,18 +703,24 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
   </tr>
 </table>  
 **返回参数说明**  
+
 `单据号`  
 
 
 ### 提交预取的前编码单据编码API ###
 
 **描述**  
+
 提交前编码  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.IBillCodeProvider.commitPreBillCode(BillCodeRuleVO, BillCodeElemInfo, String)  
+com.yonyou.uap.billcode.service.IBillCodeProvider.commitPreBillCode(BillCodeRuleVO, BillCodeElemInfo, String)  
+
 **请求方式**  
+
 服务调用   
+
 **请求参数说明**  
 
 <table>
@@ -781,18 +753,25 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
     <td>要提交的编码</td>
   </tr>
 </table>  
+
 **返回参数说明**  
+
 无  
 
 ### 回滚预取单据号API ###
 
 **描述**  
+
 回滚前编码  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.IBillCodeProvider.rollbackPreBillCode(BillCodeRuleVO, BillCodeElemInfo, String)  
+com.yonyou.uap.billcode.service.IBillCodeProvider.rollbackPreBillCode(BillCodeRuleVO, BillCodeElemInfo, String)  
+
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -827,17 +806,23 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 </table>  
 
 **返回参数说明**  
-无	
+无
 
 
 ### 批量返回num个单据号API ###
 
 **描述**  
+
 获取num个后编码  
+
 **请求方法**  
-	com.yonyou.uap.billcode.service.IBillCodeProvider.getBatchBillCodes(BillCodeRuleVO, BillCodeBillVO, BillCodeElemInfo, Object, int)
+
+com.yonyou.uap.billcode.service.IBillCodeProvider.getBatchBillCodes(BillCodeRuleVO, BillCodeBillVO, BillCodeElemInfo, Object, int)
+
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -886,16 +871,23 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 </table>  
 
 **返回参数说明**   
+
 `List<String>,一批单据号`  
 
 ### 获取一个生成的单据号API ###
 
 **描述**  
+
 获取一个后编码  
+
 **请求方法**  
-	com.yonyou.uap.billcode.service.IBillCodeProvider.getBillCode(BillCodeRuleVO, BillCodeBillVO, BillCodeElemInfo, Object)  
+
+com.yonyou.uap.billcode.service.IBillCodeProvider.getBillCode(BillCodeRuleVO, BillCodeBillVO, BillCodeElemInfo, Object)  
+
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -937,17 +929,23 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 </table>  
 
 **返回参数说明**  
+
 `单据号`  
 
 ### 删除单据时回退单据号API ###
 
 **描述**  
+
 回退单据号  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.IBillCodeProvider.returnBillCode(BillCodeRuleVO, BillCodeBillVO, BillCodeElemInfo, String)  
+com.yonyou.uap.billcode.service.IBillCodeProvider.returnBillCode(BillCodeRuleVO, BillCodeBillVO, BillCodeElemInfo, String)  
+
 **请求方式**  
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -989,17 +987,23 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 </table>  
 
 **返回参数说明**  
+
 无  
 
 ### 删除回退的单据号API ###
 
 **描述**  
+
 将已经回退的单据号丢弃  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.IBillCodeProvider.DeleteRetrunedBillCode(BillCodeRuleVO, BillCodeElemInfo, String)  
-**请求方式**  
+com.yonyou.uap.billcode.service.IBillCodeProvider.DeleteRetrunedBillCode(BillCodeRuleVO, BillCodeElemInfo, String)  
+
+**请求方式**
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -1034,17 +1038,23 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 </table>  
 
 **返回参数说明**  
+
 无  
 
 ### 删除已经使用的单据号API ###
 
 **描述**  
+
 单据号已经使用，但是在编码规则还提供，这种情况下删除它  
+
 **请求方法**  
 
-	com.yonyou.uap.billcode.service.IBillCodeProvider.AbandenBillCode(BillCodeRuleVO, BillCodeBillVO, BillCodeElemInfo, String)  
-**请求方式**  
+com.yonyou.uap.billcode.service.IBillCodeProvider.AbandenBillCode(BillCodeRuleVO, BillCodeBillVO, BillCodeElemInfo, String)  
+
+**请求方式**
+
 服务调用  
+
 **请求参数说明**  
 
 <table>
@@ -1087,4 +1097,3 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 **返回参数说明**  
 无   
-

@@ -28,75 +28,334 @@
 
 ## API接口 ##
 
-    //分享到新浪微博
-    function ShareToSina(title, pageurl, source) {
-    window.open('http://v.t.sina.com.cn/share/share.php?title=' + encodeURIComponent(title) + '&url=' + encodeURIComponent(pageurl) + '&source=' + encodeURIComponent(source), '_blank');
-    }
-    
-    //分享到QQ好友
-    function ShareToQQIM(title, pageurl, source) {
-    window.open('http://connect.qq.com/widget/shareqq/index.html?url=' +  encodeURIComponent(pageurl) +'&desc=&title= '+ encodeURIComponent(title) + '&summary=&pics=&flash=&site=&style=101&width=96&height=24&showcount=', '_blank');
-    }
-    
-    //分享到腾讯微博
-    function ShareToTencent(title, pageurl, source) {
-    window.open('http://v.t.qq.com/share/share.php?title=' + encodeURIComponent(title) + '&url=' + encodeURIComponent(pageurl) + '&source=' + encodeURIComponent(source), '_blank');
-    }
-    
-    //分享到百度贴吧
-    function ShareToBaiduTieba(title, pageurl, source) {
-    window.open('http://tieba.baidu.com/i/sys/share?title=' + encodeURIComponent(title) + '&link=' + encodeURIComponent(pageurl) + '&source=' + encodeURIComponent(source), '_blank');
-    }
-    
-    //分享到豆瓣网
-    function ShareToDouban(title, pageurl, source) {
-    window.open('http://www.douban.com/recommend/?title='+ encodeURIComponent(title) + '&url=' + encodeURIComponent(pageurl) + '&source=' + encodeURIComponent(source), '_blank');
-    }
-    
-    //分享到QQ空间
-    function ShareToQzone(title, pageurl, source) {
-    window.open('http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + encodeURIComponent(pageurl)+'&title=' + encodeURIComponent(title) , '_blank');
-    }
-    
-    //分享到微信朋友圈
-    function ShareToWeChart() {
-    	
-    	var qrcodeDIV = document.getElementById("qrcode");
-    	if(qrcodeDIV.getElementsByTagName("div").length == 0){//需要生成二维码
-    		
-    		var pageurl = location.href;
-    		
-    		var qr = qrcode(10, 'Q');
-    		qr.addData(pageurl);
-    		qr.make();
-    		
-    		var qrcodeImgdom = document.createElement('DIV');
-    		qrcodeImgdom.innerHTML = qr.createImgTag();
-    		
-    		qrcodeDIV.appendChild(qrcodeImgdom);
-    	}
-    
-    	qrcodeDIV.style.display='';
-    }
+### 分享到新浪微博 ###
+
+**描述**  
+
+分享到新浪微博
+
+**请求方法**  
+
+ShareToSina(title, pageurl, source)
+
+**请求参数说明**  
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+    <th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>title</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>标题</td>
+  </tr>
+  <tr>
+    <td>pageurl</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>当前要分享页面的url</td>
+  </tr>
+  <tr>
+    <td>source</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>分享内容</td>
+  </tr>
+</table>  
+
+**返回参数说明**  
+
+无
+
+
+### 分享到QQ好友 ###
+
+**描述**  
+
+分享到QQ好友
+
+**请求方法**  
+
+ShareToQQIM(title, pageurl, source)
+
+**请求参数说明**  
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+    <th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>title</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>标题</td>
+  </tr>
+  <tr>
+    <td>pageurl</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>当前要分享页面的url</td>
+  </tr>
+  <tr>
+    <td>source</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>分享内容</td>
+  </tr>
+</table>  
+
+**返回参数说明**  
+
+无
+
+
+### 分享到腾讯微博 ###
+
+**描述**  
+
+分享到腾讯微博
+
+**请求方法**  
+
+ShareToTencent(title, pageurl, source)
+
+**请求参数说明**  
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+    <th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>title</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>标题</td>
+  </tr>
+  <tr>
+    <td>pageurl</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>当前要分享页面的url</td>
+  </tr>
+  <tr>
+    <td>source</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>分享内容</td>
+  </tr>
+</table>  
+
+**返回参数说明**  
+
+无
+
+### 分享到百度贴吧 ###
+
+**描述**  
+
+分享到百度贴吧
+
+**请求方法**  
+
+ShareToBaiduTieba(title, pageurl, source)
+
+**请求参数说明**  
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+    <th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>title</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>标题</td>
+  </tr>
+  <tr>
+    <td>pageurl</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>当前要分享页面的url</td>
+  </tr>
+  <tr>
+    <td>source</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>分享内容</td>
+  </tr>
+</table>  
+
+**返回参数说明**  
+
+无
+
+
+### 分享到豆瓣网 ###
+
+**描述**  
+
+分享到豆瓣网
+
+**请求方法**  
+
+ShareToDouban(title, pageurl, source)
+
+**请求参数说明**  
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+    <th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>title</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>标题</td>
+  </tr>
+  <tr>
+    <td>pageurl</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>当前要分享页面的url</td>
+  </tr>
+  <tr>
+    <td>source</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>分享内容</td>
+  </tr>
+</table>  
+
+**返回参数说明**  
+
+无
+
+
+### 分享到QQ空间 ###
+
+**描述**  
+
+分享到QQ空间
+
+**请求方法**  
+
+ShareToQzone(title, pageurl, source)
+
+**请求参数说明**  
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+    <th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>title</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>标题</td>
+  </tr>
+  <tr>
+    <td>pageurl</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>当前要分享页面的url</td>
+  </tr>
+  <tr>
+    <td>source</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>分享内容</td>
+  </tr>
+</table>  
+
+**返回参数说明**  
+
+无
+
+
+### 分享到微信朋友圈 ###
+
+**描述**  
+
+分享到微信朋友圈
+
+**请求方法**  
+
+ShareToWeChart()
+
+**请求参数说明**  
+
+无
+
+**返回参数说明**  
+
+无
 
 ## 开发步骤 ##
 
-1. 引入分享组件：  
-在前台页面引入以下JS文件： 
- 
+** 1. 引入分享组件：  **
+在前台页面引入以下JS文件：
+
 		<script src="resources/js/share.js"></script>
 		<script src="resources/js/qrcode.js"></script>
 *注意：使用分享到微信朋友圈功能时，才需要在页面加入qrcode.js文件*
-2. 在前台页面中添加分享按钮  
 
-    	<a style="font-size:18px" onclick="document.getElementById('light').style.display='block'">分享: </a>  
-3. 添加分享层DIV和各分享超链接  
+** 2. 在前台页面中添加分享按钮  **
+
+```
+  <a style="font-size:18px" onclick="document.getElementById('light').style.display='block'">分享: </a>  
+```
+** 3. 添加分享层DIV和各分享超链接  **
+
 此处仅以分享到腾讯微博和分享到微信为例：
-	
+
+```
 		<!--分享层 -->
 		<div id="light" style="display: none; position: absolute; top: 100px; left: 30%; width: 40%; height: 350px; padding: 16px; border: 5px solid gray; background-color: white; z-index: 1002; overflow: auto;">
 			分享到   :
-			<a href="javascript:void(0)" onclick="document.getElementById('light').style.display='none'"> 
+			<a href="javascript:void(0)" onclick="document.getElementById('light').style.display='none'">
 		        <img src="resources/images/shareimg/x.png" border="0"  style="float:right;" alt="关闭" >
 		    </a>
 			<ul id="bsLogoList">
@@ -106,7 +365,7 @@
 						腾讯微博
 					</div>
 				</div>
-				
+
 				<div id="bp-wechart" style="float: left; width: 50px; margin: 15px;">
 					<a href="javascript:void(0)" onclick="ShareToWeChart();" class='tmblog'>
 						<img src="resources/images/shareimg/wechart.png" border="0" alt="微信分享">
@@ -122,8 +381,8 @@
 			</a>
 		</div>
 		<!--end分享层 -->
+```
 
 ## 扩展机制 ##
 
 用户可以自定义分享页面的UI，或者添加分享到其他SNS门户的按钮。
-

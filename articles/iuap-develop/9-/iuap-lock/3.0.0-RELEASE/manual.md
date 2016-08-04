@@ -14,7 +14,7 @@ iuap的分布式锁组件是利用Zookeeper的强一致特性，通过Zookeeper�
 
 锁的逻辑实现的流程图如下：
 
-![](../images/iuap_lock_flow.jpg)
+![](./images/iuap_lock_flow.jpg)
 
 
 # 使用说明 #
@@ -24,6 +24,9 @@ iuap的分布式锁组件是利用Zookeeper的强一致特性，通过Zookeeper�
 	
 	#配置锁组件连接zookeeper的url
 	zklock.url=127.0.0.1:2181
+	#zookeeper集群方式配置示例
+	#zklock.url=20.12.6.58:2181,20.12.6.59:2181,20.12.6.60:2181
+
 	#锁存活最大时间，单位秒，如果不配置，不强制删除，如果配置，加锁失败且已有的锁存活时间大于此值，强制删除
 	zklock.maxlocktime=3600
 
@@ -234,4 +237,5 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
     <td>String[]</td>
     <td>需要批量解锁资源的唯一标识数组</td>
   </tr>
-</tbody></table>
+</tbody>
+</table>

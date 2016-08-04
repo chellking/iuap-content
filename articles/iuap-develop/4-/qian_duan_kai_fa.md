@@ -1,12 +1,14 @@
 # 前端开发
 
+在进行前端开始时，需要先新建数据模型，使用工具生成对应的html、js页面。再根据具体的业务逻辑修改页面内容。
 
 ## 新建数据模型
-1）	切换到iUAP开发视图，工程上右键选择新建下的新建数据模型
+
+1）切换到iuap开发视图，工程上右键选择新建下的新建数据模型
 
 ![](image/image29.png)
 
-2）	输入文件名为product.model，点击下一步
+2）输入文件名为product.model，点击下一步
 
 ![](image/image30.png)
 
@@ -18,22 +20,22 @@
 
 ![](image/image32.png)
 
-5）	工具生成数据模型文件，如下图
+5）工具生成数据模型文件，如下图
 
 ![](image/image33.png)
 
 ## 新建iuap页面
 
-1）	在webapp的pages下右键新建iuap页面，点击下一步
+1）在webapp的pages下右键新建iuap页面，点击下一步
 
 ![](image/image34.png)
 ![](image/image35.png)
  
-也可以切换到iUAP开发视图，在webapp下的pages目录右键，选择新建下的iUAP页面
+也可以切换到iuap开发视图，在webapp下的pages目录右键，选择新建下的iuap页面
 
 ![](image/image36.png)
 
-2）	输入页面目录名称为product，勾选使用数据模型，点击下一步
+2）输入页面目录名称为product，勾选使用数据模型，点击下一步
 
 ![](image/image37.png)
 
@@ -45,31 +47,37 @@
 
 ![](image/image39.png)
 
-## 调整模块的js文件
+## js文件
 
-1）	定义js前端的datatable数据模型，修完成改后如下
+开发工具会根据业务场景生成最基本的js文件，用户还需根据业务完善DataTable的定义、添加依赖的js以及添加具体的事件处理。深入理解DataTable请点击[这里](http://design.yyuap.com/dist/pages/kero/dataTableUse.html)。
+
+### viewModel定义
+
+在viewModel中需要定义DataTable，每个DataTable里面都会有`meta`，这里的`meta`指模型的字段信息，其中的`key`为字段名，`value`为字段属性信息，属性信息可自定义。没有字段属性时，可以为空对象，这些字段的属性值在控件模型中会被使用到，主要用于控制表单输入、字段显示格式等业务特性。
+
+工具生成的js文件包括最基本的DataTable信息，`meta`中各个字段的属性用户需要根据业务需求来定义。下面实例代码在原有的基础上增加了`type`属性
 
 ```
 mainDataTable: new u.DataTable({
 	meta: {
 		'productid':{
 			type:'string'
-		},
+		},//productid类型为 string
 		'productname': {
 			type: 'string'
 		},
 		'productnum': {
 			type: 'integer'
-		},
+		},//productnum类型为整形
 		'price': {
 			type: 'float'
-		},
+		},//price类型为浮点型
 		'supplier': {
 			type: 'string'
 		}, //供应商
 		'prodate': {
 			type: 'date'
-		}, //生成日期
+		}, //prodate类型为时间
 		'orgin': {
 			type: 'string'
 		} //原产地
@@ -78,11 +86,16 @@ mainDataTable: new u.DataTable({
 })
 ```
 
-2）	定义事件方法，如查询、添加、返回等，例如删除方法：
+### 增加事件
+
+一些交互的js事件，需要在viewModel定义了，方便html页面的中dom元素进行事件绑定。最常用的业务事件无非就是查询、增加、删除、修改等。下面就以删除事件为例进行说明：
 
 ```
+//删除某行
 delRow: function() {
+	//获取选中的行号
 	var selectArray = viewModel.mainDataTable.selectedIndices();
+	//用户未选择行时，return
 	if (selectArray.length < 1) {
 		u.messageDialog({
 			msg: "请选择要删除的行!",
@@ -91,6 +104,7 @@ delRow: function() {
 		});
 		return;
 	}
+	//选中的行数大于0时，弹出框用户点击确认进行删除
 	u.confirmDialog({
 	    msg: "是否确认删除？",
 	    title: "测试确认",
@@ -112,525 +126,69 @@ delRow: function() {
 }
 ```
 
-3）	对应html片段，绑定事件，完整示例product.js代码如下：
+[查看完整js代码](../../res/qian_duan_kai_fa_js.html)
+
+## html文件
+
+用户可以根据需求先搭建整个页面的布局，然后使用工具拖拽生成所需的控件，生成的控件代码需要微调
+
+### 拖拽基本元素
+
+打开生成的html页面，选择左侧的控件元素并拖拽到代码中。下图拖拽了一个基本的按钮
+![](image/image52.png)
+
+简单的拖拽就可以实现一个基本的dom元素，用户还可以增加一些样式，丰富动态效果。具体的控件样式参考[neoui](http://design.yyuap.com/dist/pages/neoui/index.html)文档说明。
+### 调整拖拽后的代码
+
+拖拽后的代码需要根据业务微调，以表格为例进行说明。
+
+拖拽前的代码：
 
 ```
-define(['jquery', 'knockout', 'text!pages/product/product.html', 'uui'], function($, ko, template) {
-
-	var ctrlBathPath = ctx+'/product';
-	var app, viewModel, datas;
-	var viewModel = {
-		md: document.querySelector('#demo-mdlayout'),
-		editoradd: '',
-		searchText: ko.observable(''),
-		mainDataTable: new u.DataTable({
-			meta: {
-				'productid':{
-					type:'string'
-				},
-				'productname': {
-					type: 'string'
-				},
-				'productnum': {
-					type: 'integer'
-				},
-				'price': {
-					type: 'float'
-				},
-				'supplier': {
-					type: 'string'
-				}, //供应商
-				'prodate': {
-					type: 'date'
-				}, //生成日期
-				'orgin': {
-					type: 'string'
-				} //原产地
-			},
-			pageSize: 10
-		}),
-		infodata: new u.DataTable({
-			meta: {
-				'productid':{
-					type:'string'
-				},
-				'productname': {
-					type: 'string'
-				},
-				'productnum': {
-					type: 'integer',
-					precision: 0,
-					min: 0
-				},
-				'price': {
-					type: 'float',
-					precision: 2,
-					min: 0
-				},
-				'supplier': {
-					//供应商
-					type: 'string'
-				},
-				'prodate': {
-					//生成日期
-					type: 'date'
-				}, 
-				'orgin': {
-					//原产地
-					type: 'string'
-				} 
-			}
-		}),
-		
-		events: {
-			//查询主数据
-			queryMain: function(){
-				var queryData = {};
-				var searchValue = viewModel.searchText();
-				var key = 'search_LIKE_productname';
-				queryData[key] = searchValue;
-		        
-		        queryData["pageIndex"] = viewModel.mainDataTable.pageIndex();
-		        queryData["pageSize"] = viewModel.mainDataTable.pageSize();
-				$.ajax({
-					type : 'GET',
-					url : ctrlBathPath+'/page',
-					data : queryData,
-					dataType : 'json',
-					success : function(result) {
-						var data = result.data;
-						if(data!=null){
-							viewModel.mainDataTable.setSimpleData(data.content);
-							viewModel.mainDataTable.totalPages(data.totalPages);
-						} else {
-							
-						}
-					}
-				});
-			},
-			//搜索
-			search: function(){
-				this.events.queryMain();
-			},
-			searchKeyUp: function(model,event){
-				if (event.keyCode == '13'){
-					if(u.isIE){
-						event.target.blur();
-						this.events.queryMain();
-						event.target.focus();
-					} else {
-						this.events.queryMain();
-					}
-				}
-				return true;
-			},
-			afterAdd:function(element, index, data){
-	            if (element.nodeType === 1) {
-	                u.compMgr.updateComp(element);
-	            }
-	        },
-			goBack: function() {
-				viewModel.md['u.MDLayout'].dBack();
-			},
-			goPage: function(pathStr) {
-				viewModel.md['u.MDLayout'].dGo(pathStr);
-			},
-			beforeAdd: function() {
-				viewModel.editoradd = 'add';
-				viewModel.infodata.clear();
-				viewModel.infodata.createEmptyRow();
-				viewModel.infodata.setRowSelect(0);
-				viewModel.md['u.MDLayout'].dGo('addPage');
-			},
-			addOrEditRow: function() {
-				var self = this;
-				var _meta = this.mainDataTable.meta;
-				var addInfo = this.infodata.getAllRows();
-				var url = '';
-				var postData = {};
-				if (this.editoradd === 'add') {
-					url = ctrlBathPath+'/save';
-					postData = JSON.stringify(this.infodata.getSimpleData()[0]);
-				} else {
-					url = ctrlBathPath+'/update';
-					postData = JSON.stringify(self.infodata.getSimpleData({type:'select'})[0]);
-				}
-				$.ajax({
-					url:url,
-					type:'POST',
-					contentType: 'application/json',
-					data:postData,
-					success:function(res){
-						if (res.flag == 'success'){
-							if (self.editoradd === 'add'){
-								self.mainDataTable.addSimpleData(res.data);
-							}else{
-								var curRow = viewModel.mainDataTable.getCurrentRow();
-								curRow.setSimpleData(viewModel.infodata.getCurrentRow().getSimpleData(), 'upd');
-
-							}
-							viewModel.md['u.MDLayout'].dBack();
-							u.showMessage('保存成功！');								
-						}else{
-							u.showMessageDialog(res.msg);
-						}
-					},
-					error:function(){
-						//待显示错误信息
-					}
-				});
-				
-			},
-			
-			beforeEdit: function(id) {
-				viewModel.mainDataTable.setRowSelect(id);
-				viewModel.infodata.setSimpleData(viewModel.mainDataTable.getSimpleData({
-					type: 'select'
-				}));
-				viewModel.editoradd = 'edit';
-				viewModel.md['u.MDLayout'].dGo('addPage');
-			},
-			
-			delRow: function() {
-				var selectArray = viewModel.mainDataTable.selectedIndices();
-				if (selectArray.length < 1) {
-					u.messageDialog({
-						msg: "请选择要删除的行!",
-						title: "提示",
-						btnText: "OK"
-					});
-					return;
-				}
-		        u.confirmDialog({
-		            msg: "是否确认删除？",
-		            title: "测试确认",
-		            onOk: function () {
-		                $.ajax({
-		                	url:ctrlBathPath+'/del',
-		                	type:'post',
-		                	data:{data:JSON.stringify(viewModel.mainDataTable.getSimpleData({type:'select',fields:['productid']}))},
-		                	success: function(){
-		                		u.showMessage('删除成功！');
-		                		viewModel.events.queryMain();
-		                	}
-		                });
-		            },
-		            onCancel: function () {
-		                
-		            }
-		        });
-			},
-			viewRow: function(id) {
-				//如果样式列表不含有checkbox说明不是第一列
-				if (event.target.classList.toString().indexOf('checkbox') < 0) { 
-					viewModel.mainDataTable.setRowFocus(id);
-					viewModel.md['u.MDLayout'].dGo('showPage');
-				}
-			},
-			pageChangeFunc: function(index){
-				viewModel.mainDataTable.pageIndex(index);
-				viewModel.events.queryMain();		
-			},
-			sizeChangeFunc: function(size){
-				viewModel.mainDataTable.pageSize(size);
-				viewModel.events.queryMain();
-			}
-		}
-	};
-
-	var init = function(params) {
-		var app = u.createApp({
-			el: '#content',
-			model: viewModel
-		});
-		viewModel.md = document.querySelector('#demo-mdlayout');
-	    viewModel.events.queryMain();
-	};
-
-	return {
-		'model': viewModel,
-		'template': template,
-		'init': init
-	};
-});
-```
-
-## 调整模块的html片段
-
-1）	调整html片段，调整表格和表单的html片段，示例如下：
-```
-<div class="u-widget-body">
-	<table class="u-table" style="width:100%;">
-		<thead>
-			<tr>
-				<th><label class="u-checkbox only-style" data-bind="click: mainDataTable.toggleAllSelect.bind(mainDataTable), css:{'is-checked': mainDataTable.allSelected()}">
-					<input id="checkInput" type="checkbox" class="u-checkbox-input">
-					<span class="u-checkbox-label"></span> </label></th>
-				<th>名称</th>
-				<th>数量</th>
-				<th>单价</th>
-				<th>供应商</th>
-				<th>生成日期</th>
-				<th>原产地</th>
-				<th>操作</th>
-			</tr>
-		</thead>
-		<tbody data-bind="foreach:{data:mainDataTable.rows(),as:'row', afterAdd: events.afterAdd}" >
-			<tr data-bind="css: { 'is-selected' : row.selected() } ,attr:{'id': $index()}">
-				<td class="checkbox1"><label class="u-checkbox only-style u-checkbox-floatl" data-bind="click: row.multiSelect, css:{'is-checked': row.selected()}">
-					<input type="checkbox" class="u-checkbox-input">
-					<span class="u-checkbox-label"></span> </label></td>
-				<td data-bind="text: row.ref('productname')"></td>
-				<td data-bind="text: row.ref('productnum')"></td>
-				<td data-bind="text: row.ref('price')"></td>
-				<td data-bind="text: row.ref('supplier')"></td>
-				<td data-bind="text: u.dateRender(row.ref('prodate'))"></td>
-				<td data-bind="text: row.ref('orgin')"></td>
-				<td><a href="javascript:;" class="m-r-sm" data-bind="click:$parent.events.beforeEdit.bind($data,  $index())">修改</a><a href="javascript:;" data-bind="click:$parent.events.viewRow.bind($data, $index())">查看</a></td>
-			</tr>
-		</tbody>
-	</table>
-	<div id='pagination' class='u-pagination pagination' u-meta='{"type":"pagination","data":"mainDataTable","pageChange":"events.pageChangeFunc","sizeChange":"events.sizeChangeFunc"}'></div>
-
-</div>
-```
-
-2）	使用ko语法绑定事件和数据模型
+<table class="u-table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>serialVersionUID</th>
+            <th>productid</th>
+            <th>productname</th>
+            <th>productnum</th>
+            <th>price</th>
+            <th>supplier</th>
+            <th>prodate</th>
+            <th>orgin</th>
+            <th>ts</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-bind="text:Product['ref']('serialVersionUID')"></td>
+            <td data-bind="text:Product['ref']('productid')"></td>
+            <td data-bind="text:Product['ref']('productname')"></td>
+            <td data-bind="text:Product['ref']('productnum')"></td>
+            <td data-bind="text:Product['ref']('price')"></td>
+            <td data-bind="text:Product['ref']('supplier')"></td>
+            <td data-bind="text:Product['ref']('prodate')"></td>
+            <td data-bind="text:Product['ref']('orgin')"></td>
+            <td data-bind="text:Product['ref']('ts')"></td>
+        </tr>
+    </tbody>
+</table>
 
 ```
-<tr data-bind="css: { 'is-selected' : row.selected() } ,attr:{'id': $index()}">
-	<td class="checkbox1"><label class="u-checkbox only-style u-checkbox-floatl" data-bind="click: row.multiSelect, css:{'is-checked': row.selected()}">
-		<input type="checkbox" class="u-checkbox-input">
-		<span class="u-checkbox-label"></span> </label>
-	</td>
-	<td data-bind="text: row.ref('productname')"></td>
-	<td data-bind="text: row.ref('productnum')"></td>
-	<td data-bind="text: row.ref('price')"></td>
-	<td data-bind="text: row.ref('supplier')"></td>
-	<td data-bind="text: u.dateRender(row.ref('prodate'))"></td>
-	<td data-bind="text: row.ref('orgin')"></td>
-	<td><a href="javascript:;" class="m-r-sm" data-bind="click:$parent.events.beforeEdit.bind($data,  $index())">修改</a><a href="javascript:;" data-bind="click:$parent.events.viewRow.bind($data, $index())">查看</a></td>
-</tr>
+#### 去掉无用的内容
+
+可以看到生产的表格`td`、`th`中`serialVersionUID`、`productid`、`ts`这些是不希望显示出来的，所以需要开发者自己删除。
+
+#### 绑定事件
+
+给相关dom元素添加事件，绑定事件的方法是使用[knockout](http://design.yyuap.com/dist/pages/kero/knockout.html)绑定的,也可以通过普通的js、jquery设置。这里利用knockout语法，进行相关的事件绑定。
+
+例如在`a`标签中绑定在js文件中定义的`delRow`方法
 
 ```
-
-3）	完整的示例代码如下：
-
-```
-<!-- 页面内容区(HTML片段，不能放置HTML 及 BODY 标签 )-->
-<div class="u-mdlayout" id="demo-mdlayout">
-
-	<div class="u-mdlayout-master" style="display:none"></div>
-
-	<div class="u-mdlayout-detail">
-		<div class="u-mdlayout-page u-navlayout-fixed-header current" id="list">
-			<div class="u-mdlayout-page-section">
-				
-					<div class="u-container-fluid u-widget-bg">
-						<div class="u-row">
-							<div class="u-col-12">
-								<div class="u-widget" style="background-color:transparent">
-									<button class="u-button raised primary m-r-sm" data-bind="click: events.beforeAdd">
-										新增
-									</button>
-									<button class="u-button raised" data-bind="click: events.delRow">
-										删除
-									</button>
-									<div class="u-input-group u-has-feedback u-right m-r-sm">
-										<!-- 如果多条件查询，定义多个输入框或者修改后端查询方式  -->
-										<input type="text" class="u-form-control sm" placeholder="商品名称" data-bind="value:searchText,event:{keyup: events.searchKeyUp}"/>
-										<span class="u-form-control-feedback sm fa fa-search" data-bind="click:events.search"></span>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="u-row">
-							<div class="u-col-12">
-								<div class="u-widget">
-
-									<div class="u-widget-heading">
-										<h3 class="u-widget-title">产品列表</h3>
-									</div>
-									<div class="u-widget-body">
-										<table class="u-table" style="width:100%;">
-											<thead>
-												<tr>
-													<th><label class="u-checkbox only-style" data-bind="click: mainDataTable.toggleAllSelect.bind(mainDataTable), css:{'is-checked': mainDataTable.allSelected()}">
-														<input id="checkInput" type="checkbox" class="u-checkbox-input">
-														<span class="u-checkbox-label"></span> </label></th>
-													<th>名称</th>
-													<th>数量</th>
-													<th>单价</th>
-													<th>供应商</th>
-													<th>生成日期</th>
-													<th>原产地</th>
-													<th>操作</th>
-												</tr>
-											</thead>
-											<tbody data-bind="foreach:{data:mainDataTable.rows(),as:'row', afterAdd: events.afterAdd}" >
-												<tr data-bind="css: { 'is-selected' : row.selected() } ,attr:{'id': $index()}">
-													<td class="checkbox1"><label class="u-checkbox only-style u-checkbox-floatl" data-bind="click: row.multiSelect, css:{'is-checked': row.selected()}">
-														<input type="checkbox" class="u-checkbox-input">
-														<span class="u-checkbox-label"></span> </label></td>
-													<td data-bind="text: row.ref('productname')"></td>
-													<td data-bind="text: row.ref('productnum')"></td>
-													<td data-bind="text: row.ref('price')"></td>
-													<td data-bind="text: row.ref('supplier')"></td>
-													<td data-bind="text: u.dateRender(row.ref('prodate'))"></td>
-													<td data-bind="text: row.ref('orgin')"></td>
-													<td><a href="javascript:;" class="m-r-sm" data-bind="click:$parent.events.beforeEdit.bind($data,  $index())">修改</a><a href="javascript:;" data-bind="click:$parent.events.viewRow.bind($data, $index())">查看</a></td>
-												</tr>
-											</tbody>
-										</table>
-										<div id='pagination' class='u-pagination pagination' u-meta='{"type":"pagination","data":"mainDataTable","pageChange":"events.pageChangeFunc","sizeChange":"events.sizeChangeFunc"}'></div>
-
-									</div>
-
-								</div>
-							</div>
-						</div>
-
-					</div>
-
-				
-			</div>
-		</div>
-		<!--编辑/新增-->
-		<div class="u-mdlayout-page u-navlayout-fixed-header" id="addPage">
-			<div class="u-mdlayout-page-section">
-				<div class="u-container-fluid u-widget-bg">
-					<div class="u-row">
-						<div class="u-col-12">
-							<div class="u-widget" style="background-color:transparent">
-								<button class="u-button raised m-r-sm" data-bind="click: events.goBack">
-									返回
-								</button>
-								<button class="u-button raised primary" data-bind='click:events.addOrEditRow'>
-									保存
-								</button>
-							</div>
-						</div>
-					</div>
-					<div class="u-row">
-						<div class="u-col-12">
-							<div class="u-widget">
-								<div class="u-widget-heading">
-									<h3 class="u-widget-title">商品信息</h3>
-								</div>
-								<div class="u-widget-body form-container">
-									<div class="u-container-fluid">
-										<div class="u-row">
-											<div class="u-col-1 u-col-sm-4">
-												<label class="u-input-label right">商品名称:</label>
-											</div>
-											<div class="u-col-3 u-col-sm-8 m-b-md">
-												<input type="text" class="u-form-control" placeholder="商品名称" u-meta='{"id":"productname","type":"string","data":"infodata","field":"productname"}'>
-											</div>
-											<div class="u-col-1 u-col-sm-4">
-												<label class="u-input-label right">单价:</label>
-											</div>
-											<div class="u-col-3 u-col-sm-8 m-b-md">
-												<input type="text" class="u-form-control" placeholder="单价" u-meta='{"id":"price","type":"float","data":"infodata","field":"price"}'>
-											</div>
-											<div class="u-col-1 u-col-sm-4">
-												<label class="u-input-label right">供应商:</label>
-											</div>
-											<div class="u-col-3 u-col-sm-8 m-b-md">
-												<input type="text" class="u-form-control" placeholder="供应商" u-meta='{"id":"supplier","type":"string","data":"infodata","field":"supplier"}'>
-											</div>
-										</div>
-										<div class="u-row">
-											<div class="u-col-1 u-col-sm-4">
-												<label class="u-input-label right">数量:</label>
-											</div>
-											<div class="u-col-3 u-col-sm-8 m-b-md">
-												<input type="text" class="u-form-control" placeholder="数量" u-meta='{"id":"productnum","type":"integer","data":"infodata","field":"productnum"}'>
-											</div>
-											<div class="u-col-1 u-col-sm-4">
-												<label class="u-input-label right">生成日期:</label>
-											</div>
-											<div class="u-col-3 u-col-sm-8 m-b-md">
-												<div class="u-input-group u-has-feedback" u-meta='{"id":"prodate","type":"u-date","data":"infodata","field":"prodate"}'>
-													<input type="text" class="u-form-control"/>
-													<span class="u-form-control-feedback fa fa-calendar" data-role="date-button"></span>
-												</div>
-											</div>
-											<div class="u-col-1 u-col-sm-4">
-												<label class="u-input-label right">原产地:</label>
-											</div>
-											<div class="u-col-3 u-col-sm-8 m-b-md">
-												<input type="text" class="u-form-control" placeholder="原产地" u-meta='{"id":"orgin","type":"string","data":"infodata","field":"orgin"}'>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="u-mdlayout-page u-navlayout-fixed-header" id="showPage">
-			<div class="u-mdlayout-page-section">
-				<div class="u-container-fluid u-widget-bg">
-					<div class="u-row">
-						<div class="u-col-12">
-							<div class="u-widget" style="background-color:transparent">
-								<button class="u-button raised primary m-r-sm" data-bind="click: events.goBack">
-									返回
-								</button>
-							</div>
-						</div>
-					</div>
-					<div class="u-row">
-						<div class="u-col-12">
-							<div class="u-widget">
-								<div class="u-widget-heading">
-									<h3 class="u-widget-title">商品信息</h3>
-								</div>
-								<div class="u-widget-body form-container">
-									<ul class="u-form-browse">
-										<li class="m-v">
-											<label class="u-control-label w-sm">商品名称:</label>
-											<span data-bind="text:mainDataTable.ref('productname')"></span>
-										</li>
-										<li class="m-v">
-											<label class="u-control-label w-sm">单价:</label>
-											<span data-bind="text: mainDataTable.ref('price')"></span>
-										</li>
-										<li class="m-v">
-											<label class="u-control-label w-sm">供应商:</label>
-											<span data-bind="text:mainDataTable.ref('supplier')"></span>
-										</li>
-										<li class="m-v">
-											<label class="u-control-label w-sm">数量:</label>
-											<span data-bind="text: mainDataTable.ref('productnum')"></span>
-										</li>
-										<li class="m-v">
-											<label class="u-control-label w-sm">生产日期:</label>
-											<span data-bind="text:u.dateRender(mainDataTable.ref('prodate'))"></span>
-										</li>
-										<li class="m-v">
-											<label class="u-control-label w-sm">原产地:</label>
-											<span data-bind="text:mainDataTable.ref('orgin')"></span>
-										</li>
-									</ul>
-								</div>
-							</div>
-
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
-</div>
+	<a href="javascript:;" class="m-r-sm" data-bind="click:delRow.bind()">删除</a>
 ```
 
-4）请注意，js的数据模型中的字段定义务必和html中的数据绑定处的字段名称一致
+[查看完整html代码](../../res/qian_duan_kai_fa_html.html)
 
-
-
+	注意：js的数据模型中的字段定义务必和html中的数据绑定处的字段名称一致

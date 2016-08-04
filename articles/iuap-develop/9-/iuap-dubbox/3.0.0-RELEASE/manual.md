@@ -20,7 +20,7 @@ iuap的Dubbox扩展组件适配Dubbo 2.8.4，基于Spring 4.0.5 重新编译，�
 # 整体设计 #
 
 ## 依赖环境 ##
-iuap-dubbox组件依赖dubbo 2.8.4版本，是基于spring 4.0.5 重新编译的，会随着IUAP的开发工具包发布，内部依赖方式如下：
+iuap-dubbox组件依赖dubbo 2.8.4版本，是基于spring 4.0.5 重新编译的，会随着iuap的开发工具包发布，内部依赖方式如下：
 
 	<dependency>
 	    <groupId>com.alibaba</groupId>
@@ -124,7 +124,6 @@ iuap-dubbox在原有dubbo服务的基础上，以Filter的方式进行扩展，�
 		<bean id="dubboxProvider" class="uap.web.dubbox.DubboxProviderImplTest"/>
 		<dubbo:service interface="uap.web.dubbox.DubboxProviderItfTest" ref="dubboxProvider" version="0.1" retries="0" timeout="35000" loadbalance="${dubbo.service.loadbalance}" filter="logcontext"/>
 
-
 - 2）consumer示例：applicationContext-dubbo-consumer.xml
 
 	    <!-- dubbo 配置 -->
@@ -146,5 +145,3 @@ iuap-dubbox在原有dubbo服务的基础上，以Filter的方式进行扩展，�
 - 启动服务提供者，导入iuap-dubbox-example-provider，以单元测试方式启动即可
 
 - 模拟消费者调用，导入iuap-dubbox-example-consumer，单元测试方式运行TestDubboxConsumer中的方法
-
-	

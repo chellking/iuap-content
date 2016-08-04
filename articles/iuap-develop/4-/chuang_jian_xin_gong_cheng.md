@@ -14,17 +14,19 @@
 
 ![](image/image13.png)
 
-4）	工程模板中默认引入了部分组件，以spring方式集成，webapp中默认引入了iuap design的相关脚本
+4）工程模板中默认引入了部分组件，以spring方式集成，webapp中默认引入了iuap design的相关脚本
 
-5）	右键工程，选择iuap tools下的数据库连接配置，设置数据库连接的相关属性如下
+5）右键工程，选择iuap tools下的数据库连接配置，设置数据库连接的相关属性如下
+
 ![](image/image14.png) 
-6）	点击测试连接，测试数据库服务的连通性
+
+6）点击测试连接，测试数据库服务的连通性
 
 ![](image/image15.png)
 
 ## 新建功能菜单
 
-1）	打开默认示例模板的index.html，添加作为示例的“商品管理”菜单
+1）打开默认示例模板的index.html，添加作为示例的“商品管理”菜单
 
 ![](image/image16.png)
 

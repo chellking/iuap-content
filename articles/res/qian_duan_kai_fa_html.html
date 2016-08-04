@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>快速入门前端开发——html代码</title>
+</head>
+
+<body>
+    <section class="normal" id="section-">
+                    
+                        <pre><code>&lt;!-- 页面内容区(HTML片段，不能放置HTML 及 BODY 标签 )--&gt;
+&lt;div class="u-mdlayout" id="demo-mdlayout"&gt;
+
+    &lt;div class="u-mdlayout-master" style="display:none"&gt;&lt;/div&gt;
+
+    &lt;div class="u-mdlayout-detail"&gt;
+        &lt;div class="u-mdlayout-page u-navlayout-fixed-header current" id="list"&gt;
+            &lt;div class="u-mdlayout-page-section"&gt;
+
+                    &lt;div class="u-container-fluid u-widget-bg"&gt;
+                        &lt;div class="u-row"&gt;
+                            &lt;div class="u-col-12"&gt;
+                                &lt;div class="u-widget" style="background-color:transparent"&gt;
+                                    &lt;button class="u-button raised primary m-r-sm" data-bind="click: events.beforeAdd"&gt;
+                                        新增
+                                    &lt;/button&gt;
+                                    &lt;button class="u-button raised" data-bind="click: events.delRow"&gt;
+                                        删除
+                                    &lt;/button&gt;
+                                    &lt;div class="u-input-group u-has-feedback u-right m-r-sm"&gt;
+                                        &lt;!-- 如果多条件查询，定义多个输入框或者修改后端查询方式  --&gt;
+                                        &lt;input type="text" class="u-form-control sm" placeholder="商品名称" data-bind="value:searchText,event:{keyup: events.searchKeyUp}"/&gt;
+                                        &lt;span class="u-form-control-feedback sm fa fa-search" data-bind="click:events.search"&gt;&lt;/span&gt;
+                                    &lt;/div&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class="u-row"&gt;
+                            &lt;div class="u-col-12"&gt;
+                                &lt;div class="u-widget"&gt;
+
+                                    &lt;div class="u-widget-heading"&gt;
+                                        &lt;h3 class="u-widget-title"&gt;产品列表&lt;/h3&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class="u-widget-body"&gt;
+                                        &lt;table class="u-table" style="width:100%;"&gt;
+                                            &lt;thead&gt;
+                                                &lt;tr&gt;
+                                                    &lt;th&gt;&lt;label class="u-checkbox only-style" data-bind="click: mainDataTable.toggleAllSelect.bind(mainDataTable), css:{'is-checked': mainDataTable.allSelected()}"&gt;
+                                                        &lt;input id="checkInput" type="checkbox" class="u-checkbox-input"&gt;
+                                                        &lt;span class="u-checkbox-label"&gt;&lt;/span&gt; &lt;/label&gt;&lt;/th&gt;
+                                                    &lt;th&gt;名称&lt;/th&gt;
+                                                    &lt;th&gt;数量&lt;/th&gt;
+                                                    &lt;th&gt;单价&lt;/th&gt;
+                                                    &lt;th&gt;供应商&lt;/th&gt;
+                                                    &lt;th&gt;生成日期&lt;/th&gt;
+                                                    &lt;th&gt;原产地&lt;/th&gt;
+                                                    &lt;th&gt;操作&lt;/th&gt;
+                                                &lt;/tr&gt;
+                                            &lt;/thead&gt;
+                                            &lt;tbody data-bind="foreach:{data:mainDataTable.rows(),as:'row', afterAdd: events.afterAdd}" &gt;
+                                                &lt;tr data-bind="css: { 'is-selected' : row.selected() } ,attr:{'id': $index()}"&gt;
+                                                    &lt;td class="checkbox1"&gt;&lt;label class="u-checkbox only-style u-checkbox-floatl" data-bind="click: row.multiSelect, css:{'is-checked': row.selected()}"&gt;
+                                                        &lt;input type="checkbox" class="u-checkbox-input"&gt;
+                                                        &lt;span class="u-checkbox-label"&gt;&lt;/span&gt; &lt;/label&gt;&lt;/td&gt;
+                                                    &lt;td data-bind="text: row.ref('productname')"&gt;&lt;/td&gt;
+                                                    &lt;td data-bind="text: row.ref('productnum')"&gt;&lt;/td&gt;
+                                                    &lt;td data-bind="text: row.ref('price')"&gt;&lt;/td&gt;
+                                                    &lt;td data-bind="text: row.ref('supplier')"&gt;&lt;/td&gt;
+                                                    &lt;td data-bind="text: u.dateRender(row.ref('prodate'))"&gt;&lt;/td&gt;
+                                                    &lt;td data-bind="text: row.ref('orgin')"&gt;&lt;/td&gt;
+                                                    &lt;td&gt;&lt;a href="javascript:;" class="m-r-sm" data-bind="click:$parent.events.beforeEdit.bind($data,  $index())"&gt;修改&lt;/a&gt;&lt;a href="javascript:;" data-bind="click:$parent.events.viewRow.bind($data, $index())"&gt;查看&lt;/a&gt;&lt;/td&gt;
+                                                &lt;/tr&gt;
+                                            &lt;/tbody&gt;
+                                        &lt;/table&gt;
+                                        &lt;div id='pagination' class='u-pagination pagination' u-meta='{"type":"pagination","data":"mainDataTable","pageChange":"events.pageChangeFunc","sizeChange":"events.sizeChangeFunc"}'&gt;&lt;/div&gt;
+
+                                    &lt;/div&gt;
+
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+
+                    &lt;/div&gt;
+
+
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;!--编辑/新增--&gt;
+        &lt;div class="u-mdlayout-page u-navlayout-fixed-header" id="addPage"&gt;
+            &lt;div class="u-mdlayout-page-section"&gt;
+                &lt;div class="u-container-fluid u-widget-bg"&gt;
+                    &lt;div class="u-row"&gt;
+                        &lt;div class="u-col-12"&gt;
+                            &lt;div class="u-widget" style="background-color:transparent"&gt;
+                                &lt;button class="u-button raised m-r-sm" data-bind="click: events.goBack"&gt;
+                                    返回
+                                &lt;/button&gt;
+                                &lt;button class="u-button raised primary" data-bind='click:events.addOrEditRow'&gt;
+                                    保存
+                                &lt;/button&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div class="u-row"&gt;
+                        &lt;div class="u-col-12"&gt;
+                            &lt;div class="u-widget"&gt;
+                                &lt;div class="u-widget-heading"&gt;
+                                    &lt;h3 class="u-widget-title"&gt;商品信息&lt;/h3&gt;
+                                &lt;/div&gt;
+                                &lt;div class="u-widget-body form-container"&gt;
+                                    &lt;div class="u-container-fluid"&gt;
+                                        &lt;div class="u-row"&gt;
+                                            &lt;div class="u-col-1 u-col-sm-4"&gt;
+                                                &lt;label class="u-input-label right"&gt;商品名称:&lt;/label&gt;
+                                            &lt;/div&gt;
+                                            &lt;div class="u-col-3 u-col-sm-8 m-b-md"&gt;
+                                                &lt;input type="text" class="u-form-control" placeholder="商品名称" u-meta='{"id":"productname","type":"string","data":"infodata","field":"productname"}'&gt;
+                                            &lt;/div&gt;
+                                            &lt;div class="u-col-1 u-col-sm-4"&gt;
+                                                &lt;label class="u-input-label right"&gt;单价:&lt;/label&gt;
+                                            &lt;/div&gt;
+                                            &lt;div class="u-col-3 u-col-sm-8 m-b-md"&gt;
+                                                &lt;input type="text" class="u-form-control" placeholder="单价" u-meta='{"id":"price","type":"float","data":"infodata","field":"price"}'&gt;
+                                            &lt;/div&gt;
+                                            &lt;div class="u-col-1 u-col-sm-4"&gt;
+                                                &lt;label class="u-input-label right"&gt;供应商:&lt;/label&gt;
+                                            &lt;/div&gt;
+                                            &lt;div class="u-col-3 u-col-sm-8 m-b-md"&gt;
+                                                &lt;input type="text" class="u-form-control" placeholder="供应商" u-meta='{"id":"supplier","type":"string","data":"infodata","field":"supplier"}'&gt;
+                                            &lt;/div&gt;
+                                        &lt;/div&gt;
+                                        &lt;div class="u-row"&gt;
+                                            &lt;div class="u-col-1 u-col-sm-4"&gt;
+                                                &lt;label class="u-input-label right"&gt;数量:&lt;/label&gt;
+                                            &lt;/div&gt;
+                                            &lt;div class="u-col-3 u-col-sm-8 m-b-md"&gt;
+                                                &lt;input type="text" class="u-form-control" placeholder="数量" u-meta='{"id":"productnum","type":"integer","data":"infodata","field":"productnum"}'&gt;
+                                            &lt;/div&gt;
+                                            &lt;div class="u-col-1 u-col-sm-4"&gt;
+                                                &lt;label class="u-input-label right"&gt;生成日期:&lt;/label&gt;
+                                            &lt;/div&gt;
+                                            &lt;div class="u-col-3 u-col-sm-8 m-b-md"&gt;
+                                                &lt;div class="u-input-group u-has-feedback" u-meta='{"id":"prodate","type":"u-date","data":"infodata","field":"prodate"}'&gt;
+                                                    &lt;input type="text" class="u-form-control"/&gt;
+                                                    &lt;span class="u-form-control-feedback fa fa-calendar" data-role="date-button"&gt;&lt;/span&gt;
+                                                &lt;/div&gt;
+                                            &lt;/div&gt;
+                                            &lt;div class="u-col-1 u-col-sm-4"&gt;
+                                                &lt;label class="u-input-label right"&gt;原产地:&lt;/label&gt;
+                                            &lt;/div&gt;
+                                            &lt;div class="u-col-3 u-col-sm-8 m-b-md"&gt;
+                                                &lt;input type="text" class="u-form-control" placeholder="原产地" u-meta='{"id":"orgin","type":"string","data":"infodata","field":"orgin"}'&gt;
+                                            &lt;/div&gt;
+                                        &lt;/div&gt;
+                                    &lt;/div&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class="u-mdlayout-page u-navlayout-fixed-header" id="showPage"&gt;
+            &lt;div class="u-mdlayout-page-section"&gt;
+                &lt;div class="u-container-fluid u-widget-bg"&gt;
+                    &lt;div class="u-row"&gt;
+                        &lt;div class="u-col-12"&gt;
+                            &lt;div class="u-widget" style="background-color:transparent"&gt;
+                                &lt;button class="u-button raised primary m-r-sm" data-bind="click: events.goBack"&gt;
+                                    返回
+                                &lt;/button&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div class="u-row"&gt;
+                        &lt;div class="u-col-12"&gt;
+                            &lt;div class="u-widget"&gt;
+                                &lt;div class="u-widget-heading"&gt;
+                                    &lt;h3 class="u-widget-title"&gt;商品信息&lt;/h3&gt;
+                                &lt;/div&gt;
+                                &lt;div class="u-widget-body form-container"&gt;
+                                    &lt;ul class="u-form-browse"&gt;
+                                        &lt;li class="m-v"&gt;
+                                            &lt;label class="u-control-label w-sm"&gt;商品名称:&lt;/label&gt;
+                                            &lt;span data-bind="text:mainDataTable.ref('productname')"&gt;&lt;/span&gt;
+                                        &lt;/li&gt;
+                                        &lt;li class="m-v"&gt;
+                                            &lt;label class="u-control-label w-sm"&gt;单价:&lt;/label&gt;
+                                            &lt;span data-bind="text: mainDataTable.ref('price')"&gt;&lt;/span&gt;
+                                        &lt;/li&gt;
+                                        &lt;li class="m-v"&gt;
+                                            &lt;label class="u-control-label w-sm"&gt;供应商:&lt;/label&gt;
+                                            &lt;span data-bind="text:mainDataTable.ref('supplier')"&gt;&lt;/span&gt;
+                                        &lt;/li&gt;
+                                        &lt;li class="m-v"&gt;
+                                            &lt;label class="u-control-label w-sm"&gt;数量:&lt;/label&gt;
+                                            &lt;span data-bind="text: mainDataTable.ref('productnum')"&gt;&lt;/span&gt;
+                                        &lt;/li&gt;
+                                        &lt;li class="m-v"&gt;
+                                            &lt;label class="u-control-label w-sm"&gt;生产日期:&lt;/label&gt;
+                                            &lt;span data-bind="text:u.dateRender(mainDataTable.ref('prodate'))"&gt;&lt;/span&gt;
+                                        &lt;/li&gt;
+                                        &lt;li class="m-v"&gt;
+                                            &lt;label class="u-control-label w-sm"&gt;原产地:&lt;/label&gt;
+                                            &lt;span data-bind="text:mainDataTable.ref('orgin')"&gt;&lt;/span&gt;
+                                        &lt;/li&gt;
+                                    &lt;/ul&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+                    
+                    </section>
+</body>
+
+</html>

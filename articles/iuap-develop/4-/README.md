@@ -1,6 +1,22 @@
 # iuap快速开发
 
-本文档目的是指导开发者熟悉如何从获取到开发平台的工具包到开发出一个完整的简单示例的过程，示例中不涉及复杂的业务场景，只简单介绍下如何一步步完成简单的增改删查的示例，示例中使用的持久化方式为iuap-jdbc完整示例开发完后的效果如下：
+通过阅读快速入门文档，开发者可以用setp by step的方式掌握如何使用iuap Studio开发出产品实现如下目标：
+
+- 掌握DevTool和 iuap Studio 的初始化和基本配置
+- 掌握通过 iuap Studio 创建新的 iuap 工程
+- 掌握如何开发服务端的Entity、Dao、Service、Controller类
+- 掌握如何编辑前端的模块js和html
+- 掌握如何利用工具使用jetty调试工程
+- 熟悉如何使用Maven进行打包部署
+
+按照此文档开发出的简单增改删查示例的效果如下：
      
 ![](image/image2.png)
 
+修改界面：
+
+![](image/imageedit.jpg)
+
+查看界面：
+
+![](image/imageview.jpg)

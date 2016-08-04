@@ -1,6 +1,6 @@
 # iuap技术文档投稿指南
 
-您找到的这个GitHub知识库是发布到iUAP产品中心[http://iuap.yonyou.com](http://iuap.yonyou.com)在线技术文档的源文件。
+您找到的这个GitHub知识库是发布到iuap产品中心[http://iuap.yonyou.com](http://iuap.yonyou.com)在线技术文档的源文件。
 
 该库还包含指导您贡献给我们的技术文档。
 

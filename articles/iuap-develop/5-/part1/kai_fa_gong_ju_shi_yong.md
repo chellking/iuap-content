@@ -1,6 +1,6 @@
 # 开发工具使用
 
-# 1.iUAP_Studio 开发工具
+# 1.iuap Studio 开发工具
 
 ## 1.1 产品概述
 
@@ -24,26 +24,29 @@ iuap_quickstart工程是iUAP开发平台的实例工程，该工程基于iUAP开
 
 开发工具默认JDK位于安装目录下的Runtime目录。 在IDE中，选择窗口->首选项->JAVA->已安装的JRE，可以看到目前IDE中使用的JAVA环境。如果不使用默认的JDK，可手动添加本地JDK，勾选即可。
 
-
-
 ![](./image/Jdk.png)
-
-
-
 
 
 ### 2.1.2 Maven配置
 
-开发环境的maven位于iUAP开发工具包的DevTool\repository\Maven\Maven3.2.2目录下，也可以自定义使用本地maven。以默认maven为例，首先要设置maven的环境变量，在系统变量中添加环境变量MAVENHOME,该变量指向目录DevTool\repository\Maven\Maven3.2.2，然后在Path变量中加入路径%MAVENHOME%\bin。 maven环境变量配置好以后，我们要在IDE中配置maven的配置文件的路径，在IDE的菜单栏中选择窗口->首选项->Maven->User Settings，将标签页的Global Settings和User Settings改为开发工具包内maven的配置文件的地址  
-
-
-
-
+开发环境的maven位于iUAP开发工具包的DevTool\repository\Maven\Maven3.2.2目录下，也可以自定义使用本地maven。以默认maven为例，首先要设置maven的环境变量，在系统变量中添加环境变量MAVENHOME,该变量指向目录DevTool\repository\Maven\Maven3.2.2，然后在Path变量中加入路径%MAVENHOME%\bin。 maven环境变量配置好以后，我们要在IDE中配置maven的配置文件的路径，在iuap Studio 的菜单栏中选择窗口->首选项->Maven->User Settings，将标签页的Global Settings和User Settings改为开发工具包内maven的配置文件的地址  
 
 ![](./image/Mavensetting.png)
 
-  
+### 2.1.3 授权管理
+iuap Studio初次使用可以免费使用6个月。在6个月免费期内无需注册即可享受全部功能。 6个月后，若不进行授权，则无法使用部分功能。
 
+获取授权需要启动license server，具体过程请参考license服务器使用说明文档。
+
+服务器获取授权后，保持联机状态，点击主菜单栏->帮助->授权管理， 进入授权管理窗口。 在文本框中输入license服务器的ip和端口，点击“ping”按钮，确认license server已联机。
+
+根据需要，勾选工具产品后，点授权按钮。客户端将向License Server 发出注册申请。一旦服务端授权成功，客户端会弹出提示框获取授权。
+
+![](./image/license.png)
+
+已经获取授权的客户端允许在离线时限（30天）内，不用每次使用时都联接License Server进行认证。
+
+超过有效期的客户端不能继续使用，此时在License Server端可以注销该用户。
 
 
 ## 2.2 工程初始化

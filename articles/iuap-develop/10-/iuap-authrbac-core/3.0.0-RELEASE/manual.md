@@ -112,76 +112,90 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 ### 授权认证 ###
 基于角色的访问控制（隐式角色）  
-
-Shiro提供了hasRole/hasRole用于判断用户是否拥有某个角色/某些权限；但是没有提供如hashAnyRole用于判断是否有某些权限中的某一个。   
-Shiro提供的checkRole/checkRoles和hasRole/hasAllRoles不同的地方是它在判断为假的情况下会抛出UnauthorizedException异常。  
+通过Subject的hasRole/hasRole用于判断用户是否拥有某个角色/某些权限；但是没有提供如hashAnyRole用于判断是否有某些权限中的某一个。   
+通过Subject的checkRole/checkRoles和hasRole/hasAllRoles不同的地方是它在判断为假的情况下会抛出UnauthorizedException异常。  
 
 这种方式的缺点就是如果很多地方进行了角色判断，但是有一天不需要了那么就需要修改相应代码把所有相关的地方进行删除；这就是粗粒度造成的问题。  
 
 **基于资源的访问控制（显示角色）**  
-Shiro提供了isPermitted/isPermittedAll用于判断用户是否拥有某个权限或所有权限，也没有提供如isPermittedAny用于判断拥有某一个权限的接口。  
+通过Subject的isPermitted/isPermittedAll用于判断用户是否拥有某个权限或所有权限。
 但是失败的情况下会抛出UnauthorizedException异常。  
 这种方式的一般规则是“资源标识符：操作”，即是资源级别的粒度；这种方式的好处就是如果要修改基本都是一个资源级别的修改，不会对其他模块代码产生影响，粒度小。但是实现起来可能稍微复杂点，需要维护“用户—角色，角色—权限（资源：操作）”之间的关系。   
 
 字符串通配符权限  
 规则：“资源标识符：操作：对象实例ID”  即对哪个资源的哪个实例可以进行什么操作。其默认支持通配符权限字符串，“:”表示资源/操作/实例的分割；“,”表示操作的分割；“*”表示任意资源/操作/实例。  
-1. 单个资源单个权限  
 
-	1.	subject().checkPermissions("system:user:update");  
-用户拥有资源“system:user”的“update”权限。  
-2. 单个资源多个权限  
+#### 1. 单个资源单个权限  
 
-	1.	subject().checkPermissions("system:user:update", "system:user:delete");  
-用户拥有资源“system:user”的“update”和“delete”权限。  
-3. 单个资源全部权限  
+subject().checkPermissions("system:user:update");  
+用户拥有资源“system:user”的“update”权限。
 
-	1.	subject().checkPermissions("system:user:create,delete,update:view");  
-用户拥有资源“system:user”的“create”、“update”、“delete”和“view”所有权限。  
-4. 所有资源全部权限  
+#### 2. 单个资源多个权限  
 
-	1.	subject().checkPermissions("user:view");  
-用户拥有所有资源的“view”所有权限。  
-5. 实例级别的权限
+subject().checkPermissions("system:user:update", "system:user:delete");  
+用户拥有资源“system:user”的“update”和“delete”权限。
+
+#### 3. 单个资源全部权限  
+
+subject().checkPermissions("system:user:create,delete,update:view");  
+用户拥有资源“system:user”的“create”、“update”、“delete”和“view”所有权限。
+
+#### 4. 所有资源全部权限  
+
+subject().checkPermissions("user:view");  
+用户拥有所有资源的“view”所有权限。
+
+#### 5. 实例级别的权限
+
 
  - 单个实例单个权限  
+
 通过如下代码判断  
 
 		1.	subject().checkPermissions("user:view:1");  
- - 单个实例多个权限  
+
+ - 单个实例多个权限
+
 通过如下代码判断  
 
 		1.	subject().checkPermissions("user:delete,update:1");  
 		2.	subject().checkPermissions("user:update:1", "user:delete:1");  
+
  - 单个实例所有权限  
+
 通过如下代码判断   
 
 		1.	subject().checkPermissions("user:update:1", "user:delete:1", "user:view:1");  
- - 所有实例单个权限  
+
+  - 所有实例单个权限  
+
 通过如下代码判断   
 
 		1.	subject().checkPermissions("user:auth:1", "user:auth:2");  
+
  - 所有实例所有权限  
+
 通过如下代码判断  
 
 		1.	subject().checkPermissions("user:view:1", "user:auth:2");  
 
-6 Shiro对权限字符串缺失部分的处理  
+#### 6. 对权限字符串缺失部分的处理  
 如“user:view”等价于“user:view:\*”；而“organization”等价于“organization:*”或者“organization:\*:\*”。可以这么理解，这种方式实现了前缀匹配。  
 另外如“user:\*”可以匹配如“user:delete”、“user:delete”可以匹配如“user:delete:1”、“user:\*:1”可以匹配如“user:view:1”、“user”可以匹配“user:view”或“user:view:1”等。即\*可以匹配所有，不加\*可以进行前缀匹配；但是如“\*:view”不能匹配“system:user:view”，需要使用“\*:\*:view”，即后缀匹配必须指定前缀（多个冒号就需要多个\*来匹配）。  
-7. WildcardPermission  
+#### 7. WildcardPermission  
 如下两种方式是等价的：   
 
 	1.	subject().checkPermission("menu:view:1");  
 	2.	subject().checkPermission(new WildcardPermission("menu:view:1"));   
 因此没什么必要的话使用字符串更方便。  
-8. 性能问题  
+#### 8. 性能问题  
 通配符匹配方式比字符串相等匹配来说是更复杂的，因此需要花费更长时间，但是一般系统的权限不会太多，且可以配合缓存来提供其性能，如果这样性能还达不到要求我们可以实现位操作算法实现性能更好的权限匹配。  
 另外实例级别的权限验证如果数据量太大也不建议使用，可能造成查询权限及匹配变慢。可以考虑比如在sql查询时加上权限字符串之类的方式在查询时就完成了权限匹配。   
 
 ### 拦截器 ###
 1. 拦截器介绍  
-Shiro使用了与Servlet一样的Filter接口进行扩展。  
-Shiro对Servlet容器的FilterChain进行了代理，即ShiroFilter在Servlet容器的Filter链的执行之前，通过ProxiedFilterChain对Servlet容器的FilterChain进行了代理。即先走Shiro自己的Filter体系，然后才会委托给Servlet容器的FilterChain进行Servlet容器级别的Filter链执行。  
+使用了与Servlet一样的Filter接口进行扩展。  
+对Servlet容器的FilterChain进行了代理，即ShiroFilter在Servlet容器的Filter链的执行之前，通过ProxiedFilterChain对Servlet容器的FilterChain进行了代理。即先走Shiro自己的Filter体系，然后才会委托给Servlet容器的FilterChain进行Servlet容器级别的Filter链执行。  
 Shiro的ProxiedFilterChain执行流程：  
  1. 先执行Shiro自己的Filter链；  
  2. 再执行Servlet容器的Filter链（即原始的Filter）。  
@@ -190,7 +204,7 @@ Shiro的ProxiedFilterChain执行流程：
 			1.	FilterChain getChain(ServletRequest request, ServletResponse response, FilterChain originalChain);    
 即传入原始的chain得到一个代理的chain。  
 2. 默认拦截器
-Shiro内置了很多默认的拦截器，比如身份验证、授权等相关的。默认拦截器可以参考org.apache.shiro.web.filter.mgt.DefaultFilter中的枚举拦截器：  
+默认提供了很多的拦截器，比如身份验证、授权等相关的。默认拦截器可以参考org.apache.shiro.web.filter.mgt.DefaultFilter中的枚举拦截器：  
 <table>
   <tr>
     <th><br>  名称<br>  </th>
@@ -270,9 +284,9 @@ Shiro内置了很多默认的拦截器，比如身份验证、授权等相关的
 </table>
 
 ### 缓存机制 ###
-Shiro提供了类似于Spring的Cache抽象，即Shiro本身不实现Cache，但是对Cache进行了抽象，方便更换不同的底层Cache实现。  
+框架提供了类似于Spring的Cache抽象，框架本身不实现Cache，但是对Cache进行了抽象，方便更换不同的底层Cache实现。  
 
-Shiro提供的Cache接口：
+框架提供的Cache接口：
 
 	public interface Cache<K, V> {  
 	    //根据Key获取缓存中的值  
@@ -290,19 +304,19 @@ Shiro提供的Cache接口：
 	    //获取缓存中所有的value  
 	    public Collection<V> values();  
 	}    
-Shiro提供的CacheManager接口：  
+CacheManager接口：  
 
 	public interface CacheManager {  
 	    //根据缓存名字获取一个Cache  
 	    public <K, V> Cache<K, V> getCache(String name) throws CacheException;  
 	}   
-Shiro还提供了CacheManagerAware用于注入CacheManager：  
+CacheManagerAware用于注入CacheManager：  
 
 	public interface CacheManagerAware {  
 	    //注入CacheManager  
 	    void setCacheManager(CacheManager cacheManager);  
 	}  
-Shiro内部相应的组件（DefaultSecurityManager）会自动检测相应的对象（如Realm）是否实现了CacheManagerAware并自动注入相应的CacheManager。  
+框架的默认组件DefaultSecurityManager()会自动检测相应的对象（如Realm）是否实现了CacheManagerAware并自动注入相应的CacheManager。  
 
 #### Realm缓存 ####
 提供了CachingRealm，其实现了CacheManagerAware接口，提供了缓存的一些基础实现；另外AuthenticatingRealm及AuthorizingRealm分别提供了对AuthenticationInfo 和AuthorizationInfo信息的缓存。  
@@ -326,7 +340,7 @@ Shiro内部相应的组件（DefaultSecurityManager）会自动检测相应的�
 
 组件未提供登录界面，需要开发者自行实现登录界面开发，并向后台提交登录所需身份/凭证信息。  
 
-**注：本组件为基于Shiro的使用示例，如果使用认证组件(iuap-auth)，则不需要进行下面过程，请参考认证组件的开发说明，并在loginContraller中增加基于用户密码（或其他方式，例如图片验证码、手机、第三方登录等）的认证逻辑，具体可参考示例工程中的loginContraller的实现**
+**注：如果使用认证组件(iuap-auth)，则不需要进行下面过程，请参考认证组件的开发说明，并在loginContraller中增加基于用户密码（或其他方式，例如图片验证码、手机、第三方登录等）的认证逻辑，具体可参考示例工程中的loginContraller的实现**
 
 ### 开发步骤 ###
 #### 自定义Realm ####
@@ -401,7 +415,7 @@ Realm：域，框架从Realm获取安全数据（如用户、角色、权限）�
 
 
 认证策略的另外一项工作就是聚合所有的`Realm`的结果信息封装至一个`AuthenticationInfo`实例中，并将此信息返回，以此作为`Subject`的身份信息。
-Shiro定义了3中认证策略的实现：
+框架定义了3中认证策略的实现：
 **FirstSuccessfulStrategy：**只要有一个`Realm`验证成功即可，只返回第一个`Realm`身份验证成功的认证信息，其他的忽略；
 **AtLeastOneSuccessfulStrategy：**只要有一个`Realm`验证成功即可，和`FirstSuccessfulStrategy`不同，返回所有`Realm`身份验证成功的认证信息；
 **AllSuccessfulStrategy：**所有`Realm`验证成功才算成功，且返回所有`Realm`身份验证成功的认证信息，如果有一个失败就失败了。  
@@ -562,7 +576,7 @@ applicationContext-shiro.xml中添加shiro配置
 			</property>
 
 
-shiro提供其他的过滤链定义：  
+其他的过滤链定义：  
 
 <table>
   <tr>
@@ -633,7 +647,7 @@ shiro提供其他的过滤链定义：
 			CaptchaUsernamePasswordToken token = new CaptchaUsernamePasswordToken(userName, encryptedPassWord.toCharArray(),
 					new Boolean(rememberMe), "", captcha);
 
-			// 从Shiro组件中获取当前登录主体Subject
+			// 获取当前登录主体Subject
 			Subject subject = SecurityUtils.getSubject();
 
 			try {
@@ -695,72 +709,73 @@ shiro提供其他的过滤链定义：
 
 ### API接口 ###
 
-1. ** 登录相关 **
+#### 登录相关
 
-    **描述**  
-    用于实现用户登录。  
-    **请求方法**  
-    `/login`  
-    **请求方式**  
-    `URL POST`  
-    **请求参数说明**  
+**描述**  
+用于实现用户登录。  
+**请求方法**  
+`/login`  
+**请求方式**  
+`URL POST`  
+**请求参数说明**  
 
-    <table>
-      <tr>
-        <th><br>  参数字段<br>  </th>
-        <th><br>  必选<br>  </th>
-        <th><br>  类型<br>  </th>
-        <th><br>  长度限制<br>  </th>
-        <th><br>  说明<br>  </th>
-      </tr>
-      <tr>
-        <td><br>  username<br>  </td>
-        <td><br>  True<br>  </td>
-        <td><br>  String<br>  </td>
-        <td><br>  20<br>  </td>
-        <td><br>  用户名<br>  </td>
-      </tr>
-      <tr>
-        <td><br>  password<br>  </td>
-        <td><br>  True<br>  </td>
-        <td><br>  String<br>  </td>
-        <td><br>  20<br>  </td>
-        <td><br>  用户密码<br>  </td>
-      </tr>
-    </table>  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  username<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  20<br>  </td>
+    <td><br>  用户名<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  password<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  20<br>  </td>
+    <td><br>  用户密码<br>  </td>
+  </tr>
+</table>  
 
-    **返回参数说明**  
-    无  
+**返回参数说明**  
+无  
 
-2. ** 登出相关 **
 
-    **描述**  
-    用于实现用户登出。  
-    **请求方法**  
-    `/logout`  
-    **请求方式**  
-    `URL POST`  
-    **请求参数说明**  
+#### 登出相关
 
-    <table>
-      <tr>
-        <th><br>  参数字段<br>  </th>
-        <th><br>  必选<br>  </th>
-        <th><br>  类型<br>  </th>
-        <th><br>  长度限制<br>  </th>
-        <th><br>  说明<br>  </th>
-      </tr>
-      <tr>
-        <td><br>  username<br>  </td>
-        <td><br>  True<br>  </td>
-        <td><br>  String<br>  </td>
-        <td><br>  20<br>  </td>
-        <td><br>  用户名<br>  </td>
-      </tr>
-    </table>  
+**描述**  
+用于实现用户登出。  
+**请求方法**  
+`/logout`  
+**请求方式**  
+`URL POST`  
+**请求参数说明**  
 
-    **返回参数说明**  
-    无
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  username<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  20<br>  </td>
+    <td><br>  用户名<br>  </td>
+  </tr>
+</table>  
+
+**返回参数说明**  
+无
 
 ### 扩展机制 ###
 
@@ -830,7 +845,7 @@ shiro提供其他的过滤链定义：
 			CaptchaUsernamePasswordToken token = new CaptchaUsernamePasswordToken(userName, encryptedPassWord.toCharArray(),
 					new Boolean(rememberMe), "", captcha);
 
-			// 从Shiro组件中获取当前登录主体Subject
+			// 获取当前登录主体Subject
 			Subject subject = SecurityUtils.getSubject();
 
 			try {
@@ -924,6 +939,8 @@ securityManager中的realm，可以配置为多个，此处为单个组件预置
 			</property>
 		</bean>
 
+4. 依次执行examples项目下sql目录中的dll.sql、index.sql、dml.sql建立数据库并初始化数据。
+
 #### 配置用户对应服务 ####
 继承com.yonyou.uap.ieop.security.service.ISecurityUserService接口。  
 
@@ -977,140 +994,143 @@ com.yonyou.uap.ieop.security.service.IBaseService<T, ID>
 com.yonyou.uap.ieop.security.service.impl.BaseServiceImpl<T, ID>  
 **描述**  
 服务类公共接口及默认实现  
-1.  **保存**
-    
-   **描述**  
-    用户保存接口  
-    **方法**  
-    	T save(T entity) throws Exception;  
-    **请求参数说明**  
-    <table>
-      <tr>
-        <th><br>  参数字段<br>  </th>
-        <th><br>  必选<br>  </th>
-        <th><br>  类型<br>  </th>
-        <th><br>  长度限制<br>  </th>
-        <th><br>  说明<br>  </th>
-      </tr>
-      <tr>
-        <td><br>  entity<br>  </td>
-        <td><br>  True<br>  </td>
-        <td><br>  T<br>  </td>
-        <td></td>
-        <td><br>  实体对象<br>  </td>
-      </tr>
-    </table>
-    **返回参数说明**  
-    <table>
-      <tr>
-        <th><br>  参数字段<br>  </th>
-        <th><br>  必选<br>  </th>
-        <th><br>  类型<br>  </th>
-        <th><br>  长度限制<br>  </th>
-        <th><br>  说明<br>  </th>
-      </tr>
-      <tr>
-        <td><br>   <br>  </td>
-        <td><br>   <br>  </td>
-        <td><br>  Iterable&lt;T &gt;<br>  </td>
-        <td><br>   <br>  </td>
-        <td><br>  保存成功的实体集合<br>  </td>
-      </tr>
-    </table>  
-2. ** 批量保存 **
+#####保存
 
-  **描述**  
-  批量保存用户接口  
-  **方法** 
-  
-  ```
-  public <S extends T> Iterable<> save(Iterable<T >paramIterable)
-  ```
-  
-  **请求参数说明**  
-  <table>
+**描述**  
+用户保存接口  
+**方法**  
+	T save(T entity) throws Exception;  
+**请求参数说明**  
+<table>
   <tr>
-   <th><br>  参数字段<br>  </th>
-   <th><br>  必选<br>  </th>
-   <th><br>  类型<br>  </th>
-   <th><br>  长度限制<br>  </th>
-   <th><br>  说明<br>  </th>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
   </tr>
   <tr>
-   <td><br>  paramIterable<br>  </td>
-   <td><br>  True<br>  </td>
-   <td><br>  Iterable&lt;T &gt;<br>  </td>
-   <td></td>
-   <td><br>  实体集合<br>  </td>
+    <td><br>  entity<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  T<br>  </td>
+    <td></td>
+    <td><br>  实体对象<br>  </td>
   </tr>
-  </table>  
-  **返回参数说明**  
-  <table>
+</table>
+**返回参数说明**  
+<table>
   <tr>
-   <th><br>  参数字段<br>  </th>
-   <th><br>  必选<br>  </th>
-   <th><br>  类型<br>  </th>
-   <th><br>  长度限制<br>  </th>
-   <th><br>  说明<br>  </th>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
   </tr>
   <tr>
-   <td><br>   <br>  </td>
-   <td><br>   <br>  </td>
-   <td><br>  Iterable&lt;T &gt;<br>  </td>
-   <td><br>   <br>  </td>
-   <td><br>  保存成功的实体集合<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  Iterable&lt;T &gt;<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  保存成功的实体集合<br>  </td>
   </tr>
-  </table>  
-3. ** 删除 ** 
+</table>  
 
- **描述**  
-    用户删除接口  
-    **方法**  
-    	public void delete(ID id) ;  
-    **请求参数说明**  
-    <table>
-      <tr>
-        <th><br>  参数字段<br>  </th>
-        <th><br>  必选<br>  </th>
-        <th><br>  类型<br>  </th>
-        <th><br>  长度限制<br>  </th>
-        <th><br>  说明<br>  </th>
-      </tr>
-      <tr>
-        <td><br>  id<br>  </td>
-        <td><br>  True<br>  </td>
-        <td><br>  ID<br>  </td>
-        <td></td>
-        <td><br>  实体ID<br>  </td>
-      </tr>
-    </table>  	
-    **返回参数说明**  
-    无  
-4. ** 更新 **
-   
-   **描述**  
-    用户保存接口  
-    **方法**  
-    	T update (T entity) throws Exception;  
-    **请求参数说明**  
-    <table>
-      <tr>
-        <th><br>  参数字段<br>  </th>
-        <th><br>  必选<br>  </th>
-        <th><br>  类型<br>  </th>
-        <th><br>  长度限制<br>  </th>
-        <th><br>  说明<br>  </th>
-      </tr>
-      <tr>
-        <td><br>  entity<br>  </td>
-        <td><br>  True<br>  </td>
-        <td><br>  T<br>  </td>
-        <td></td>
-        <td><br>  实体对象<br>  </td>
-      </tr>
-    </table>  
-    **返回参数说明**  
-    无  
+##### 批量保存
+
+**描述**  
+批量保存用户接口  
+**方法**
+
+```
+public <S extends T> Iterable<> save(Iterable<T >paramIterable)
+```
+
+**请求参数说明**  
+<table>
+<tr>
+ <th><br>  参数字段<br>  </th>
+ <th><br>  必选<br>  </th>
+ <th><br>  类型<br>  </th>
+ <th><br>  长度限制<br>  </th>
+ <th><br>  说明<br>  </th>
+</tr>
+<tr>
+ <td><br>  paramIterable<br>  </td>
+ <td><br>  True<br>  </td>
+ <td><br>  Iterable&lt;T &gt;<br>  </td>
+ <td></td>
+ <td><br>  实体集合<br>  </td>
+</tr>
+</table>  
+**返回参数说明**  
+<table>
+<tr>
+ <th><br>  参数字段<br>  </th>
+ <th><br>  必选<br>  </th>
+ <th><br>  类型<br>  </th>
+ <th><br>  长度限制<br>  </th>
+ <th><br>  说明<br>  </th>
+</tr>
+<tr>
+ <td><br>   <br>  </td>
+ <td><br>   <br>  </td>
+ <td><br>  Iterable&lt;T &gt;<br>  </td>
+ <td><br>   <br>  </td>
+ <td><br>  保存成功的实体集合<br>  </td>
+</tr>
+</table>  
+
+##### 删除  
+
+**描述**  
+用户删除接口  
+**方法**  
+	public void delete(ID id) ;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  id<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  ID<br>  </td>
+    <td></td>
+    <td><br>  实体ID<br>  </td>
+  </tr>
+</table>  	
+**返回参数说明**  
+无  
+
+##### 更新
+
+**描述**  
+用户保存接口  
+**方法**  
+	T update (T entity) throws Exception;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  entity<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  T<br>  </td>
+    <td></td>
+    <td><br>  实体对象<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+无  
 
 #### 用户服务接口 ####
 **服务接口**  
@@ -1123,184 +1143,187 @@ delete, deleteByEntity, findAll, findAll, get, save, save, update
 **描述**  
 提供用户服务相关接口，包括增删改查，分页查询，动态条件查询，锁定/解锁用户  
 
-1.  ** 根据登录名查询用户 **
-	
-	**描述**  
-	根据用户登录名查询用户实体信息  
-	**方法**  
-		public abstract User findUserByLoginName(String loginName) throws Exception;  
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  loginName<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  String<br>  </td>
-	    <td></td>
-	    <td><br>  用户登录名<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  User<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  User<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  该登录名对应用户<br>  </td>
-	  </tr>
-	</table>  
+##### 根据登录名查询用户
 
-2. **根据ID查询用户 **
-	
-	**描述**  
-	根据用户登录名查询用户实体信息  
-	**方法**  
-		public abstract User getUser(Long id) throws Exception;  
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  id<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  Long<br>  </td>
-	    <td></td>
-	    <td><br>  用户ID<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  User<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  User<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  根据用户ID查询的用户实体<br>  </td>
-	  </tr>
-	</table>  
-3.  **动态分页查询 **
-	
-	**描述**  
-	根据查询条件分页查询用户  
-	**方法**  
-		public abstract Page<User> getAccountPage(Map<String, Object>searchParams, PageRequest pageRequest) throws Exception;  
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  searchParams<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  Map<br>  </td>
-	    <td></td>
-	    <td><br>  查询条件<br>  </td>
-	  </tr>
-	  <tr>
-	    <td><br>  pageRequest<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  PageRequest<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  分页查询请求<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>   <br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  Page&lt;User&gt;<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  查询返回的用户分页<br>  </td>
-	  </tr>
-	</table>  
-4. ** 锁定用户 **
-	
-	**描述**  
-	锁定用户  
-	**方法**  
-		public User lockUser(User entity)   
-	**请求参数说明**
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  entity<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  User<br>  </td>
-	    <td></td>
-	    <td><br>  用户<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	无  
-5. ** 解锁用户 **
-	
-	**描述**  
-	锁定用户  
-	**方法**  
-		public User unlockUser (User entity)   
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  entity<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  User<br>  </td>
-	    <td></td>
-	    <td><br>  用户<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	无  
+**描述**  
+根据用户登录名查询用户实体信息  
+**方法**  
+	public abstract User findUserByLoginName(String loginName) throws Exception;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  loginName<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td></td>
+    <td><br>  用户登录名<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  User<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  User<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  该登录名对应用户<br>  </td>
+  </tr>
+</table>  
+
+##### 根据ID查询用户
+
+**描述**  
+根据用户登录名查询用户实体信息  
+**方法**  
+	public abstract User getUser(Long id) throws Exception;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  id<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  Long<br>  </td>
+    <td></td>
+    <td><br>  用户ID<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  User<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  User<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  根据用户ID查询的用户实体<br>  </td>
+  </tr>
+</table>  
+
+##### 动态分页查询
+
+**描述**  
+根据查询条件分页查询用户  
+**方法**  
+	public abstract Page<User> getAccountPage(Map<String, Object>searchParams, PageRequest pageRequest) throws Exception;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  searchParams<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  Map<br>  </td>
+    <td></td>
+    <td><br>  查询条件<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  pageRequest<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  PageRequest<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  分页查询请求<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>   <br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  Page&lt;User&gt;<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  查询返回的用户分页<br>  </td>
+  </tr>
+</table>  
+
+##### 锁定用户
+
+**描述**  
+锁定用户  
+**方法**  
+	public User lockUser(User entity)   
+**请求参数说明**
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  entity<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  User<br>  </td>
+    <td></td>
+    <td><br>  用户<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+无  
+
+##### 解锁用户
+
+**描述**  
+锁定用户  
+**方法**  
+	public User unlockUser (User entity)   
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  entity<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  User<br>  </td>
+    <td></td>
+    <td><br>  用户<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+无  
 
 #### 角色服务接口 ####
 **服务接口**  
@@ -1313,173 +1336,176 @@ delete, deleteByEntity, findAll, findAll, get, save, save, update
 **描述**  
 提供角色服务相关接口，包括增删改查（继承自IBaseService），分页查询，动态条件查询，查询有效角色。  
 
-1. **根据ID查询角色 **
-	
-	**描述**  
-	根据角色ID查询角色  
-	**方法**  
-		public abstract Role findById(longid) throws Exception;  
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  id<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  Long<br>  </td>
-	    <td></td>
-	    <td><br>  角色ID<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  Role<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  Role<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  根据角色ID查询的角色<br>  </td>
-	  </tr>
-	</table>  
-2. ** 根据角色名称查询角色  **
-	
-	**描述**  
-	根据角色名称查询角色  
-	**方法**  
-		public abstract List<Role> findByName(String roleName) throws Exception;  
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  roleName<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  String<br>  </td>
-	    <td></td>
-	    <td><br>  角色名称<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>   <br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  List&lt;Role&gt;<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  根据角色名称查询返回的角色集合<br>  </td>
-	  </tr>
-	</table>  
-3. ** 根据角色编码查询角色 **
-	
-	**描述**  
-	根据角色编码查询角色  
-	**方法**  
-		public abstract List<Role> findByCode(String roleCode) throws Exception;
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  roleCode<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  String<br>  </td>
-	    <td></td>
-	    <td><br>  角色编码<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>   <br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  List&lt;Role&gt;<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  根据角色编码查询返回的角色集合<br>  </td>
-	  </tr>
-	</table>  
-4. ** 动态分页查询 **
-	
-	**描述**  
-	根据查询条件分页查询角色  
-	**方法**  
-		public abstract Page<Role> getAccountPage(Map<String, Object>searchParams, PageRequest pageRequest) throws Exception;  
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  searchParams<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  Map<br>  </td>
-	    <td></td>
-	    <td><br>  查询条件<br>  </td>
-	  </tr>
-	  <tr>
-	    <td><br>  pageRequest<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  PageRequest<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  分页查询请求<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>   <br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  Page&lt;Role&gt;<br>  </td>
-	    <td><br>   <br>  </td>
-	    <td><br>  查询返回的角色分页<br>  </td>
-	  </tr>
-	</table>  
+##### 根据ID查询角色
+
+**描述**  
+根据角色ID查询角色  
+**方法**  
+	public abstract Role findById(longid) throws Exception;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  id<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  Long<br>  </td>
+    <td></td>
+    <td><br>  角色ID<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  Role<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  Role<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  根据角色ID查询的角色<br>  </td>
+  </tr>
+</table>  
+
+##### 根据角色名称查询角色  
+
+**描述**  
+根据角色名称查询角色  
+**方法**  
+	public abstract List<Role> findByName(String roleName) throws Exception;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  roleName<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td></td>
+    <td><br>  角色名称<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>   <br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  List&lt;Role&gt;<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  根据角色名称查询返回的角色集合<br>  </td>
+  </tr>
+</table>  
+
+##### 根据角色编码查询角色
+
+**描述**  
+根据角色编码查询角色  
+**方法**  
+	public abstract List<Role> findByCode(String roleCode) throws Exception;
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  roleCode<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td></td>
+    <td><br>  角色编码<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>   <br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  List&lt;Role&gt;<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  根据角色编码查询返回的角色集合<br>  </td>
+  </tr>
+</table>  
+
+##### 动态分页查询
+
+**描述**  
+根据查询条件分页查询角色  
+**方法**  
+	public abstract Page<Role> getAccountPage(Map<String, Object>searchParams, PageRequest pageRequest) throws Exception;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  searchParams<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  Map<br>  </td>
+    <td></td>
+    <td><br>  查询条件<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  pageRequest<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  PageRequest<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  分页查询请求<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>   <br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  Page&lt;Role&gt;<br>  </td>
+    <td><br>   <br>  </td>
+    <td><br>  查询返回的角色分页<br>  </td>
+  </tr>
+</table>  
 
 #### 角色分配接口 ####
 **服务接口**  
@@ -1503,219 +1529,224 @@ delete, deleteByEntity, findAll, findAll, get, save, save, update
 **描述**  
 提供功能服务相关接口的实现，包括增删改查（继承自IBaseService），分页查询，动态条件查询，查询有效角色。
 
-1. ** 根据ID查询功能 **
-	
-	**描述**  
-	根据功能ID查询功能  
-	**方法**  
-		public abstract Function getFuncById(String id) throws Exception;   
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  id<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  String<br>  </td>
-	    <td></td>
-	    <td><br>  功能ID<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  Function<br>  </td>
-	    <td></td>
-	    <td><br>  Function<br>  </td>
-	    <td></td>
-	    <td><br>  根据功能ID查询的功能<br>  </td>
-	  </tr>
-	</table>  
-2. ** 根据ID删除功能 **
-	
-	**描述**  
-	根据功能ID删除功能  
-	**方法**  
-		public abstract void deleteById(String id) throws Exception;  
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  id<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  String<br>  </td>
-	    <td></td>
-	    <td><br>  功能ID<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	无  
-3. ** 保存功能 **
-	
-	**描述**  
-	保存功能  
-	**方法**  
-		public abstract Function saveEntity(Function entity) throws Exception;  
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  entity<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  Function<br>  </td>
-	    <td></td>
-	    <td><br>  待保存的功能<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  Function<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  Function<br>  </td>
-	    <td></td>
-	    <td><br>  保存后的功能<br>  </td>
-	  </tr>
-	</table>  
-4. ** 查询根功能 **
-	
-	**描述**  
-	保存功能  
-	**方法**  
-		public abstract Function getFuncRoot() throws Exception;  
-	**请求参数说明**  
-	无  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  Function<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  Function<br>  </td>
-	    <td></td>
-	    <td><br>  根节点功能<br>  </td>
-	  </tr>
-	</table>  
-5. ** 根据用户查询功能 **
-	
-	**描述**  
-	根据用户查询功能  
-	**方法**  
-		public abstract List<Function> getFuncByUser(String userId) throws Exception;
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  userId<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  String<br>  </td>
-	    <td></td>
-	    <td><br>  用户ID<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td></td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  List< Function ><br>  </td>
-	    <td></td>
-	    <td><br>  功能List<br>  </td>
-	  </tr>
-	</table>  
-6. ** 动态查询功能 **
-	
-	**描述**  
-	创建动态查询条件组合  
-	**方法**  
-		public abstract Specification<Function> buildSpecification(
-				Map<String, Object> searchParams) throws Exception;  
-	**请求参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td><br>  searchParams<br>  </td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  Map< String, Object ><br>  </td>
-	    <td></td>
-	    <td><br>  查询条件Map<br>  </td>
-	  </tr>
-	</table>  
-	**返回参数说明**  
-	<table>
-	  <tr>
-	    <th><br>  参数字段<br>  </th>
-	    <th><br>  必选<br>  </th>
-	    <th><br>  类型<br>  </th>
-	    <th><br>  长度限制<br>  </th>
-	    <th><br>  说明<br>  </th>
-	  </tr>
-	  <tr>
-	    <td></td>
-	    <td><br>  True<br>  </td>
-	    <td><br>  Specification< Function > <br>  </td>
-	    <td></td>
-	    <td></td>
-	  </tr>
-	</table>  
+##### 根据ID查询功能
+
+**描述**  
+根据功能ID查询功能  
+**方法**  
+	public abstract Function getFuncById(String id) throws Exception;   
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  id<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td></td>
+    <td><br>  功能ID<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  Function<br>  </td>
+    <td></td>
+    <td><br>  Function<br>  </td>
+    <td></td>
+    <td><br>  根据功能ID查询的功能<br>  </td>
+  </tr>
+</table>  
+
+##### 根据ID删除功能
+
+**描述**  
+根据功能ID删除功能  
+**方法**  
+	public abstract void deleteById(String id) throws Exception;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  id<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td></td>
+    <td><br>  功能ID<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+无  
+
+##### 保存功能
+
+**描述**  
+保存功能  
+**方法**  
+	public abstract Function saveEntity(Function entity) throws Exception;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  entity<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  Function<br>  </td>
+    <td></td>
+    <td><br>  待保存的功能<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  Function<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  Function<br>  </td>
+    <td></td>
+    <td><br>  保存后的功能<br>  </td>
+  </tr>
+</table>
+
+##### 查询根功能
+
+**描述**  
+保存功能  
+**方法**  
+	public abstract Function getFuncRoot() throws Exception;  
+**请求参数说明**  
+无  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  Function<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  Function<br>  </td>
+    <td></td>
+    <td><br>  根节点功能<br>  </td>
+  </tr>
+</table>  
+
+##### 根据用户查询功能
+
+**描述**  
+根据用户查询功能  
+**方法**  
+	public abstract List<Function> getFuncByUser(String userId) throws Exception;
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  userId<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td></td>
+    <td><br>  用户ID<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td></td>
+    <td><br>  True<br>  </td>
+    <td><br>  List< Function ><br>  </td>
+    <td></td>
+    <td><br>  功能List<br>  </td>
+  </tr>
+</table>  
+
+##### 动态查询功能
+
+**描述**  
+创建动态查询条件组合  
+**方法**  
+	public abstract Specification<Function> buildSpecification(
+			Map<String, Object> searchParams) throws Exception;  
+**请求参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  searchParams<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  Map< String, Object ><br>  </td>
+    <td></td>
+    <td><br>  查询条件Map<br>  </td>
+  </tr>
+</table>  
+**返回参数说明**  
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度限制<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td></td>
+    <td><br>  True<br>  </td>
+    <td><br>  Specification< Function > <br>  </td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>  
 
 
-	### 扩展机制 ###
+### 扩展机制 ###
 权限模型接口可通过集成模型实体及默认实现扩展；  
 权限扩展可通过继承permission，定义权限策略并注册，权限认证时会根据定义自己的权限策略进行权限解析。  

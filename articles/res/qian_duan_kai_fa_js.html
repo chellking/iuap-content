@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>快速入门前端开发——html代码</title>
+</head>
+
+<body>
+    <section class="normal" id="section-">
+        <pre><code>define(['jquery', 'knockout', 'text!pages/product/product.html', 'uui'], function($, ko, template) {
+//添加依赖的模块（jquery、knockout、uui等），具体使用方法参考requireJs
+    var ctrlBathPath = ctx+'/product';
+    var app, viewModel, datas;
+    var viewModel = {
+        md: document.querySelector('#demo-mdlayout'),
+        editoradd: '',
+        searchText: ko.observable(''),
+        mainDataTable: new u.DataTable({//定义主体的dataTable
+            meta: {
+                'productid':{
+                    type:'string'
+                },
+                'productname': {
+                    type: 'string'
+                },
+                'productnum': {
+                    type: 'integer'
+                },
+                'price': {
+                    type: 'float'
+                },
+                'supplier': {
+                    type: 'string'
+                }, //供应商
+                'prodate': {
+                    type: 'date'
+                }, //生成日期
+                'orgin': {
+                    type: 'string'
+                } //原产地
+            },
+            pageSize: 10
+        }),
+        infodata: new u.DataTable({//infodata在修改和添加时会使用
+            meta: {
+                'productid':{
+                    type:'string'
+                },
+                'productname': {
+                    type: 'string'
+                },
+                'productnum': {
+                    type: 'integer',
+                    precision: 0,
+                    min: 0
+                },
+                'price': {
+                    type: 'float',
+                    precision: 2,
+                    min: 0
+                },
+                'supplier': {
+                    //供应商
+                    type: 'string'
+                },
+                'prodate': {
+                    //生成日期
+                    type: 'date'
+                }, 
+                'orgin': {
+                    //原产地
+                    type: 'string'
+                } 
+            }
+        }),
+        //添加的主要事件
+        events: {
+            //查询主数据
+            queryMain: function(){
+                var queryData = {};
+                var searchValue = viewModel.searchText();
+                var key = 'search_LIKE_productname';
+                queryData[key] = searchValue;
+
+                queryData["pageIndex"] = viewModel.mainDataTable.pageIndex();
+                queryData["pageSize"] = viewModel.mainDataTable.pageSize();
+                $.ajax({
+                    type : 'GET',
+                    url : ctrlBathPath+'/page',
+                    data : queryData,
+                    dataType : 'json',
+                    success : function(result) {
+                        var data = result.data;
+                        if(data!=null){
+                            //对mainDataTable进行赋值
+                            viewModel.mainDataTable.setSimpleData(data.content);
+                            viewModel.mainDataTable.totalPages(data.totalPages);
+                        } else {
+
+                        }
+                    }
+                });
+            },
+            //搜索
+            search: function(){
+                this.events.queryMain();
+            },
+            //键盘事件
+            searchKeyUp: function(model,event){
+                if (event.keyCode == '13'){
+                    if(u.isIE){
+                        event.target.blur();
+                        this.events.queryMain();
+                        event.target.focus();
+                    } else {
+                        this.events.queryMain();
+                    }
+                }
+                return true;
+            },
+            //新生成的每行，进行控件渲染
+            afterAdd:function(element, index, data){
+                if (element.nodeType === 1) {
+                    u.compMgr.updateComp(element);
+                }
+            },
+            //回到上一个页面
+            goBack: function() {
+                viewModel.md['u.MDLayout'].dBack();
+            },
+            //跳转到pathStr对应的dom内容
+            goPage: function(pathStr) {
+                viewModel.md['u.MDLayout'].dGo(pathStr);
+            },
+            //添加之前清空infodata内容，并跳转到id位addPage对应的Dom元素
+            beforeAdd: function() {
+                viewModel.editoradd = 'add';
+                viewModel.infodata.clear();
+                viewModel.infodata.createEmptyRow();
+                viewModel.infodata.setRowSelect(0);
+                viewModel.md['u.MDLayout'].dGo('addPage');
+            },
+            //添加或修改
+            addOrEditRow: function() {
+                var self = this;
+                var _meta = this.mainDataTable.meta;
+                var addInfo = this.infodata.getAllRows();
+                var url = '';
+                var postData = {};
+                if (this.editoradd === 'add') {
+                    url = ctrlBathPath+'/save';
+                    postData = JSON.stringify(this.infodata.getSimpleData()[0]);
+                } else {
+                    url = ctrlBathPath+'/update';
+                    postData = JSON.stringify(self.infodata.getSimpleData({type:'select'})[0]);
+                }
+                $.ajax({
+                    url:url,
+                    type:'POST',
+                    contentType: 'application/json',
+                    data:postData,
+                    success:function(res){
+                        if (res.flag == 'success'){
+                            //添加
+                            if (self.editoradd === 'add'){
+                                //mainDataTable添加一行数据
+                                self.mainDataTable.addSimpleData(res.data);
+                            }else{
+                                //获取当前行
+                                var curRow = viewModel.mainDataTable.getCurrentRow();
+                                //对mainDataTable当前行进行赋值
+                                curRow.setSimpleData(viewModel.infodata.getCurrentRow().getSimpleData(), 'upd');
+
+                            }
+                            //回到上层并提示保存成功
+                            viewModel.md['u.MDLayout'].dBack();
+                            u.showMessage('保存成功！');                                
+                        }else{
+                            //弹出失败信息
+                            u.showMessageDialog(res.msg);
+                        }
+                    },
+                    error:function(){
+                        //待显示错误信息
+                    }
+                });
+
+            },
+
+            beforeEdit: function(id) {
+                viewModel.mainDataTable.setRowSelect(id);
+                viewModel.infodata.setSimpleData(viewModel.mainDataTable.getSimpleData({
+                    type: 'select'
+                }));
+                viewModel.editoradd = 'edit';
+                viewModel.md['u.MDLayout'].dGo('addPage');
+            },
+            //删除某行
+            delRow: function() {
+                //获取选中的行号
+                var selectArray = viewModel.mainDataTable.selectedIndices();
+                //用户未选择行时，return
+                if (selectArray.length &lt; 1) {
+                    u.messageDialog({
+                        msg: "请选择要删除的行!",
+                        title: "提示",
+                        btnText: "OK"
+                    });
+                    return;
+                }
+                u.confirmDialog({
+                    msg: "是否确认删除？",
+                    title: "测试确认",
+                    onOk: function () {
+                        $.ajax({
+                            url:ctrlBathPath+'/del',
+                            type:'post',
+                            data:{data:JSON.stringify(viewModel.mainDataTable.getSimpleData({type:'select',fields:['productid']}))},
+                            success: function(){
+                                u.showMessage('删除成功！');
+                                viewModel.events.queryMain();
+                            }
+                        });
+                    },
+                    onCancel: function () {
+
+                    }
+                });
+            },
+            viewRow: function(id) {
+                //如果样式列表不含有checkbox说明不是第一列
+                if (event.target.classList.toString().indexOf('checkbox') &lt; 0) { 
+                    viewModel.mainDataTable.setRowFocus(id);
+                    viewModel.md['u.MDLayout'].dGo('showPage');
+                }
+            },
+            //分页的当前页修改时触发
+            pageChangeFunc: function(index){
+                viewModel.mainDataTable.pageIndex(index);
+                viewModel.events.queryMain();        
+            },
+            //每页显示的个数变化时触发
+            sizeChangeFunc: function(size){
+                viewModel.mainDataTable.pageSize(size);
+                viewModel.events.queryMain();
+            }
+        }
+    };
+
+    var init = function(params) {
+        //创建app，需要绑定的dom元素和数据模型viewModel
+        var app = u.createApp({
+            el: '#content',
+            model: viewModel
+        });
+        viewModel.md = document.querySelector('#demo-mdlayout');
+        viewModel.events.queryMain();
+    };
+
+    return {
+        'model': viewModel,
+        'template': template,
+        'init': init
+    };
+});
+</code></pre>
+    </section>
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-#组织组件概述 
+#组织组件概述
 
 ## 业务需求 ##
 
@@ -34,11 +34,15 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 ## 使用方法
 
-1，	配置spring文件，参考示例工程：organization-applicationContext.xml
+** 1. 	配置spring文件，参考示例工程：organization-applicationContext.xml **
 
-2，字段结构如下：
+** 2. 执行数据库脚本 **
 
-#####（1）组织表org_orgs
+	依次执行examples项目下sql目录中的dll.sql、index.sql、dml.sql建立数据库并初始化数据
+
+** 3. 组织表结构说明：**
+
+##### （1）组织表org_orgs
 
 <table>
    <tr>
@@ -137,8 +141,8 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
       <td></td>
    </tr>
 </table>
- 
-#####（2）组织类型表org_type
+
+##### （2）组织类型表org_type
 
 <table>
    <tr>
@@ -188,92 +192,842 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
    </tr>
 </table>
 
-注：基本数据库表见jar包中resource目录下的sql>mysql。
 
-3，服务接口类
+## API接口
 
-（1）IOrgService，主要提供组织相关的接口：
+### IOrgService，主要提供组织相关的接口：
 
-```
-    public interface IOrgService {
-	
-		public void save(OrgEntity orgEntity);
+#### 保存组织基本信息
 
-		public void deleteById(String id);
-	
-		public OrgEntity queryById(String id);
-	
-		/**
-	 	* 具有某种组织类型的组织
-	 	* @param orgtype  传入字符串类似为orgtype1
-		 * @return
-		 */
-		public List<OrgEntity> queryOrgsByOrgType(String orgtype);
-	
-		/**
-		 * 查询具有某几种组织类型的组织
-		 * @param orgtypeArray  传入参数为例如new String[]{"orgtype1","orgtype2",...}
-	 	* @return
-	 	*/
-		public List<OrgEntity> queryOrgsByOrgTypeArray(String[] orgtypeArray);
+**描述**  
 
-		public OrgEntity queryParentOrg(String id);
+保存组织基本信息
 
-		public List<OrgEntity> queryChildrenOrgs(String id);
-	
-		public List<OrgEntity> queryAllOrgs();
-	
-		public List<OrgEntity> queryOrgsByIds(String[] ids);
-	
-		public List<OrgEntity> queryOrgsByIdList(List<String> idList);
-    }
-```
+**请求方法**  
 
-（2）IOrgTypeService，主要提供组织职能的相关接口：
+com.yonyou.iuap.org.service.IOrgService.save(OrgEntity orgEntity)
 
-```
-    public interface IOrgTypeService {
+**请求方式**  
 
-	    public void save(OrgTypeEntity orgTypeEntity);
-		
-	    public void deleteById(String id);
-	
-	    public OrgTypeEntity queryOrgTypebyId(String id);
-	
-	    public OrgTypeEntity queryOrgTypeByCode(String code);
-	
-	    public OrgTypeEntity queryOrgTypeByName(String name);
-	
-		public OrgTypeEntity queryOrgTypeByFieldName(String fieldname);
-	
-		public OrgTypeEntity queryOrgTypeByServiceClassName(String serviceclass);
-	
-		public OrgTypeEntity queryOrgTypeByEntityClassName(String entityclassname);
-	
-		public List<OrgTypeEntity> queryOrgTypesByIds(String[] ids);
+服务调用  
 
-		public OrgTypeEntity[] queryOrgTypeByOrg(OrgEntity orgEntity); 
+**请求参数说明**  
 
-		public OrgTypeEntity[] queryOrgTypeByOrgID(String orgId);
-		
-		/**
-		 *判断该OrgEntity中的对应orgtype是否被选中
-	 	* @param orgEntity
-	 	* @param orgtypeId
-		 * @return
-	 	*/
-		public boolean isTypeOf(OrgEntity orgEntity, String orgtypeId);
-	
-		/**
-		 * 判断该orgId对应的OrgEntity中的对应orgtype是否被选中
-		 * @param orgId
-		 * @param orgtypeId
-		 * @return
-		 */
-		public boolean isTypeOfByOrgId(String orgId, String orgtypeId);
-	
-    }
-```
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>orgEntity</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织实体，详见OrgEntity</td>
+	</tr>
+</table>
+
+
+**返回参数说明**  
+
+无
+
+
+#### 删除组织基本信息
+
+**描述**  
+
+根据主键删除组织基本信息
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgService.deleteById(String id);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>id</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织基本信息主键</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+无
+
+#### 根据主键查询组织基本信息
+
+**描述**  
+
+根据主键查询组织基本信息
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgService.queryById(String id);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>id</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织基本信息主键</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织实体 ：OrgEntity
+
+
+
+#### 根据组织类型字段查询组织基本信息
+
+**描述**  
+
+根据组织类型字段查询组织基本信息
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgService.queryOrgsByOrgType(String orgtype)；
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>orgtype</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织类型</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织实体列表：List<OrgEntity>
+
+
+#### 根据多个组织类型字段查询组织基本信息
+
+**描述**  
+
+根据多个组织类型字段查询组织基本信息
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgService.queryOrgsByOrgTypeArray(String[] orgtypeArray);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>orgtype</td>
+		<td>True</td>
+		<td>String[]</td>
+		<td>无</td>
+		<td>组织类型数组，例如：{"orgtype1","orgtype2",...}</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+
+组织实体列表：List<OrgEntity>
+
+
+
+#### 查询上级组织基本信息
+
+**描述**  
+
+根据组织基本信息主键查询上级组织基本信息
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgService.queryParentOrg(String id);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>id</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织基本信息主键</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+上级组织实体：OrgEntity
+
+
+
+#### 查询下级组织基本信息
+
+**描述**  
+
+根据组织基本信息主键查询下级组织基本信息
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgService.queryChildrenOrgs(String id);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>id</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织基本信息主键</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+包含本级的全部下级组织基本信息：List<OrgEntity>
+
+
+
+#### 查询全部组织基本信息
+
+**描述**  
+
+查询全部组织基本信息
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgService.queryAllOrgs();
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+无
+
+**返回参数说明**  
+
+全部组织基本信息：List<OrgEntity>
+
+
+
+#### 根据ID批量查询组织基本信息
+
+**描述**  
+
+根据ID批量查询组织基本信息
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgService.queryOrgsByIds(String[] ids);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>ids</td>
+		<td>True</td>
+		<td>String[]</td>
+		<td>无</td>
+		<td>组织基本信息主键数组</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+织基本信息列表：List<OrgEntity>
+
+### IOrgTypeService，主要提供组织职能的相关接口：
+
+#### 保存组织职能
+
+**描述**  
+
+保存组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.save(OrgTypeEntity orgTypeEntity);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>OrgTypeEntity</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织职能实体，详见OrgTypeEntity</td>
+	</tr>
+</table>
+
+
+**返回参数说明**  
+
+无
+
+
+#### 删除组织职能
+
+**描述**  
+
+根据ID删除组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.deleteById(String id);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>id</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织职能主键</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+无
+
+#### 根据ID查询组织职能
+
+**描述**  
+
+根据ID查询组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.queryOrgTypebyId(String id);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>id</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织职能主键</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织职能实体 OrgTypeEntity
+
+#### 根据编码查询组织职能
+
+**描述**  
+
+根据编码查询组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.queryOrgTypeByCode(String code);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>code</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织职能编码</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织职能实体 OrgTypeEntity
+
+#### 根据名称查询组织职能
+
+**描述**  
+
+根据名称查询组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.queryOrgTypeByName(String name);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织职能名称</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织职能实体 OrgTypeEntity
+
+#### 根据组织基本信息职能字段查询组织职能
+
+**描述**  
+
+根据组织基本信息职能字段查询组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.queryOrgTypeByFieldName(String fieldname);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>fieldname</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织职能在基本信息中的字段名称</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织职能实体 OrgTypeEntity
+
+#### 根据组织职能的实体类查询组织职能
+
+**描述**  
+
+根据组织职能的实体类查询组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.queryOrgTypeByEntityClassName(String entityclassname);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>entityclassname</td>
+		<td>True</td>
+		<td>String</td>
+		<td>无</td>
+		<td>组织职能的对应的实体类的全类名</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织职能实体 OrgTypeEntity
+
+#### 根据组织职能服务类查询拥有的组织职能
+
+**描述**  
+
+根据组织基本信息查询组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.queryOrgTypeByServiceClassName(String serviceclass);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>serviceclass</td>
+		<td>True</td>
+		<td>String[]</td>
+		<td>无</td>
+		<td>组织职能中注册的服务类</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织职能实体 OrgTypeEntity
+
+#### 根据组织职能主键批量查询组织职能
+
+**描述**  
+
+根据组织职能主键批量查询组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.queryOrgTypesByIds(String[] ids);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>ids</td>
+		<td>True</td>
+		<td>String[]</td>
+		<td>无</td>
+		<td>组织职能主键数组</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织职能实体列表 List<OrgTypeEntity>
+
+#### 根据组织基本信息查询拥有的组织职能
+
+**描述**  
+
+根据组织基本信息查询组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.queryOrgTypeByOrg(OrgEntity orgEntity);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>orgEntity</td>
+		<td>True</td>
+		<td>String[]</td>
+		<td>无</td>
+		<td>组织基本信息实体</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织职能实体列表 List<OrgTypeEntity>
+
+#### 根据组织基本信息主键查询拥有的组织职能
+
+**描述**  
+
+根据组织基本信息主键查询组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.queryOrgTypeByOrgID(String orgId);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>id</td>
+		<td>True</td>
+		<td>String[]</td>
+		<td>无</td>
+		<td>组织基本信息主键</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+组织职能实体列表 List<OrgTypeEntity>
+
+#### 根据组织基本信息判断是否拥有指定的组织职能
+
+**描述**  
+
+根据组织基本信息判断是否拥有指定的组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.isTypeOf(OrgEntity orgEntity, String orgtypeId);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>orgEntity</td>
+		<td>True</td>
+		<td>String[]</td>
+		<td>无</td>
+		<td>组织基本信息实体</td>
+	</tr>
+	<tr>
+		<td>orgtypeId</td>
+		<td>True</td>
+		<td>String[]</td>
+		<td>无</td>
+		<td>组织职能主键</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+boolean
+
+#### 根据组织基本信息主键判断是否拥有指定的组织职能
+
+**描述**  
+
+根据组织基本信息主键判断是否拥有指定的组织职能
+
+**请求方法**  
+
+com.yonyou.iuap.org.service.IOrgTypeService.isTypeOfByOrgId(String orgId, String orgtypeId);
+
+**请求方式**  
+
+服务调用  
+
+**请求参数说明**  
+
+<table>
+	<tr>
+		<th>参数字段</th>
+		<th>必选</th>
+		<th>类型</th>
+		<th>长度限制</th>
+		<th>说明</th>
+	</tr>
+	<tr>
+		<td>orgId</td>
+		<td>True</td>
+		<td>String[]</td>
+		<td>无</td>
+		<td>组织基本信息主键</td>
+	</tr>
+	<tr>
+		<td>orgtypeId</td>
+		<td>True</td>
+		<td>String[]</td>
+		<td>无</td>
+		<td>组织职能主键</td>
+	</tr>
+</table>
+
+**返回参数说明**  
+
+boolean
+
 
 ## 扩展开发说明
 
@@ -310,4 +1064,3 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 </table>
 
 最后，要将扩展的组织数据同步到org_orgs中，pk相同，组织表中的orgtype1字段存为'Y'
-

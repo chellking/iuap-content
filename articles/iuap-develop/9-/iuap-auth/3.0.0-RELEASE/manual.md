@@ -22,7 +22,7 @@ iuap认证组件通过配置的方式对指定路径的服务资源进行拦截�
 
 ## 依赖环境 ##
 
-组件采用Maven进行编译和打包发布，依赖Apache的shiro框架,引入了shiro.shiro-spring的1.2.3版本和iUAP平台的一些基础组件如iuap-log和iuap-cache，其对外提供的依赖方式如下：
+组件采用Maven进行编译和打包发布，依赖Apache的shiro框架,引入了shiro.shiro-spring的1.2.3版本和iuap平台的一些基础组件如iuap-log和iuap-cache，其对外提供的依赖方式如下：
 
 	<dependency>
 	  <groupId>com.yonyou.iuap</groupId>
@@ -118,7 +118,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version,需�
 
 <img src="/images/auth_example.jpg"/>
 
-开发工具包DevTool中携带了对认证组件的示例工程，位置位于DevTool/examples/example\_iuap\_auth下，在IUAP_STUDIO中导入已有的Maven工程，可以将示例工程导入到工作区。示例工程中有较为完整的对iuap-auth组件的使用示例代码。
+开发工具包DevTool中携带了对认证组件的示例工程，位置位于DevTool/examples/example\_iuap\_auth下，在iuap Studio中导入已有的Maven工程，可以将示例工程导入到工作区。示例工程中有较为完整的对iuap-auth组件的使用示例代码。
 
 ## 开发步骤 ##
 

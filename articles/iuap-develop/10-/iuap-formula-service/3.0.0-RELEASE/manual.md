@@ -29,41 +29,112 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 # 使用说明
 
-## 提供的功能说明： 
+## 提供的功能说明：
 
 1 提供基本类型、数学函数、字符串函数、日期函数等基本功能。
 2 提供自定义函数扩展功能。
 3 本组件提供通过resetAPI的方式直接执行公式的能力
-	
+
 ## 部署说明：
 
 ### 1:部署公式服务到web服务器
 
-下载 iuap-formula-service.war 作为独立应用部署	
+下载 iuap-formula-service.war 作为独立应用部署
 
-## Rest服务调用说明	
 
-	
+## 调用示例
+
 ### 1:公式Rest服务的get调用
 
 服务接口：
 
 iuap-formula-service/formula/execute4get?formula={"variables":{"d1":3,"d2":4,"i1":6},"formulas":["f1->d1*d2*i1"]}
-	
+
 参数以json 格式传入
-	
+
 返回值格式如下：{"f1":[72]}
 
 ### 2:公式Rest服务的post调用
 
 服务接口：
 /iuap-formula-service/formula/execute
-	
+
 参数格式：
 
 String param ="{\"formulas\":[\"f1->d1*d2*i1\"],\"variables\":{\"d1\":3,\"d2\":4,\"i1\":6}}";
-	
+
 返回值格式如下：{"f1":[72]}
+
+
+
+## API接口
+
+#### 公式执行get方式
+
+**请求方法**  
+
+/formula/execute4get
+
+**请求方式**  
+
+get
+
+**请求参数说明**  
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+    <th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>formula</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>执行公式文本，例如"{\"formulas\":[\"f1->d1*d2*i1\"],\"variables\":{\"d1\":3,\"d2\":4,\"i1\":6}}"</td>
+  </tr>
+</table>
+
+**返回参数说明**  
+
+返回：map格式的json数据，key－变量名称 value－执行结果（结果可以为数组），例如{"f1":[72]}
+
+#### 公式执行post方式
+
+**请求方法**  
+
+/formula/execute
+
+**请求方式**  
+
+post
+
+**请求参数说明**  
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+    <th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>formula</td>
+    <td>True</td>
+    <td>String</td>
+    <td>无</td>
+    <td>执行公式文本，例如"{\"formulas\":[\"f1->d1*d2*i1\"],\"variables\":{\"d1\":3,\"d2\":4,\"i1\":6}}"</td>
+  </tr>
+</table>
+
+**返回参数说明**  
+
+返回：map格式的json数据，key－变量名称 value－执行结果（结果可以为数组），例如{"f1":[72]}
+
 
 
 

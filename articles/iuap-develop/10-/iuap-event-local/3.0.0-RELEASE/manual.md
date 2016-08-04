@@ -161,6 +161,8 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 1、服务启动，Spring初始化配置文件路径中添加classpath:eventLocal-applicationContext.xml,请参考示例工程。
 
 2、执行建表脚本
+
+依次执行examples项目下sql目录中的dll.sql、index.sql、dml.sql建立数据库并初始化数据。
 	
 
 ## 配置说明

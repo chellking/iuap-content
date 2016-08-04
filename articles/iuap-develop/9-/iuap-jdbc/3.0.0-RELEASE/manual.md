@@ -427,14 +427,7 @@ getMetaDefinedName和getNamespace方法是为了后期的元数据操作时候�
     	}
     
     	public void remove(List<Parent> vos) throws DAOException {
-    		
-    		for (Iterator<Parent> iterator = vos.iterator(); iterator.hasNext();) {
-    			Parent testorderJdbc = (Parent) iterator.next();
-    			remove(testorderJdbc);
-    		}
-    		
-    		//为什么不用批量删除，待核实
-    		//dao.remove(vos);
+    		dao.remove(vos);
     	}
     
     	//业务开发根据自己的需求，修改查询条件的拼接方式
@@ -452,7 +445,7 @@ getMetaDefinedName和getNamespace方法是为了后期的元数据操作时候�
     					
     					sb.append(columnName).append(" ").append(compartor).append(" ? ");
     					// 处理模糊查询
-    					value = "like".equalsIgnoreCase(compartor) ? "%" + value + "%" : value;
+    					value = "like".equalsIgnoreCase(compartor) ? value + "%" : value;
     					sqlParameter.addParam(value);
     					index ++;
     					
@@ -519,7 +512,7 @@ getMetaDefinedName和getNamespace方法是为了后期的元数据操作时候�
     					
     					sb.append(columnName).append(" ").append(compartor).append(" ? ");
     					// 处理模糊查询
-    					value = "like".equalsIgnoreCase(compartor) ? "%" + value + "%" : value;
+    					value = "like".equalsIgnoreCase(compartor) ? value + "%" : value;
     					sqlParameter.addParam(value);
     					index ++;
     					

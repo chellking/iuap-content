@@ -26,7 +26,7 @@ iuap缓存组件还实现了对连接池的管理，并支持Redis以主从方�
 
 ## 依赖环境 ##
 
-组件采用Maven进行编译和打包发布，依赖Jedis的2.6.0版本和iUAP平台的一些基础组件如iuap-log，其对外提供的依赖方式如下：
+组件采用Maven进行编译和打包发布，依赖Jedis的2.6.0版本和iuap平台的一些基础组件如iuap-log，其对外提供的依赖方式如下：
 
 	<dependency>
 	  <groupId>com.yonyou.iuap</groupId>
@@ -113,7 +113,7 @@ ${iuap.modules.version}为在pom.xml中定义的引用iuap-cache的版本。
 
 ## 工程样例 ##
 
-开发工具包DevTool中携带了对分布式缓存组件的示例工程，位置位于DevTool/examples/example_iuap_cache下，在IUAP_STUDIO中导入已有的Maven工程，可以将示例工程导入到工作区。示例工程中有较为完整的对iuap-cache组件的使用示例代码。
+开发工具包DevTool中携带了对分布式缓存组件的示例工程，位置位于DevTool/examples/example_iuap_cache下，在iuap Studio中导入已有的Maven工程，可以将示例工程导入到工作区。示例工程中有较为完整的对iuap-cache组件的使用示例代码。
 <img src="/images/cache_example.jpg"/>
 
 ## 开发步骤 ##

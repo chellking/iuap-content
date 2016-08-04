@@ -53,7 +53,7 @@ iuap-dispatch-sdk是任务调度客户端SDK组件，该组件可通过客户端
 **1:配置监听Servlet**
 
   任务调度客户端的配置文件web.xml中配置监听任务调度客户端SDK提供的servlet类地址，用于执行回调任务。
- 
+
 ```
     <servlet>
           <servlet-name>DispatchClientServlet</servlet-name>
@@ -87,11 +87,11 @@ dispatch-client.properties配置文件字段说明
     import com.yonyou.iuap.dispatch.client.ITask;
 
     public class TestTaskImpl implements ITask{
-	
-	
+
+
 	public void execute(Map<String,String> data) {
 		//业务操作
-		
+
 	 }
     }
 ```
@@ -102,9 +102,9 @@ dispatch-client.properties配置文件字段说明
 
 ```
      public void addSimpleTask(Date startDate, TimeConfig timeConfig, String note){
-		SimpleTaskConfig taskConfig = 
-					new SimpleTaskConfig(UUID.randomUUID().toString()/*任务名*/, 
-										 "simpleTaskGroup"/*任务组名*/, 
+		SimpleTaskConfig taskConfig =
+					new SimpleTaskConfig(UUID.randomUUID().toString()/*任务名*/,
+										 "simpleTaskGroup"/*任务组名*/,
 										 timeConfig);
 		taskConfig.setStartDate(startDate);
 		Map<String,String> params = new HashMap<String,String>();
@@ -117,19 +117,19 @@ dispatch-client.properties配置文件字段说明
 		}
 	}
  ```
- 
+
     **B、Cron类型任务**
-    
+
 ```
     public void addCronTask(){
-		CronTaskConfig cronTaskConfig = new CronTaskConfig("cronTask", 
-														   "cronTaskGroup", 
+		CronTaskConfig cronTaskConfig = new CronTaskConfig("cronTask",
+														   "cronTaskGroup",
 														   "* */1 * * * ?");
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("serverName", System.getProperty("os.name"));//任务可传入附加数据
-		boolean success = DispatchRemoteManager.add(cronTaskConfig, 
-													TestTaskImpl.class, 
-													params, 
+		boolean success = DispatchRemoteManager.add(cronTaskConfig,
+													TestTaskImpl.class,
+													params,
 													true);
 		if(success){
 			System.out.println("任务添加成功");
@@ -137,7 +137,7 @@ dispatch-client.properties配置文件字段说明
 			System.out.println("任务添加失败");
 		}
 	}
- 
+
 ```
 
 ## 开发步骤 ##
@@ -155,7 +155,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 - 组件配置
   任务调度客户端的配置文件web.xml中需要配置任务调度客户端SDK提供的servlet类地址，用于执行回调任务。
- 
+
  ```
  <servlet>
           <servlet-name>DispatchClientServlet</servlet-name>
@@ -178,58 +178,522 @@ dispatch-client.properties配置文件配置
 
 
 - 编写任务代码
-  
+
 该类需要实现ITask接口
 
 - 添加任务
 
 使用SDK提供的DispatchRemoteManager类的add方法添加任务。
 
-## 常用接口 ##
+## API接口 ##
 
-- DispatchRemoteManager
+### 指定执行类新增定时任务 ###
 
-<table style="border-collapse:collapse">
-	<thead>
-		<tr>
-			<th>方法名</th>
-			<th>参数</th>
-			<th>返回值</th>
-			<th>说明</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>add(SimpleTaskConfig simpleTaskConfig,Class<? extends ITask> taskName, boolean replace)</td>
-			<td>simpleTaskConfig简单类型相关参数，taskName任务执行类，replace是否覆盖</td>
-			<td>boolean 添加任务是否成功</td>
-			<td>添加一个简单类型的任务</td>
-		</tr>
-		<tr>
-			<td>add(CronTaskConfig cronTaskConfig, RecallConfig recallConfig, boolean replace)</td>
-			<td>cronTaskConfig 	Cron表达式及相关参数 ，recallConfig回调相关参数，replace是否覆盖</td>
-			<td>boolean 添加任务是否成功</td>
-			<td>添加一个Cron表达式复杂任务</td>
-		</tr>
-		<tr>
-			<td>deleteJob(String jobName, String groupName)</td>
-			<td>jobName 任务名称，groupName组名称</td>
-			<td>String 删除成功返回NULL，否则返回具体异常原因</td>
-			<td>删除任务</td>
-		</tr>
-		<tr>
-			<td>pauseJob(String jobName, String groupName)</td>
-			<td>jobName 任务名称，groupName组名称</td>
-			<td>String 暂停成功返回NULL，否则返回具体异常原因</td>
-			<td>暂停任务</td>
-		</tr>
-		<tr>
-			<td>resumeJob(String jobName, String groupName)</td>
-			<td>jobName 任务名称，groupName组名称</td>
-			<td>String 暂停成功返回NULL，否则返回具体异常原因</td>
-			<td>启动任务（将任务从暂停状态恢复为执行状态）</td>
-		</tr>
+**描述**
 
+添加或覆盖简单类型的定时调度任务
 
-	</tbody>
+**请求方法**
+
+com.yonyou.iuap.dispatch.client.DispatchRemoteManager.add(SimpleTaskConfig simpleTaskConfig, Class<? extends ITask> taskName, boolean replace)
+
+**请求方式**
+
+工具类调用  
+
+**请求参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+		<th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>simpleTaskConfig</td>
+    <td>True</td>
+		<td>SimpleTaskConfig</td>
+    <td>无</td>
+    <td>任务执行类</td>
+  </tr>
+  <tr>
+    <td>taskName</td>
+    <td>True</td>
+		<td>Class</td>
+    <td>无</td>
+    <td>Cron表达式及相关参数</td>
+  </tr>
+  <tr>
+    <td>replace</td>
+    <td>True</td>
+		<td>boolean</td>
+    <td>无</td>
+    <td>是否覆盖，为ture时，自动覆盖，为false时，如果存在会抛出异常</td>
+  </tr>
 </table>
+
+**返回参数说明**
+
+boolean 成功返回true，否则会抛出异常
+
+### 指定执行类新增带参数的定时任务 ###
+
+**描述**
+
+添加或覆盖简单类型的定时调度任务
+
+**请求方法**
+
+com.yonyou.iuap.dispatch.client.DispatchRemoteManager.add(SimpleTaskConfig simpleTaskConfig, Class<? extends ITask> taskName, Map<String, String> data, boolean replace)
+
+**请求方式**
+
+工具类调用  
+
+**请求参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+		<th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>simpleTaskConfig</td>
+    <td>True</td>
+		<td>SimpleTaskConfig</td>
+    <td>无</td>
+    <td>任务执行类</td>
+  </tr>
+  <tr>
+    <td>taskName</td>
+    <td>True</td>
+		<td>Class</td>
+    <td>无</td>
+    <td>Cron表达式及相关参数</td>
+  </tr>
+  <tr>
+    <td>data</td>
+    <td>FALSE</td>
+		<td>Map<String, String></td>
+    <td>无</td>
+    <td>任务附加数据，以key－value形式增加，仅支持String，在任务执行时传递给任务执行类</td>
+  </tr>
+  <tr>
+    <td>replace</td>
+    <td>True</td>
+		<td>boolean</td>
+    <td>无</td>
+    <td>是否覆盖，为ture时，自动覆盖，为false时，如果存在会抛出异常</td>
+  </tr>
+</table>
+
+**返回参数说明**
+
+boolean 成功返回true，否则会抛出异常
+
+### 指定任务id新增定时任务 ###
+
+**描述**
+
+添加或覆盖简单类型的定时调度任务
+
+**请求方法**
+
+com.yonyou.iuap.dispatch.client.DispatchRemoteManager.add(SimpleTaskConfig simpleTaskConfig,String taskBeanId,Map<String,String> data, boolean replace)
+
+**请求方式**
+
+工具类调用  
+
+**请求参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+		<th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>simpleTaskConfig</td>
+    <td>True</td>
+		<td>SimpleTaskConfig</td>
+    <td>无</td>
+    <td>任务执行类</td>
+  </tr>
+  <tr>
+    <td>taskBeanId</td>
+    <td>True</td>
+		<td>String</td>
+    <td>无</td>
+    <td>任务执行类BeanId(Spring中配置的BeanID，实现类需要继承com.yonyou.iuap.dispatch.client.ITask接口</td>
+  </tr>
+  <tr>
+    <td>data</td>
+    <td>FALSE</td>
+		<td>Map<String, String></td>
+    <td>无</td>
+    <td>任务附加数据，以key－value形式增加，仅支持String，在任务执行时传递给任务执行类</td>
+  </tr>
+  <tr>
+    <td>replace</td>
+    <td>True</td>
+		<td>boolean</td>
+    <td>无</td>
+    <td>是否覆盖，为ture时，自动覆盖，为false时，如果存在会抛出异常</td>
+  </tr>
+</table>
+
+**返回参数说明**
+
+boolean 成功返回true，否则会抛出异常
+
+
+### 指定执行类新增基于Cron表达式的定时任务 ###
+
+**描述**
+
+添加或覆盖基于Cron表达式的定时调度任务
+
+**请求方法**
+
+com.yonyou.iuap.dispatch.client.DispatchRemoteManager.add(CronTaskConfig cronTaskConfig, Class<? extends ITask> taskName, boolean replace)
+
+**请求方式**
+
+工具类调用  
+
+**请求参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+		<th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>cronTaskConfig</td>
+    <td>True</td>
+		<td>CronTaskConfig</td>
+    <td>无</td>
+    <td>Cron表达式及相关参数</td>
+  </tr>
+  <tr>
+    <td>taskName</td>
+    <td>True</td>
+		<td>Class</td>
+    <td>无</td>
+    <td>任务执行类</td>
+  </tr>
+  <tr>
+    <td>replace</td>
+    <td>True</td>
+		<td>boolean</td>
+    <td>无</td>
+    <td>是否覆盖，为ture时，自动覆盖，为false时，如果存在会抛出异常</td>
+  </tr>
+</table>
+
+**返回参数说明**
+
+boolean 成功返回true，否则会抛出异常
+
+### 指定执行类新增带参数基于Cron表达式的定时任务 ###
+
+**描述**
+
+添加或覆盖基于Cron表达式的定时调度任务
+
+**请求方法**
+
+com.yonyou.iuap.dispatch.client.DispatchRemoteManager.add(CronTaskConfig cronTaskConfig, Class<? extends ITask> taskName, Map<String, String> data, boolean replace)
+
+**请求方式**
+
+工具类调用  
+
+**请求参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+		<th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>cronTaskConfig</td>
+    <td>True</td>
+		<td>CronTaskConfig</td>
+    <td>无</td>
+    <td>Cron表达式及相关参数</td>
+  </tr>
+  <tr>
+    <td>taskName</td>
+    <td>True</td>
+		<td>Class</td>
+    <td>无</td>
+    <td>任务执行类</td>
+  </tr>
+  <tr>
+    <td>data</td>
+    <td>FALSE</td>
+		<td>Map<String, String></td>
+    <td>无</td>
+    <td>任务附加数据，以key－value形式增加，仅支持String，在任务执行时传递给任务执行类</td>
+  </tr>
+  <tr>
+    <td>replace</td>
+    <td>True</td>
+		<td>boolean</td>
+    <td>无</td>
+    <td>是否覆盖，为ture时，自动覆盖，为false时，如果存在会抛出异常</td>
+  </tr>
+</table>
+
+**返回参数说明**
+
+boolean 成功返回true，否则会抛出异常
+
+### 指定任务Beanid新增基于Cron表达式的定时任务 ###
+
+**描述**
+
+添加或覆盖基于Cron表达式的定时调度任务
+
+**请求方法**
+
+com.yonyou.iuap.dispatch.client.DispatchRemoteManager.add(CronTaskConfig cronTaskConfig,String taskBeanId,Map<String,String> data, boolean replace)
+
+**请求方式**
+
+工具类调用  
+
+**请求参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+		<th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>cronTaskConfig</td>
+    <td>True</td>
+		<td>CronTaskConfig</td>
+    <td>无</td>
+    <td>任务执行类</td>
+  </tr>
+  <tr>
+    <td>taskBeanId</td>
+    <td>True</td>
+		<td>String</td>
+    <td>无</td>
+    <td>任务执行类BeanId(Spring中配置的BeanID，实现类需要继承com.yonyou.iuap.dispatch.client.ITask接口</td>
+  </tr>
+  <tr>
+    <td>data</td>
+    <td>FALSE</td>
+		<td>Map<String, String></td>
+    <td>无</td>
+    <td>任务附加数据，以key－value形式增加，仅支持String，在任务执行时传递给任务执行类</td>
+  </tr>
+  <tr>
+    <td>replace</td>
+    <td>True</td>
+		<td>boolean</td>
+    <td>无</td>
+    <td>是否覆盖，为ture时，自动覆盖，为false时，如果存在会抛出异常</td>
+  </tr>
+</table>
+
+**返回参数说明**
+
+boolean 成功返回true，否则会抛出异常
+
+### 暂停任务 ###
+
+**描述**
+
+ 根据任务名称和组名称暂停任务
+
+**请求方法**
+
+com.yonyou.iuap.dispatch.client.DispatchRemoteManager.pauseJob(String jobName, String groupName)
+
+**请求方式**
+
+工具类调用  
+
+**请求参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+		<th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>jobName</td>
+    <td>True</td>
+		<td>String</td>
+    <td>无</td>
+    <td>任务名称</td>
+  </tr>
+  <tr>
+    <td>groupName</td>
+    <td>True</td>
+		<td>String</td>
+    <td>无</td>
+    <td>组名称</td>
+  </tr>
+</table>
+
+**返回参数说明**
+
+暂停成功返回NULL，否则返回具体异常原因
+
+### 恢复任务 ###
+
+**描述**
+
+ 根据任务名称和组名称恢复任务
+
+**请求方法**
+
+com.yonyou.iuap.dispatch.client.DispatchRemoteManager.resumeJob(String jobName, String groupName)
+
+**请求方式**
+
+工具类调用  
+
+**请求参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+		<th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>jobName</td>
+    <td>True</td>
+		<td>String</td>
+    <td>无</td>
+    <td>任务名称</td>
+  </tr>
+  <tr>
+    <td>groupName</td>
+    <td>True</td>
+		<td>String</td>
+    <td>无</td>
+    <td>组名称</td>
+  </tr>
+</table>
+
+**返回参数说明**
+
+暂停成功返回NULL，否则返回具体异常原因
+
+### 删除任务 ###
+
+**描述**
+
+ 根据任务名称和组名称删除任务
+
+**请求方法**
+
+com.yonyou.iuap.dispatch.client.DispatchRemoteManager.deleteJob(String jobName, String groupName)
+
+**请求方式**
+
+工具类调用  
+
+**请求参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+		<th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>jobName</td>
+    <td>True</td>
+		<td>String</td>
+    <td>无</td>
+    <td>任务名称</td>
+  </tr>
+  <tr>
+    <td>groupName</td>
+    <td>True</td>
+		<td>String</td>
+    <td>无</td>
+    <td>组名称</td>
+  </tr>
+</table>
+
+**返回参数说明**
+
+暂停成功返回NULL，否则返回具体异常原因
+
+### 立即执行任务 ###
+
+**描述**
+
+ 根据任务名称和组名称立即执行任务
+
+**请求方法**
+
+com.yonyou.iuap.dispatch.client.DispatchRemoteManager.triggerJob(String jobName, String groupName)
+
+**请求方式**
+
+工具类调用  
+
+**请求参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+    <th>必选</th>
+		<th>类型</th>
+    <th>长度限制</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>jobName</td>
+    <td>True</td>
+		<td>String</td>
+    <td>无</td>
+    <td>任务名称</td>
+  </tr>
+  <tr>
+    <td>groupName</td>
+    <td>True</td>
+		<td>String</td>
+    <td>无</td>
+    <td>组名称</td>
+  </tr>
+</table>
+
+**返回参数说明**
+
+暂停成功返回NULL，否则返回具体异常原因

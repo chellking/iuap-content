@@ -126,7 +126,7 @@ new MessageSend(msgReceivers, msgContent).send();
     htmlContent.append("<h1>我是标题</h1>");
     htmlContent.append("<h3>企业互联网运营支撑平台</h3>");
     htmlContent.append("<div><img src='http://img4.3lian.com/sucai/img6/230/29.jpg'></div>");
-    htmlContent.append("<a href='http://ieop.yyuap.com/'>用友应用支撑平台</a>");
+    htmlContent.append("<a href='http://iuap.yonyou.com/'>用友开放平台</a>");
     MessageContent mailContent = new EmailContent("HTML Mail测试", htmlContent.toString());
 ```
 这样就可以发送HTML格式的邮件。  

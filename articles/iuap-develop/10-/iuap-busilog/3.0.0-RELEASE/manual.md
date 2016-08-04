@@ -76,7 +76,6 @@ iuap-busilog组件提供采用Spring AOP拦截器机制，最终做到将记录�
 
 **2:使用数据库时需要拷贝的文件**
 
-	执行示例工程中src\main\resources\db\busilog.sql数据库脚本
 	拷贝src\main\resources\mybatis目录到busilog-applicationContext.xml同级目录
 	同时增加配置文件中
 	busilog-applicationContext.xml
@@ -91,26 +90,12 @@ maven私服上发布的有示例工程，用户可将示例工程下载下来，
 
 ## 开发步骤 ##
 
-1. 执行数据库脚本  
-如果用户需要将业务日志持久化到数据库中的话：（for mysql） 
+** 1. 执行数据库脚本   **
 
-```
-		drop table if exists busilog_saas;
-		
-		CREATE TABLE busilog_saas( 
-		    id VARCHAR(40) NOT NULL, 
-     		clientip VARCHAR(18),/*IP*/
-     		operuser VARCHAR(40),/*用户*/ 
-	 		logcategory  VARCHAR(40),/*日志分类*/ 
-	 		logcontent  VARCHAR(500),/*日志内容*/ 
-	 		sysid VARCHAR(40),/* 应用id*/
-	 		tenantid VARCHAR(40),/* 租户id*/
-     		logdate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-     		PRIMARY KEY (id)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-```
+依次执行examples项目下sql目录中的dll.sql、index.sql、dml.sql建立数据库并初始化数据。
 
-2. spring集成（配置文件参见组件的示例工程example-iuap-busilog）  
+** 2. spring集成（配置文件参见组件的示例工程example-iuap-busilog）  **
+
 需要添加的配置文件及存放目录示意图：  
 ![img001](img/image001.jpg)
 其中：  
@@ -122,10 +107,15 @@ maven私服上发布的有示例工程，用户可将示例工程下载下来，
 		    <!-- 将需要进行日志记录的业务类注入到Spring中进行管理 -->
 		    <bean id="exampleService" class="com.yonyou.uap.busiog.service.ExampleService"></bean> 
 该文件无须修改，需要修改的配置均放在busilog-systemConfig.properties文件中。文件主要内容包括：    
-     1. 日志拦截器的注入。  
-     2. AOP切入点的定义。
-     3. 一步线程池的配置。
-     4. mybatis数据源配置。
+    
+1). 日志拦截器的注入。  
+     
+2). AOP切入点的定义。
+     
+3). 一步线程池的配置。
+     
+4). mybatis数据源配置。
+     
  - busilog-systemConfig.properties：配置组件相关参数
 
 ```
@@ -169,7 +159,7 @@ maven私服上发布的有示例工程，用户可将示例工程下载下来，
 
  - BusilogMapper.xml：配置数据库与实体的对应关系以及对实体操作的配置文件。无须修改。
 
-3.	为业务方法加上annotation  
+** 3.	为业务方法加上annotation  **
 
 这个别名必须符合Java方法名的命名规则，给业务方法加别名的目的是为了方便业务方法与日志模板之间的映射。  
 ```
