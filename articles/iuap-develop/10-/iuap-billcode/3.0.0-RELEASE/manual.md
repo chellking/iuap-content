@@ -63,9 +63,10 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 ### spring集成 ###
 
-在Spring的配置文件中添加如下配置（或者是将以下内容放在一个单独的配置文件中，在工程启动时加载此文件）：
+** 1. 在Spring的配置文件中添加如下配置（或者是将以下内容放在一个单独的配置文件中，在工程启动时加载此文件）：**
 
-      <?xml version="1.0" encoding="UTF-8"?>
+```
+  	<?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
@@ -143,6 +144,50 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
     <!--    <property name="minEvictableIdleTimeMillis" value="30000" /> -->
     <!--  </bean> -->
     </beans>
+```
+
+** 2. 如果要使用分布式锁的机制，需要将spring配置文件中的zookeeper相关的注释放开，将mySqlRowLock的注释掉。同时配置application.properties（也可以为自己指定的属性文件，只要注入到spring中即可）内容如下：**
+
+```
+
+#配置锁组件连接zookeeper时候使用的连接类型，single(单机)、cluster（集群）
+zklock.connection.type=single
+zklock.url.single=20.12.6.126:2181
+zklock.url.cluster=172.20.12.20:2180,172.20.12.20:2181,172.20.12.20:2182
+
+```
+** 3. web.xml 配置启动监听初始化分布式锁的连接池（使用分布式锁时） **
+
+
+代码实现
+```
+public class CustomServletContextListener implements ServletContextListener {
+
+    public void contextDestroyed(ServletContextEvent sce) {
+    }
+
+	public void contextInitialized(ServletContextEvent event) {
+		WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
+		ContextHolder.setContext(wac);
+		GenericObjectPoolConfig config = (GenericObjectPoolConfig)ContextHolder.getContext().getBean("zkPoolConfig");
+		ZkPool.initPool(config);
+	}
+
+}
+
+```
+web.xml中配置如下，
+
+```
+
+<listener>
+	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	<listener-class>com.yonyou.uap.billcode.listener.CustomServletContextListener</listener-class>
+</listener>
+
+```
+** 注:此处主要为了初始化分布式锁，只要保证应用启动时执行ZkPool.initPool(config)即可**
+
 
 ### 使用API接口完成请求 ###
 
@@ -156,27 +201,28 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 支持以下几种扩展方式：  
 
-**一、自定义编码元素处理器**  
+** 一、自定义编码元素处理器 **  
 1. 复制本jar包中  `'com/yonyou/uap/billcode/BillCodeEngineContext.xml'到任意'类路径''A'`
 2. 实现编码元素处理器接口：  `'com.yonyou.uap.billcode.elemproc.itf.IElemProcessor'`  
 3. 在编码规则引擎上下文配置文件（复制的`'BillCodeEngineContext.xml'`）中`'添加'`或`'替换'`元素处理器
 
-**二、自定义序列号编码元素的序列号生成方式**  
+** 二、自定义序列号编码元素的序列号生成方式 **  
 1.同上  
 2.实现编码元素处理器接口：      `'com.yonyou.uap.billcode.sngenerator.ISNGenerator'`  
 3.在编码规则引擎上下文配置文件（复制的`'BillCodeEngineContext.xml'`）中`'添加'`或`'替换'`序列号生成器
 
-**三、自定义系统时间编码元素的时间获取方式**  
+** 三、自定义系统时间编码元素的时间获取方式 **  
 1.同上  
 2.实现编码元素处理器接口：      `'com.yonyou.uap.billcode.sysdate.ISysDateProvider'`  
 3.在编码规则引擎上下文配置文件（复制的`'BillCodeEngineContext.xml'`）中`'替换'`时间获取方式
 
-**四、自定义唯一性随机编码生成类**（不需要业务对象编号有业务意义时，此类提供唯一性的无业务意义的编码）  
+** 四、自定义唯一性随机编码生成类 ** （不需要业务对象编号有业务意义时，此类提供唯一性的无业务意义的编码）  
 1.同上  
 2.实现编码元素处理器接口：  `'com.yonyou.uap.billcode.randomcode.IRandomCodeGenerator'`  
 3.在编码规则引擎上下文配置文件（复制的`'BillCodeEngineContext.xml'`）中`'替换'`随机编码生成类
 
 注意：自定义编码规则组件的上下文，需要在程序启动时调用`com.yonyou.uap.billcode.BillCodeEngineContext.getInstance('A')`将引擎上下文A载入内存（否则将走默认的的上下文配置` 'com/yonyou/uap/billcode/BillCodeEngineContext.xml'`）
+
 
 ## 编码规则对象注册说明 ##
 ### 编码规则
@@ -212,27 +258,50 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
   <tr>
     <td>codemode</td>
     <td>编码方式</td>
-	<td>前编码或后编码，具体见IBillCodeBaseVO中常量</td>
+		<td>前编码或后编码，具体见IBillCodeBaseVO中常量</td>
   </tr>
   <tr>
     <td>iseditable</td>
     <td>生成的编码是否可以编辑</td>
-	<td>true/false</td>
+		<td>true/false</td>
   </tr>
   <tr>
     <td>isautofill</td>
     <td>编码是否保证连</td>
-	<td>true/false，为true时，系统会重新使用被删除或取消的流水号，否则取消或删除的流水号不会在使用</td>
+		<td>true/false，为true时，系统会重新使用被删除或取消的流水号，否则取消或删除的流水号不会在使用</td>
   </tr>
   <tr>
     <td>isBolGetRandomCode</td>
     <td>是否获取随机码</td>
-	<td>true/false</td>
+		<td>true/false，设置单据号是否以随机数的方式生成还是以编码元素定义的方式生成；两者只能选择一种，后续的编码元素要根据选则设置</td>
   </tr>
   <tr>
     <td>isBolSNAppendZero</td>
     <td>序列号是否补零</td>
-	<td>true/false，不补0，序列号4位，1显示为1，否则，为0001</td>
+		<td>true/false，不补0，序列号4位，1显示为1，否则，为0001，用于流水号生成算法</td>
+  </tr>
+</table>
+
+** 编码方式: ** IBillCodeBaseVO.STYLE_XXX
+
+<table>
+  <tr>
+    <th>常量</th>
+	  <th>常量值</th>
+    <th>描述</th>
+		<th>具体说明</th>
+  </tr>
+  <tr>
+    <td>STYLE_PRE</td>
+    <td>pre</td>
+    <td>前编码</td>
+		<td>即界面新增时获取编码，分两步调用，先预取编码设置到编码字段上，然后单据保存时提交编码，否则回滚编码</td>
+  </tr>
+  <tr>
+    <td>STYLE_AFT</td>
+    <td>after</td>
+    <td>后编码</td>
+		<td>即数据后台保存时获取编码，新增时编码字段为空，在单据保存时，调用获取编码</td>
   </tr>
 </table>
 
@@ -259,19 +328,20 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
   <tr>
     <td>elemtype</td>
     <td>元素类型</td>
-	<td>见常量com.yonyou.uap.billcode.model.IBillCodeElemVO.TYPE_XX</td>
+		<td>见下面说明</td>
   </tr>
   <tr>
     <td>elemvalue</td>
-    <td>元素值</td>
-	<td>不同类型的编码元素意义不同：
-	 <br>0-流水号 			：流水号生成器的类型
-	 <br>1-常量     			：常量值
-	 <br>2-系统时间		：空
-	 <br>3-随机码			：空
-	 <br>4-单据业务时间	：扩展人员决定是否使用
-	 <br>5-单据字符串属性     ：扩展人员决定是否使用
-	 <br>6-单据参照属性	：扩展人员决定是否使用</td>
+	    <td>元素值</td>
+			<td>不同元素类型的编码元素意义不同：具体参考见下面说明
+			<br>TYPE_SN-流水号 			：流水号生成器的类型 具体值为参考下文
+		  <br>TYPE_CONST-常量     			：常量值
+		  <br>TYPE_SYSTIME-系统时间		：空
+		  <br>TYPE_RANDOM-随机码			：空
+		  <br>TYPE_BILLBUSITIMEATTR-单据业务时间	：扩展人员决定是否使用
+		  <br>TYPE_BILLSTRINGATTR-单据字符串属性     ：扩展人员决定是否使用
+		  <br>TYPE_BILLENTITYATTR-单据参照属性	：扩展人员决定是否使用
+		</td>
   </tr>
   <tr>
     <td>elemlenth</td>
@@ -281,32 +351,323 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
   <tr>
     <td>isrefer</td>
     <td>元素流水依据</td>
-	<td>见常量com.yonyou.uap.billcode.model.IBillCodeElemVO.REF_XXX</td>
+		<td>见下面说明</td>
   </tr>
   <tr>
     <td>eorder</td>
     <td>编码元素的排序</td>
-	<td>最终的单据编码按此顺序拼接而成</td>
+		<td>最终的单据编码按此顺序拼接而成</td>
   </tr>
   <tr>
     <td>fillstyle</td>
     <td>补位方式</td>
-	<td>见常量com.yonyou.uap.billcode.model.IBillCodeElemVO.FIllSTYLE_XXX</td>
+		<td>仅“单据字符串属性”，“单据参照属性”时使用，其它元素类型请选择“不补位”具体值见下面说明</td>
   </tr>
   <tr>
     <td>fillsign</td>
     <td>补位符号</td>
-	<td></td>
+		<td>补位方式不为“不补位”时使用，补位时增补的字符，例如补位符号为“@”，字段值为001，长度为5时，补位方式为右补位时，生成元素值为“001@@”</td>
   </tr>
   <tr>
     <td>datedisplayformat</td>
-    <td>日前格式化</td>
-	<td>只有元素是日期类型时才会用到，最终日期的格式</td>
+    <td>日期格式化方式</td>
+	<td>只有元素是日期类型时才会用到，最终日期的格式，具体值见下面说明</td>
   </tr>
 </table>
 
+** 元素类型: ** IBillCodeElemVO.TYPE_XXX
+
+<table>
+  <tr>
+    <th>常量</th>
+	  <th>常量值</th>
+    <th>描述</th>
+		<th>具体说明</th>
+  </tr>
+  <tr>
+    <td>TYPE_SN</td>
+    <td>0</td>
+    <td>流水号</td>
+		<td>系统根据流水号生成策略生成，一般从1开始递增</td>
+  </tr>
+  <tr>
+    <td>TYPE_CONST</td>
+    <td>1</td>
+    <td>常量</td>
+		<td>指定长度的字符，例如“AAA”</td>
+  </tr>
+  <tr>
+    <td>TYPE_SYSTIME</td>
+    <td>2</td>
+    <td>系统时间</td>
+		<td>生成编码时的系统时间，最后生成的编码内容，根据编码元素中指定的日期格式化方式生成，例如指定为“yyyyMMdd”生成的格式为“20160721”</td>
+  </tr>
+  <tr>
+    <td>TYPE_RANDOM</td>
+    <td>3</td>
+    <td>随机码</td>
+		<td>系统根据编码元素长度自动生成的随机的字符串</td>
+  </tr>
+  <tr>
+    <td>TYPE_BILLBUSITIMEATTR</td>
+    <td>4</td>
+    <td>单据业务时间</td>
+		<td>从单据实体上获取单据的时间值，同系统时间根据指定的日期格式化方式生成，需要实现IBillVOFieldValueFetcher接口，具体见接口扩展说明</td>
+  </tr>
+  <tr>
+    <td>TYPE_BILLSTRINGATTR</td>
+    <td>5</td>
+    <td>单据字符串属性</td>
+		<td>单据的属性的值，需要实现IBillVOFieldValueFetcher接口，具体见接口扩展说明</td>
+  </tr>
+  <tr>
+    <td>TYPE_BILLENTITYATTR</td>
+    <td>6</td>
+    <td>单据参照属性</td>
+		<td>单据上的参照属性，返回需要实现IBillVOFieldValueFetcher接口，具体见接口扩展说明</td>
+  </tr>
+</table>
+
+** 流水号生成器的类型: ** IBillCodeElemVO.TYPE_XXSN_GENETATOR_XXX
+
+<table>
+  <tr>
+    <th>常量</th>
+	  <th>常量值</th>
+    <th>描述</th>
+		<th>具体说明</th>
+  </tr>
+  <tr>
+    <td>SN_GENETATOR_PUREDIGITAL</td>
+    <td>0</td>
+    <td>数字</td>
+		<td></td>
+  </tr>
+  <tr>
+    <td>SN_GENETATOR_LETTERDIGITAL</td>
+    <td>1</td>
+    <td>流水号生成规则为首位为字母，后位为数字，亦即流水号首位为26进制，其余位数为10进制</td>
+		<td>对于流水号补位和流水号不补位的情况，假设前台设置的流水号位数为5位:
+	  <br>1.流水号补位：具体流水号如下，第一个流水号 A0000， 第二个流水号 A0001，最后一个流水号 Z9999
+	  <br>2.流水号不补位： 具体流水号如下： 第一个流水号A0， 第二个流水号 A1， 最后一个流水号 Z9999 特别的，假设前台设置的流水号位数为1位:流水号为A-Z。调用时第一个传入的sn转换为long后为0
+		</td>
+  </tr>
+</table>
+
+** 元素流水依据: ** IBillCodeElemVO.REF_XXX
+
+<table>
+  <tr>
+    <th>常量</th>
+	  <th>常量值</th>
+    <th>描述</th>
+		<th>具体说明</th>
+  </tr>
+  <tr>
+    <td>REF_NOT</td>
+    <td>0</td>
+    <td>不作为流水依据</td>
+		<td></td>
+  </tr>
+  <tr>
+    <td>REF_YEAR</td>
+    <td>1</td>
+    <td>时间类型的流水依据---按年流水</td>
+		<td>仅时间类型使用，即“系统时间”或“单据业务时间”</td>
+  </tr>
+  <tr>
+    <td>REF_MON</td>
+    <td>2</td>
+    <td>时间类型的流水依据---按月流水</td>
+		<td>仅时间类型使用，即“系统时间”或“单据业务时间”</td>
+  </tr>
+  <tr>
+    <td>REF_DAY</td>
+    <td>3</td>
+    <td>时间类型的流水依据---按日流水</td>
+		<td>仅时间类型使用，即“系统时间”或“单据业务时间”</td>
+  </tr>
+  <tr>
+    <td>REF_REALVALUE</td>
+    <td>4</td>
+    <td>按实际值流水</td>
+		<td>“单据字符串属性”或“单据参照属性”使用，为对应的单据字段值或参照对应实体的编码实际值进行流水
+			<br>单据字符串属性：IBillVOFieldValueFetcher.getBillStrAttrVal(IBillCodeElemVO elem, Object bill)返回值进行流水
+			<br>单据参照属性：IBillVOFieldValueFetcher.getBillEntityAttrVal(IBillCodeElemVO elem, Object bill)返回值进行流水
+		</td>
+  </tr>
+  <tr>
+    <td>REF_CUTEDVALUE</td>
+    <td>5</td>
+    <td>按设置的长度截取后的值流水</td>
+		<td>同上，但根据上面实际值经截取或补位后的生成的编码段的值，进行流水</td>
+  </tr>
+  <tr>
+    <td>REF_ENTITYKEY</td>
+    <td>6</td>
+    <td>按最终参照的编码实体的主键流水</td>
+		<td>“单据参照属性”使用，根据参照的主键值流水，IBillVOFieldValueFetcher.getBillEntityAttrKey(IBillCodeElemVO elem, Object bill)</td>
+  </tr>
+</table>
+
+** 补位方式: ** IBillCodeElemVO.FIllSTYLE_XXX
+
+<table>
+  <tr>
+    <th>常量</th>
+	  <th>常量值</th>
+    <th>描述</th>
+		<th>具体说明</th>
+  </tr>
+  <tr>
+    <td>FIllSTYLE_NOT</td>
+    <td>0</td>
+    <td>不补位</td>
+		<td></td>
+  </tr>
+  <tr>
+    <td>FIllSTYLE_LEFT</td>
+    <td>1</td>
+    <td>左补位</td>
+		<td></td>
+  </tr>
+  <tr>
+    <td>FIllSTYLE_RIGHT</td>
+    <td>2</td>
+    <td>右补位</td>
+		<td></td>
+  </tr>
+</table>
+
+** 日期格式化方式: ** IBillCodeElemVO.DATEFORMAT_XX
+
+<table>
+  <tr>
+    <th>常量</th>
+	  <th>常量值</th>
+    <th>描述</th>
+		<th>具体说明</th>
+  </tr>
+  <tr>
+    <td>DATEFORMAT_YY</td>
+    <td>yy</td>
+    <td>显示年份：2016/7/21 格式化为16</td>
+		<td></td>
+  </tr>
+  <tr>
+    <td>DATEFORMAT_YYYY</td>
+    <td>yyyy</td>
+    <td>左补位</td>
+    <td>显示年份：2016/7/21 格式化为2016</td>
+  </tr>
+  <tr>
+    <td>DATEFORMAT_YYMM</td>
+    <td>yyMM</td>
+    <td>右补位</td>
+    <td>显示年月：2016/7/21 格式化为1607</td>
+  </tr>
+  <tr>
+    <td>DATEFORMAT_YYYYMM</td>
+    <td>yyyyMM</td>
+    <td>右补位</td>
+    <td>显示年月日：2016/7/21 格式化为201607</td>
+  </tr>
+  <tr>
+    <td>DATEFORMAT_YYMMDD</td>
+    <td>yyMMdd</td>
+    <td>右补位</td>
+    <td>显示年月：2016/7/21 格式化为160721</td>
+  </tr>
+  <tr>
+    <td>DATEFORMAT_YYYYMMDD</td>
+    <td>yyyyMMdd</td>
+    <td>右补位</td>
+    <td>显示年月日：2016/7/21 格式化为20160721</td>
+  </tr>
+</table>
 
 ## API接口 ##
+
+### 公共参数说明
+
+#### BillCodeElemInfo
+
+**描述**  
+
+一般为为空。用于临时指定一些参数，做为附加的编码规则字段使用。
+
+**参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+		<th>类型</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>elemResultValue</td>
+		<td>String</td>
+    <td>编码元素值，补充到生成编码的最后</td>
+  </tr>
+  <tr>
+    <td>elemLength</td>
+		<td>String</td>
+    <td>编码元素值的长度</td>
+  </tr>
+</table>  
+
+#### BillCodeBillVO
+
+**描述**  
+
+在编码元素包含“单据业务时间”、“单据字符串属性”、“单据参照属性”时使用，用于获取业务对象的属性值。
+
+**参数说明**
+
+<table>
+  <tr>
+    <th>参数字段</th>
+		<th>类型</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>billVO</td>
+		<td>Object</td>
+    <td>业务对象，类型为具体业务系统的实体类型，IBillVOFieldValueFetcher接口中使用</td>
+  </tr>
+  <tr>
+    <td>valueFetcher</td>
+		<td>com.yonyou.uap.billcode.model.IBillVOFieldValueFetcher</td>
+    <td>业务对象属性获取接口，接口说明如下</td>
+  </tr>
+</table>  
+
+#### IBillVOFieldValueFetcher接口说明
+
+**描述**  
+
+用于根据业务对象获取相关的业务属性，生成编码使用
+
+**方法**
+
+**1. 获取业务时间：getBillBusiTimeAttrVal(IBillCodeElemVO elem, Object bill)**
+
+返回Date类型，不需要处理格式化问题
+
+**2. 获取单据的String属性值：getBillStrAttrVal(IBillCodeElemVO elem, Object bill)**
+
+返回指定的单据字段的实际值，不需要处理截取或补位
+
+**3. 获取单据参照属性的实际编码值：getBillEntityAttrVal(IBillCodeElemVO elem, Object bill)**
+
+返回指定的单据参照字段中记录的主键对应的业务实体的编码，也可以是其他用来表示该实体的编码值，例如通过对象编码映射指定每一个对象对应的编码值。由业务系统决定实现方案。不需要处理截取或补位
+
+**4. 获取单据参照属性的主键值：getBillEntityAttrKey(IBillCodeElemVO elem, Object bill)**
+
+返回指定的单据参照字段中记录的主键值，不参与编码的生成，仅用于流水依据。
+
+
+
 
 ### 获取编码规则API ###
 

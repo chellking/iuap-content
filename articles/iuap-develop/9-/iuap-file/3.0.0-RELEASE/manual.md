@@ -181,9 +181,6 @@ example测试类
     @WebServlet(asyncSupported = true,name = "Oss",urlPatterns = { "/oss" })
     public class OssDirectServlet extends CallbackServer {
     	
-    	/**
-    	 * 
-    	 */
     	private static final long serialVersionUID = 1L;
     
     	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -306,16 +303,16 @@ example测试类
 oss文件系统能够通过getUrl方法返回文件的url，返回的url有临时和永久两种。该接口如下
 
 
-public static String getUrl(BucketPermission permission,String fileName,int expired) 
+public static String getUrl(String bucketName,String fileName,int expired) 
 
-三个参数为ossbucket的权限，文件名，过期时间。其中permission的值可以为BucketPermission.private、BucketPermission.read、BucketPermission.full。如果需要临时url的话permission值需要为private，并且传入expired值为过期时长。如果需要永久的文件url前提是上传文件bucket需要为read或full权限（不推荐使用），设置bucket权限可以在oss控制台(相关连接：<a href="https://help.aliyun.com/document_detail/31885.html?spm=5176.doc31886.6.101.vSWwVY">建立新的bucket</a>)，选择需要修改权限的bucket，Bucket属性标签有读写权限修改。在geturl时参数传入BucketPermission.read或者BucketPermission.full，expired可以为0。
+三个参数为ossbucket的权限，文件名，过期时间。其中bucketName参数对应了配置文件application.properties中所配置的defaultBucket和defaultBucketRead的bucket名称，如果该bucket名称没有配置则默认该bucket的权限为private。如果需要临时url的话bucketName对应的bucket权限应该为private，并且传入expired值为过期时长。如果需要永久的文件url前提是上传文件bucket需要为read或full权限（不推荐使用），设置bucket权限可以在oss控制台(相关连接：<a href="https://help.aliyun.com/document_detail/31885.html?spm=5176.doc31886.6.101.vSWwVY">建立新的bucket</a>)，选择需要修改权限的bucket，Bucket属性标签有读写权限修改。在geturl获取永久链接时expired可以为0。
 
 **略缩图功能**
 
 首先在oss控制台，选择存储略缩图文件的bucket，在左边的菜单中选择图片处理，选择开通图片处理。
 然后通过下面的接口可以返回略缩图url：
 
-public static String getImgUrl(BucketPermission permission,String fileName,int expired)
+public static String getImgUrl(String bucketName,String fileName,int expired)
 
 略缩图也是分为临时与永久url，方法与上文相同。通过该方法获得url以后附加类似@100h的参数产生略缩图。
 
@@ -519,7 +516,7 @@ fdfs使用略缩图功能时 需要搭建nginx提供文件访问服务
 
 然后通过下面的接口可以返回略缩图url：
 
-public static String getImgUrl(BucketPermission permission,String fileName,int expired)
+public static String getImgUrl(String bucketName,String fileName,int expired)
 
 fileName后面附加类似@100h的参数产生略缩图。
 
