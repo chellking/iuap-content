@@ -41,7 +41,7 @@ iuap-disconf依赖zookeeper，利用zk存储配置文件和配置项信息，利
 配置中心部署结构示意图如下： 
  
 
-<img src="/images/iuap-disconf.png"/>
+<img src="images/iuap-disconf.png"/>
 
 # 使用说明 #
 
@@ -58,11 +58,11 @@ iuap-disconf依赖zookeeper，利用zk存储配置文件和配置项信息，利
 
 **4：访问部署服务器IP/iuap-disconfweb,以管理员身份登录（admin/admin）**
 
-<img src="/images/login.png"/>
+<img src="images/login.png"/>
 
 **5：创建应用、配置文件，选择指定的版本号、运行环境等**
 
-<img src="/images/index.png"/>
+<img src="images/index.png"/>
 
 **6：在业务应用中配和iuap-disconfclient进行开发**
 
