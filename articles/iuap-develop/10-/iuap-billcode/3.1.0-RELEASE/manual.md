@@ -241,6 +241,11 @@ web.xml中配置如下，
 	<td></td>
   </tr>
   <tr>
+    <td>pkbillobj</td>
+    <td>编码对象</td>
+		<td>用于标示使用编码的业务实体</td>
+  </tr>
+  <tr>
     <td>rulecode</td>
     <td>规则编码</td>
 	<td></td>
