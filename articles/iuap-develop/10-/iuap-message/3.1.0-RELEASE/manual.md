@@ -118,9 +118,107 @@ new MessageSend(msgReceivers, msgContent).send();
 - msgReceivers消息接收者。可以是邮件地址，或者是电话号码，或者是APP ID。
 - msgContent消息内容，可以设置消息标题、文本内容。
 
+
+**描述**
+
+短信、邮件和APP通过消息通道发送接口  
+
+**请求方法** 
+ 
+new MessageSend(msgReceivers, msgContent, channel).send();
+
+**请求参数说明**  
+
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  msgReceivers<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  MessageReceiver<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  消息的接收者，有多个的时候，按照英文”,”分割<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  msgContent<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  MessageContent<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  消息内容，包含消息标题，消息内容，发送时间。其中消息标题和发送时间非必填<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  channel<br>  </td>
+    <td><br>  false<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  消息通道编码<br>  </td>
+  </tr>
+</table>
+
+- msgReceivers 消息接收者。可以是邮件地址，或者是电话号码，或者是APP ID。
+- msgContent 消息内容，可以设置消息标题、文本内容。
+- channel 消息通道编码，需要注册消息通道，具体参考消息通道相关文档。
+
+支持消息通道的扩展，扩展步骤如下：
+(1)默认支持sms,messagepush,email，用户可扩展自己的消息通道，若要扩展消息通道，需在配置文件message-senderInfo.property中增加自己的消息通道,仿照下面的示例设置参数
+
+	<msconfig>
+	<!-- 短信服务参数配置  START-->
+	  <sms>
+	    <corpId></corpId><!-- 账户ID -->
+	    <secretKey></secretKey><!-- 接口调用秘钥 -->
+	    <url>http://umessage.yyuap.com/remote/sendSms.do</url><!-- 短信服务器URL -->
+	  </sms>
+	<!-- 短信服务参数配置  END-->
+	
+	<!-- 消息推送参数配置  START-->
+	  <messagepush>
+	    <userName></userName><!-- 账户名(即控制台登录名) -->
+	    <userKey></userKey><!-- 远程接口秘钥 -->
+	    <url>http://upush.yyuap.com/remote/req.do</url><!-- 消息推送服务器URL -->
+	  </messagepush>
+	<!-- 消息推送参数配置  END-->
+	
+	<!-- 邮件服务发送参数配置  START-->
+	  <mail>
+	    <userName></userName><!-- 账户名(发件人邮箱账户的账号) -->
+	    <password></password><!-- 密码(发件人邮箱账户的密码) -->
+	    <hostName>mail.yonyou.com</hostName><!-- 邮件发送服务器SMTP地址URL -->
+	    <port>25</port><!-- 邮件发送服务器SMTP端口号 -->
+	  </mail>
+	<!-- 邮件服务参数配置  END-->
+	
+	</msconfig>
+
+（2）完成消息通道的实现类，实现接口com.yonyou.uap.service.IMessageSendChannelExt，并配置到文件message-channelExt.xml中。
+
+	<MessageSendChannelExt>
+		<mail>com.yonyou.uap.service.impl.mail.EMailSend</mail>
+		<sms>com.yonyou.uap.service.impl.sms.SMSSend</sms>
+		<messagepush>com.yonyou.uap.service.impl.messagepush.MessagePush</messagepush>
+	</MessageSendChannelExt>
+
+(3)消息具体参数配置可以通过以下方式获取：
+	
+	ISenderInfoFetch getEmailSenderInfo = new SenderInfoFetchByXML();
+	Map<String, Object> channelInfoMap = getEmailSenderInfo.getSenderInfo(“消息通道编码”);
+	
+(4)需要在引用组件的war包aplication.xmk中配置以下两个bean
+
+	<bean id="senderInfoFetch" class="com.yonyou.uap.message.service.impl.SenderInfoFetchByDB" />
+	<bean id="senderInfoFetcher" class="com.yonyou.uap.service.SenderInfoFetcher" />
+	    
+
+
 ## 扩展机制 ##
-发送HTML内容的电子邮件：  
-在设置邮件发送内容时，可以直接编写HTML代码，如下：  
+1. 发送HTML内容的电子邮件：  
+在设置邮件发送内容时，可以直接编写HTML代码，如下： 
+ 
  ```     
     StringBuffer htmlContent = new StringBuffer();
     htmlContent.append("<h1>我是标题</h1>");
@@ -129,4 +227,149 @@ new MessageSend(msgReceivers, msgContent).send();
     htmlContent.append("<a href='http://iuap.yonyou.com/'>用友开放平台</a>");
     MessageContent mailContent = new EmailContent("HTML Mail测试", htmlContent.toString());
 ```
+
 这样就可以发送HTML格式的邮件。  
+
+2. 支持邮件抄送，密送，发送附件
+
+	MessageContent mailContent = new EmailContent(title, content, copyReceivers, blindCopyReceivers, attachFiles);
+			
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  title<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  邮件的标题<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  content <br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  消息内容<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  copyReceivers <br>  </td>
+    <td><br>  false<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  抄送人（多个抄送人时，用半角英文逗号分隔）<br>  </td>
+  </tr>
+   <tr>
+    <td><br>  blindCopyReceivers <br>  </td>
+    <td><br>  false<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  密送人（多个密送人时，用半角英文逗号分隔）<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  attachFiles <br>  </td>
+    <td><br>  false<br>  </td>
+    <td><br>  String[]<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  附件的本地路径名 <br>  </td>
+  </tr>
+</table>
+
+	MessageContent mailContent = new EmailContent(title, content, copyReceivers, blindCopyReceivers, attachFileBytesMap)
+
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  title<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  邮件的标题<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  content <br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  消息内容<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  copyReceivers <br>  </td>
+    <td><br>  false<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  抄送人（多个抄送人时，用半角英文逗号分隔）<br>  </td>
+  </tr>
+   <tr>
+    <td><br>  blindCopyReceivers <br>  </td>
+    <td><br>  false<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  密送人（多个密送人时，用半角英文逗号分隔）<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  attachFileBytesMap <br>  </td>
+    <td><br>  false<br>  </td>
+    <td><br>  Map<String, Object><br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  附件支持二进制发送,Map<String,byte[]>表示<文件名,对应的文件二进制流> <br>  </td>
+  </tr>
+</table>
+
+	MessageContent mailContent = new EmailContent(title, content, copyReceivers, blindCopyReceivers, attachFileUrls)
+
+<table>
+  <tr>
+    <th><br>  参数字段<br>  </th>
+    <th><br>  必选<br>  </th>
+    <th><br>  类型<br>  </th>
+    <th><br>  长度<br>  </th>
+    <th><br>  说明<br>  </th>
+  </tr>
+  <tr>
+    <td><br>  title<br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  邮件的标题<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  content <br>  </td>
+    <td><br>  True<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  消息内容<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  copyReceivers <br>  </td>
+    <td><br>  false<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  抄送人（多个抄送人时，用半角英文逗号分隔）<br>  </td>
+  </tr>
+   <tr>
+    <td><br>  blindCopyReceivers <br>  </td>
+    <td><br>  false<br>  </td>
+    <td><br>  String<br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  密送人（多个密送人时，用半角英文逗号分隔）<br>  </td>
+  </tr>
+  <tr>
+    <td><br>  attachFileUrls <br>  </td>
+    <td><br>  false <br>  </td>
+    <td><br>  List<String> <br>  </td>
+    <td><br>  -<br>  </td>
+    <td><br>  通过url地址的形势发送附件 <br>  </td>
+  </tr>
+</table>
+
