@@ -12,10 +12,10 @@
 
 ## 获取开发平台版本
 
-寻找企业应用解决方案提供开发工具，即刻开始体验[iuap开发工具](http://iuap.yonyou.com/webpage/developer/ieop/views/download-center.html)
+寻找企业应用解决方案提供开发工具，即刻开始体验[iuap开发工具](http://www.yyuap.com/page/download/dev_tools/index.html)
 
 ## 文档获取
 
-开发平台对应文档形式为在线文档。对应文档地址 [iuap 开发平台](http://iuap.yonyou.com/webpage/developer/platform3/index.html#/platform3/articles/iuap-develop/1-/readme.html)
+开发平台对应文档形式为在线文档。对应文档地址 [iuap 开发平台](http://www.yyuap.com/page/service/book/platform3/index.html#/platform3/articles/iuap-develop/1-/readme.html)
 
 文档问题需要获取支持和帮助，您可以加入本文档所在的仓库地址：[GitHub](https://github.com/chellking/iuap-content/issues)上，提出相应的问题描述说明。

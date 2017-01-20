@@ -1294,5 +1294,4 @@ index.html添加节点
 
 页面截图
 
-
-<img src="/images/htmljs.jpg"/>
+![image](images/htmljs.jpg)
