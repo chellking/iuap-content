@@ -1,6 +1,7 @@
 # Summary
 
-* [产品简介](articles/iuap-develop/1-/README.md)
+* [产品简介](articles/iuap-develop/1-/)
+   * [概述](articles/iuap-develop/1-/README.md)
 * [获取指南](articles/iuap-develop/2-/README.md)
    * [下载](articles/iuap-develop/2-/mian_fei_shi_yong.md)
    * [商务渠道](articles/iuap-develop/2-/shang_wu_qu_dao.md)
