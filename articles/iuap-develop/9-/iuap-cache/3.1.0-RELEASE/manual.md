@@ -42,7 +42,7 @@ Redis本身支持多种语言的客户端来连接，iuap-cache组件利用java�
 
 Redis中间件通常是配合哨兵进行集群部署，一主多从的部署结构和连接的示意图如下： 
 
-<img src="/images/redis_sentinel.png"/>
+<img src="/articles/iuap-develop/9-/iuap-cache/3.1.0-RELEASE/images/redis_sentinel.png"/>
 
 # 使用说明 #
 
@@ -114,7 +114,7 @@ ${iuap.modules.version}为在pom.xml中定义的引用iuap-cache的版本。
 ## 工程样例 ##
 
 开发工具包DevTool中携带了对分布式缓存组件的示例工程，位置位于DevTool/examples/example_iuap_cache下，在iuap Studio中导入已有的Maven工程，可以将示例工程导入到工作区。示例工程中有较为完整的对iuap-cache组件的使用示例代码。
-<img src="/images/cache_example.jpg"/>
+<img src="/articles/iuap-develop/9-/iuap-cache/3.1.0-RELEASE/images/cache_example.jpg"/>
 
 ## 开发步骤 ##
 
@@ -138,7 +138,7 @@ ${iuap.modules.version}为在pom.xml中定义的引用iuap-cache的版本。
 		</listener>
 
 - 属性文件中配置的redis应该是服务器的redis地址，如果本机调试，可以启动DevTool中默认携带的redis，启动脚本位于DevTool->bin->startRedis.bat,双击运行，效果如下：
-<img style="margin-left:25px;" src="/images/cache_redis.jpg"/>
+<img style="margin-left:25px;" src="/articles/iuap-develop/9-/iuap-cache/3.1.0-RELEASE/images/cache_redis.jpg"/>
 
 - 注入在applicationContext-cache.xml中声明的bean cacheManager，如果应用中只有一个此类型的bean，则可以使用@Autowired注入，如果存在多个，则按照名称注入。业务开发时候，可以为不同的业务模块声明不同的cache区域，注册多份CacheManager和redisPool即可。
 

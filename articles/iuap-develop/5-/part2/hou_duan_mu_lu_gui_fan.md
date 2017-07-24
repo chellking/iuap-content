@@ -71,14 +71,14 @@ iUAP平台组件和示例工程均采用Maven来构建、管理，推荐使用Ma
 </table>
 
 工程统一采用UTF-8编码，配置文件、属性配置文件统一采用UTF-8编码。示例如下：
- ![](../image/image2.png)
+ ![](/articles/iuap-develop/5-/image/image2.png)
 注意事项：
 1：src/main/resources包下的配置文件和属性文件会在maven打包的时候，打入到对应的jar包或者war包中，jar类型的组件中，尽量不要将配置文件打入jar包，请开发人员注意。如果是调试类型的配置文件，如jetty-context.xml、webdefault.xml等，建议放置在src/test/resources下，如下图：
- ![](../image/image3.png)
+ ![](/articles/iuap-develop/5-/image/image3.png)
 2：pom文件中引用依赖时候注意，尽量同group下的组件，以属性的形式定义版本，避免切换版本时候多处修改
- ![](../image/image4.png)
+ ![](/articles/iuap-develop/5-/image/image4.png)
 3：项目上如果遇到三方依赖组件的版本冲突问题，需要手动调整排除的组件，保证最终打包产品的三方组件无重复版本。可以借助工具中的pom文件的依赖关系查看来解决。
- ![](../image/image6.png)
+ ![](/articles/iuap-develop/5-/image/image6.png)
 
 
 ## 1.2 Web目录结构
@@ -271,4 +271,4 @@ iUAP平台组件和示例工程均采用Maven来构建、管理，推荐使用Ma
 （2）本目录是针对已经编译完成的前端资源，前端工程目录不尊从该目录规范
 
 示例结构如下：
- ![](../image/image7.png)
+ ![](/articles/iuap-develop/5-/image/image7.png)

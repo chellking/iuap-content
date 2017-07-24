@@ -218,5 +218,5 @@ iuap search组件提供了索引修改的异步接口。解耦应用数据修改
 
 	在ext.dic中添加"我去",分词效果如下图：
 
-	![](./images/extdic.png)
+	![](/articles/iuap-develop/9-/iuap-search/3.1.0-RELEASE/images/images/extdic.png)
 

@@ -9,34 +9,34 @@
 第一步：在`pom.xml`中引入对iuap-cache组件的依赖。此过程可以配置IUAP_STUDIO的可视化操作来执行，在此不作赘述。  
 
 
-![](../img/image028.jpg)
+![](/articles/iuap-develop/4-/img/image028.jpg)
 
 
 
 `${iuap.modules.version}`是以变量的方式引用版本，请开发者根据需要引用指定的版本。执行Maven的update后，可以在工程的`Maven Dependencies`下看到依赖的组件jar包。  
 
 
-![](../img/image029.jpg)
+![](/articles/iuap-develop/4-/img/image029.jpg)
 
   
 
 第二步：引入分布式缓存所需要的Spring配置文件，加入到`src/main/resources`下。  
 
 
-![](../img/image030.jpg)
+![](/articles/iuap-develop/4-/img/image030.jpg)
 
 
 第三步：在属性文件`application.properties`中，配置缓存需要的连接信息。  
 
 
-![](../img/image031.jpg)
+![](/articles/iuap-develop/4-/img/image031.jpg)
 
   
 
 第四步：确保`web.xml`引入了spring的配置。  
 
 
-![](../img/image032.jpg)
+![](/articles/iuap-develop/4-/img/image032.jpg)
 
 
 第五步：在代码中注入缓存管理类，进行缓存的操作。  

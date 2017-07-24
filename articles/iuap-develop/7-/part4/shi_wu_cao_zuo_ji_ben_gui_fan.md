@@ -81,11 +81,11 @@ iuap 平台持久化使用Spring管理事务，Spring事务的隔离级别如下
 iuap 平台建议使用声明式的方式使用Spring管理事务，声明式事务的配置方式如下：
 1. Spring配置文件中配置事务管理器
 如果是Spring JDBC和Mybatis，配置DataSourceTransactionManager：
- ![](../image/image73.png)
+ ![](/articles/iuap-develop/7-/image/image73.png)
 如果使用Spring Data Jpa，配置JpaTransactionManager：
- ![](../image/image46.png)
+ ![](/articles/iuap-develop/7-/image/image46.png)
 2. 配置事务注解特性
- ![](../image/image47.png)
+ ![](/articles/iuap-develop/7-/image/image47.png)
 <tx:annotation-driven>常用属性如下：
 - mode：指定Spring事务管理框架创建通知bean的方式。可用的值有proxy和aspectj。前者是默认值，表示通知对象是个JDK代理；后者表示Spring AOP会使用AspectJ创建代理。
 - proxy-target-class：如果为true，Spring将创建子类来代理业务类；如果为false，则使用基于接口的代理。（如果使用子类代理，需要在类路径中添加CGLib.jar类库）
@@ -97,11 +97,11 @@ iuap 平台建议使用声明式的方式使用Spring管理事务，声明式事
 如果接口上标注@Transactional注解，会留隐患：因为注解不能被继承，所以业务接口中标注的@Transactional注解不会被业务实现类继承。所以可能会出现不启动事务的情况。所以，Spring建议将@Transaction注解在实现类上。
 在方法上的@Transactional注解会覆盖掉类上的@Transactional。
 简单示例如下：
- ![](../image/image76.png)
+ ![](/articles/iuap-develop/7-/image/image76.png)
 
- ![](../image/image77.png)
+ ![](/articles/iuap-develop/7-/image/image77.png)
 
- ![](../image/image78.png)
+ ![](/articles/iuap-develop/7-/image/image78.png)
 
 @Transactional的具体配置项的含义如下：
 <table>

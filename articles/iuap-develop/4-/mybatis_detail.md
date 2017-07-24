@@ -1739,4 +1739,4 @@ index.html添加节点
 
 页面截图
 
-![image](images/htmljs.jpg)
+![image](/articles/iuap-develop/4-/images/htmljs.jpg)

@@ -82,7 +82,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 **登录流程：**
 
-![](img/image001.jpg)  
+![](/articles/iuap-develop/10-/iuap-authrbac-core/3.1.0-RELEASE/imgimage001.jpg)  
 
 1. 应用程序构建一个用户认证信息的`AuthenticationToken`实例之后，调用`Subject.login(token)`进行登录，其会自动委托给Security Manager。其中 ，`AuthenticationToken`中包含了终端用户的`Principals`和`Credentials`。  
 
@@ -98,7 +98,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 **权限控制流程**
 
-![img004](img/image004.jpg)  
+![img004](/articles/iuap-develop/10-/iuap-authrbac-core/3.1.0-RELEASE/imgimage004.jpg)  
 1. 首先调用Subject.isPermitted\*/hasRole\*接口，其会委托给SecurityManager，而SecurityManager接着会委托给Authorizer；  
 2. Authorizer是真正的授权者，如果我们调用如isPermitted("user:view")，其首先会通过PermissionResolver把字符串转换成相应的Permission实例；  
 3. 在进行授权之前，其会调用相应的Realm获取Subject相应的角色/权限用于匹配传入的角色/权限；  
@@ -399,7 +399,7 @@ Realm：域，框架从Realm获取安全数据（如用户、角色、权限）�
 
 如果配置了多个Realm，可以按照此方式来配置：  
 
-![](img/image002.jpg)  
+![](/articles/iuap-develop/10-/iuap-authrbac-core/3.1.0-RELEASE/imgimage002.jpg)  
 
 此时，securityManager会按照Realms指定的顺序来进行身份认证。  
 
@@ -793,7 +793,7 @@ applicationContext-shiro.xml中添加shiro配置
 		</div>
 		</div>  
 显示效果如图：  
-![](img/image003.jpg)  
+![](/articles/iuap-develop/10-/iuap-authrbac-core/3.1.0-RELEASE/imgimage003.jpg)  
 2. 扩展实体`bean org.apache.shiro.authc.UsernamePasswordToken`为`CaptchaUsernamePasswordToken`，增加一个`private String captcha`字段;  
 3. 扩展异常类`AuthenticationException`为`IncorrectCaptchaException`，增加当验证码输入不正确时的异常信息;  
 4. 扩展过滤`org.apache.shiro.web.filter.authc.FormAuthenticationFilter`,增加验证码校验的功能`CaptchaFormAuthenticationFilter`;  

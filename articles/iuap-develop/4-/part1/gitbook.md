@@ -6,6 +6,6 @@
 
 工具开发调试默认使用的是postgresql，开发者也可以选择本机的mysql，执行DB\data下对应的数据库脚本即可初始化数据库。
 
-![数据脚本](../img/image104.jpg)
+![数据脚本](/articles/iuap-develop/4-/img/image104.jpg)
 
 

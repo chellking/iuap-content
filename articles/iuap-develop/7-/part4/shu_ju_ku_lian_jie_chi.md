@@ -153,7 +153,7 @@ Druid数据库连接池Spring配置文件：
 
 ## 数据库连接池使用
 DataSource配置好之后，Spring Data JPA方式、Mybatis、JDBC方式的连接自动从连接池中获取，业务开发时候不需要关心，直接调用即可。
- ![](../image/image85.png)
+ ![](/articles/iuap-develop/7-/image/image85.png)
 
 如果使用的是Druid连接池，本身可提供监控界面，需要在web.xml中进行配置，如下：
 
@@ -181,7 +181,7 @@ DataSource配置好之后，Spring Data JPA方式、Mybatis、JDBC方式的连�
 
 监控界面中提供大量的信息，可以方便的查看慢sql等信息，帮助开发人员进行性能分析，界面如下：
  
-![](../image/image87.png) 
+![](/articles/iuap-develop/7-/image/image87.png) 
 
 ## 多种数据源的适配
 
@@ -189,7 +189,7 @@ DataSource配置好之后，Spring Data JPA方式、Mybatis、JDBC方式的连�
 
 使用Spring Data JPA方式，除了在注解上使用的本地sql方式外，会适配多种数据库，不需要做太多修改，需要业务开发时候，使用标准的JPQL语法即可。在配置文件中，指定方言的配置为：
 
- ![](../image/image88.png)
+ ![](/articles/iuap-develop/7-/image/image88.png)
 
 iuap平台提供的方言控制类已经提供了大多数常用数据库的配置，如果需要对特殊数据库进行配置，需要对应的扩展。
 
@@ -197,7 +197,7 @@ iuap平台提供的方言控制类已经提供了大多数常用数据库的配�
 
 Mybatis对应的映射文件编写时候使用的是针对某种数据库的语法，如果需要兼容多种数据库，需要在对应的配置文件的目录编写针对性的配置文件，mapper映射文件的名称保持相同即可，可以在制定mapper映射文件的时候，以数据库类型的文件夹名称区分，例如将mysql对应的mapper映射文件放置在mybatis/mysql，目录下，修改指定的位置即可。
  
- ![](../image/image89.png)
+ ![](/articles/iuap-develop/7-/image/image89.png)
 
 ### UAP JDBC的适配 ###
 1. 数据源配置如下：

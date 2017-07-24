@@ -34,7 +34,7 @@ iuap-licenseclient组件使用用java语言通过HttpClient方式进行连接，
 
 iuap-licenseserver支持1到N台的水平扩展部署, 示意图如下： 
 
-<img src="./images/licenseserver_ha.jpg"/>
+<img src="/articles/iuap-develop/9-/iuap-licenseserver/3.1.0-RELEASE/images/licenseserver_ha.jpg"/>
 
 # 部署说明 #
 
@@ -171,28 +171,28 @@ b)	选择几条License客户端, 点击注销按钮可以对客户端取消授�
 ## 相关页面
 1.LicenseServer 主页面
 
-<img src="./images/ui_main.png"/>
+<img src="/articles/iuap-develop/9-/iuap-licenseserver/3.1.0-RELEASE/images/ui_main.png"/>
  
 2.生成硬件锁(从主界面点击”生成硬件锁” 按钮进入)
 
-<img src="./images/ui_genhardkey.png"/>
+<img src="/articles/iuap-develop/9-/iuap-licenseserver/3.1.0-RELEASE/images/ui_genhardkey.png"/>
 
 3.导入授权(从主界面点击”导入授权”按钮进入)
 
-<img src="./images/ui_import_license.png"/>
+<img src="/articles/iuap-develop/9-/iuap-licenseserver/3.1.0-RELEASE/images/ui_import_license.png"/>
 
 4.导入授权结果成功页面
 
-<img src="./images/ui_import_license_success.png"/>
+<img src="/articles/iuap-develop/9-/iuap-licenseserver/3.1.0-RELEASE/images/ui_import_license_success.png"/>
 
 5.License文件
- <img src="./images/ui_licensefile.png"/>
+ <img src="/articles/iuap-develop/9-/iuap-licenseserver/3.1.0-RELEASE/images/ui_licensefile.png"/>
 
 6.License管理
- <img src="./images/ui_licensemgr.png"/>
+ <img src="/articles/iuap-develop/9-/iuap-licenseserver/3.1.0-RELEASE/images/ui_licensemgr.png"/>
 
 7.License客户端
- <img src="./images/ui_licenseclient.png"/>
+ <img src="/articles/iuap-develop/9-/iuap-licenseserver/3.1.0-RELEASE/images/ui_licenseclient.png"/>
 
 
 #### 其他
@@ -235,7 +235,7 @@ ${iuap.modules.version}为在pom.xml中定义的引用iuap-licenseclient的版�
 ## 工程样例 ##
 
 开发工具包DevTool中携带了对LicenseClient组件的示例工程，位置位于DevTool/examples/example\_iuap\_licenseserver下，在IUAP_STUDIO中导入已有的Maven工程，可以将示例工程导入到工作区。示例工程中有较为完整的对iuap-client组件的使用示例代码。
-<img src="./images/prj-snapshot.png"/>
+<img src="/articles/iuap-develop/9-/iuap-licenseserver/3.1.0-RELEASE/images/prj-snapshot.png"/>
 
 ## 开发步骤 ##
 
