@@ -38,7 +38,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 ## 功能结构 ##
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagesservice.jpg)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/service.jpg)
 
 ## 功能说明 ##
 
@@ -111,7 +111,7 @@ dispatch_dbinfo.properties如下：
 
 界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagestasklist.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/tasklist.png)
 
 操作说明：可以新增分组、新增任务、查看日志、对任务进行批量的启用停用。
 
@@ -123,7 +123,7 @@ dispatch_dbinfo.properties如下：
 
 界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagesaddgroup.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/addgroup.png)
 
 操作说明：在主界面上点击界面左上角新建分组按钮。弹出界面，填写后保存。
 
@@ -134,7 +134,7 @@ dispatch_dbinfo.properties如下：
 
 界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagesaddtask.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/addtask.png)
 
 操作说明：在主界面上点击界面左上角新建任务按钮。弹出任务编辑界面，填写后保存。
 
@@ -150,7 +150,7 @@ dispatch_dbinfo.properties如下：
 
 定时规则界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagestimerule.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/timerule.png)
 
 界面说明如下：
 - 支持指定任务开始结束时间
@@ -161,7 +161,7 @@ dispatch_dbinfo.properties如下：
 
 界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagestaskdetail.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/taskdetail.png)
 
 操作说明：点击主界面列表的数据行右侧查看任务详情图标。弹出任务详情界面。
 
@@ -176,7 +176,7 @@ dispatch_dbinfo.properties如下：
 
 界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagesedittask.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/edittask.png)
 
 操作说明：在主界面列表的数据行右侧点击编辑任务图标。弹出任务编辑界面，填写后保存。
 
@@ -199,7 +199,7 @@ dispatch_dbinfo.properties如下：
 
 界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagesenabletask.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/enabletask.png)
 
 操作说明：鼠标选择已停用的任务时，列表行显示启用按钮。点击按钮启用该任务。
 
@@ -207,7 +207,7 @@ dispatch_dbinfo.properties如下：
 
 界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagesdisabletask.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/disabletask.png)
 
 操作说明：鼠标选择正在运行中的任务时，列表行显示停用按钮。点击按钮停用该任务。
 
@@ -215,7 +215,7 @@ dispatch_dbinfo.properties如下：
 
 界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagesmultiop.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/multiop.png)
 
 操作说明：点击多选按钮时，会滑出启用、停用、删除按钮。列表界面切换为多选状态，选择多个任务后，点击按钮进行操作。点击多选回到原有状态。
 
@@ -223,7 +223,7 @@ dispatch_dbinfo.properties如下：
 
 界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imagesviewlog.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/viewlog.png)
 
 操作说明：
 - 点击主界面左上角的“日志”按钮，显示全部任务日志
@@ -231,7 +231,7 @@ dispatch_dbinfo.properties如下：
 - 在日志界面的左上角可以选择要查询的任务，选择后，根据指定的任务查询并显示日志信息详见下图。
 
 过滤任务界面：
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imageslogfilter.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/logfilter.png)
 
 操作说明：
 - 选择任务分组显示分组下的任务
@@ -241,7 +241,7 @@ dispatch_dbinfo.properties如下：
 
 界面如下图所示：
 
-![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/imageslogdetail.png)
+![](/articles/iuap-develop/10-/iuap-dispatch-service/3.1.0-RELEASE/images/logdetail.png)
 
 操作说明：点击任务日志列表界面的数据行右侧的“查看原因”按钮，显示日志详情。
 
