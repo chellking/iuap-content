@@ -84,7 +84,7 @@ iuap-busilog组件提供采用Spring AOP拦截器机制，最终做到将记录�
 
 ## 工程样例 ##
 
-![img001](/articles/iuap-develop/10-/iuap-busilog/3.1.0-RELEASE/imgimage001.jpg)
+![img001](/articles/iuap-develop/10-/iuap-busilog/3.1.0-RELEASE/img/image001.jpg)
 
 maven私服上发布的有示例工程，用户可将示例工程下载下来，导入到工作区。示例工程中有较为完整的对iuap-busilog组件的使用示例代码。
 
@@ -97,7 +97,7 @@ maven私服上发布的有示例工程，用户可将示例工程下载下来，
 ** 2. spring集成（配置文件参见组件的示例工程example-iuap-busilog）  **
 
 需要添加的配置文件及存放目录示意图：  
-![img001](/articles/iuap-develop/10-/iuap-busilog/3.1.0-RELEASE/imgimage001.jpg)
+![img001](/articles/iuap-develop/10-/iuap-busilog/3.1.0-RELEASE/img/image001.jpg)
 其中：  
  - BusinessLogConfig.groovy：日志输出模板，配置及意义，见**扩展机制**  
  - busilog-applicationContext.xml： 
