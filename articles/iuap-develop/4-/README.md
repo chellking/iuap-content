@@ -11,12 +11,12 @@
 
 按照此文档开发出的简单增改删查示例的效果如下：
      
-![](image/image2.png)
+![](/articles/iuap-develop/4-/image/image2.png)
 
 修改界面：
 
-![](image/imageedit.jpg)
+![](/articles/iuap-develop/4-/image/imageedit.jpg)
 
 查看界面：
 
-![](image/imageview.jpg)
+![](/articles/iuap-develop/4-/image/imageview.jpg)

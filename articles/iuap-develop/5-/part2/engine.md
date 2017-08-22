@@ -116,7 +116,7 @@ pathEquals:可选字段。代表文件生成的位置等同于其他某个模版
 
 一个完整的模版目录结构如下图所示：
 
-![image](images/sshot-1.png)
+![image](/articles/iuap-develop/5-/part2/images/sshot-1.png)
 
 #### 3.2 模版页语法
 Velocity是一个基于java的模板引擎（template engine）。它允许任何人仅仅简单的使用模板语言（template language）来引用由java代码定义的对象。 
@@ -164,14 +164,14 @@ Velocity是一个基于java的模板引擎（template engine）。它允许任�
 ### 4. 快速代码生成向导
 模式化引擎的前台展示就是快速代码生成向导了。 在studio中右键点击iuap工程， 选择iuap Tools->快速代码生成菜单项即可进入向导。完成向导即可完成模式化过程。
 
-![image](images/sshot-3.png)
+![image](/articles/iuap-develop/5-/part2/images/sshot-3.png)
 #### 4.1 数据来源配置页
 模式化过程首选选择数据来源：元数据和数据库两种。官方内置模版提供了6套模版，其中4套元数据模版和2套数据库模版。 因为数据库来源本身的限制，无法描述比较复杂的表之间的关系，所以内置模版只提供了单表的2套模版。如果选择元数据来源，可以使用单表和主子表模版两种4套模版。 
-![image](images/sshot-2.png)
+![image](/articles/iuap-develop/5-/part2/images/sshot-2.png)
 ##### 4.1.1 元数据选择页
 在数据来源中选择元数据导入，点击下一步进入元数据选择页。 如下所示：
 
-![image](images/sshot-4.png)
+![image](/articles/iuap-develop/5-/part2/images/sshot-4.png)
 左侧为当前iuap工程的元数据列表。右侧为元数据属性选择列表。 点击左侧的元数据bmf文件名称， 右侧默认全选此bmf元数据文件描述的所有实体属性。若点击左侧的bmf文件的子实体，则右侧显示实体里的属性列表，由用户自主勾选所需属性。 
 
 要注意的是： 
@@ -183,7 +183,7 @@ Velocity是一个基于java的模板引擎（template engine）。它允许任�
 ##### 4.1.2 数据表选择页
 在数据来源中选择从数据库导入，点击下一步进入数据表选择页。 如下所示：
 
-![image](images/sshot-5.png)
+![image](/articles/iuap-develop/5-/part2/images/sshot-5.png)
 左侧为当前工程关联数据库的数据表列表（数据库信息在数据库连接配置中设置)。右侧为数据表的字段选择列表，由用户自由勾选所需要的字段。
 
 要注意的是：
@@ -194,21 +194,21 @@ Velocity是一个基于java的模板引擎（template engine）。它允许任�
 #### 4.2 模版信息配置页
 在属性选择页勾选需要的数据属性后，点击下一步，进入模版信息配置页，如下所示：
 
-![image](images/sshot-6.png)
+![image](/articles/iuap-develop/5-/part2/images/sshot-6.png)
 其中top区域为模版选择区，下面有三个页签页，分别为通用配置区，前台显示配置区和自定义属性配置区。
 ##### 4.2.1 模版选择
 引擎会加载内置和用户自定义默认位置的模版显示在模版选择下拉框中。 下拉框中的内容会跟随数据来源类型进行动态筛选。
 
-![image](images/sshot-7.png)
+![image](/articles/iuap-develop/5-/part2/images/sshot-7.png)
 
 举例说明，如果选择了元数据导入，并在上一步的属性选择页选择了主子表元数据，则下拉框中只会显示模版配置文件中type为mastertable的模版。若选择数据库导入，则显示type为db的模版，若选择了单表元数据，则显示type为metadata的模版。
 ##### 4.2.2 模版通用配置
 通用配置页会根据模版配置文件description.xml中的template节点动态渲染。若template节点的resourceType属性为class，则配置页中显示配置java类的包名(package)和名称(className),如果resourceType为resource，则配置页中显示配置资源文件的生成位置和文件名。
-![image](images/sshot-8.png)
+![image](/articles/iuap-develop/5-/part2/images/sshot-8.png)
 ##### 4.2.3 前台显示配置
 点击前台显示配置页签， 进入前台控件配置页，如图所示：
 
-![image](images/sshot-9.png)
+![image](/articles/iuap-develop/5-/part2/images/sshot-9.png)
 
 页面中列表列出了上一步所勾选的所有属性。列表header字段有属性名,属性类型，显示名，是否显示，表单控件，控件属性，是否查询字段，主子表这几项。
 
@@ -222,7 +222,7 @@ Velocity是一个基于java的模板引擎（template engine）。它允许任�
 > 2. 非元数据参照字段不能自行选择为参照框。元数据参照字段需要在控件属性项中配置参照元数据实体的显示字段（属性名）。例如参照为org组织参照，则需要在控件属性项中填写显示属性为orgname
 
 ##### 4.2.4 自定义属性配置
-![image](images/sshot-10.png)
+![image](/articles/iuap-develop/5-/part2/images/sshot-10.png)
 用户可在自定义属性页中，自定义键值对，在模版页内容中通过引擎提供的方法根据key值获取value。自定义属性使用方法在下一章具体介绍。
 
 ### 5. 引擎提供可用对象

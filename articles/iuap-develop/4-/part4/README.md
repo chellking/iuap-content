@@ -9,4 +9,4 @@
 iUAP_STUDIO会提供根据数据库表或者元数据生成vo类以及数据库操作类的向导，开发者可以按照iUAP_STUODIO的具体的帮助手册中的指导生成后端代码。  
 
 多层事例代码结构如下图：
-![](../img/image020.jpg)
+![](/articles/iuap-develop/4-/img/image020.jpg)

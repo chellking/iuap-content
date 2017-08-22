@@ -6,46 +6,46 @@
 
 1）切换到iuap开发视图，工程上右键选择新建下的新建数据模型
 
-![](image/image29.png)
+![](/articles/iuap-develop/4-/image/image29.png)
 
 2）输入文件名为product.model，点击下一步
 
-![](image/image30.png)
+![](/articles/iuap-develop/4-/image/image30.png)
 
 3）选择实体类为Product，点击下一步
 
-![](image/image31.png)
+![](/articles/iuap-develop/4-/image/image31.png)
 
 4）使用默认的UTF-8编码，点击完成
 
-![](image/image32.png)
+![](/articles/iuap-develop/4-/image/image32.png)
 
 5）工具生成数据模型文件，如下图
 
-![](image/image33.png)
+![](/articles/iuap-develop/4-/image/image33.png)
 
 ## 新建iuap页面
 
 1）在webapp的pages下右键新建iuap页面，点击下一步
 
-![](image/image34.png)
-![](image/image35.png)
+![](/articles/iuap-develop/4-/image/image34.png)
+![](/articles/iuap-develop/4-/image/image35.png)
  
 也可以切换到iuap开发视图，在webapp下的pages目录右键，选择新建下的iuap页面
 
-![](image/image36.png)
+![](/articles/iuap-develop/4-/image/image36.png)
 
 2）输入页面目录名称为product，勾选使用数据模型，点击下一步
 
-![](image/image37.png)
+![](/articles/iuap-develop/4-/image/image37.png)
 
 3）选择数据模型为Product，勾选右下角的选择，点击完成
 
-![](image/image38.png)
+![](/articles/iuap-develop/4-/image/image38.png)
 
 4）工具为用户生成功能模块的js文件和html片段，所在位置如下图
 
-![](image/image39.png)
+![](/articles/iuap-develop/4-/image/image39.png)
 
 ## js文件
 
@@ -135,7 +135,7 @@ delRow: function() {
 ### 拖拽基本元素
 
 打开生成的html页面，选择左侧的控件元素并拖拽到代码中。下图拖拽了一个基本的按钮
-![](image/image52.png)
+![](/articles/iuap-develop/4-/image/image52.png)
 
 简单的拖拽就可以实现一个基本的dom元素，用户还可以增加一些样式，丰富动态效果。具体的控件样式参考[neoui](http://design.yyuap.com/dist/pages/neoui/index.html)文档说明。
 ### 调整拖拽后的代码

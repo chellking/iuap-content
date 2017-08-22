@@ -34,7 +34,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 ## 功能结构 ##
 
-![](images/oauth.jpg)
+![](/articles/iuap-develop/10-/iuap-sso/3.1.0-RELEASE/imagesoauth.jpg)
 
 **基本过程**
 

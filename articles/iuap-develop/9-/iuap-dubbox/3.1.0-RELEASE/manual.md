@@ -91,7 +91,7 @@ ${iuap.modules.version}是在pom.xml中定义的引用组件的版本。Zookeepe
 - 注册中心  
 
     服务注册与发现的注册中心，我们使用zookeeper作为示例注册中心。
-<img src="/images/dubbox.png"/>
+<img src="/articles/iuap-develop/9-/iuap-dubbox/3.1.0-RELEASE/images/dubbox.png"/>
 
 iuap-dubbox在原有dubbo服务的基础上，以Filter的方式进行扩展，增加上下文业务信息和日志信息的传递。
 

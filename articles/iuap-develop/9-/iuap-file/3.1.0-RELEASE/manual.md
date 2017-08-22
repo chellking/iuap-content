@@ -34,7 +34,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 ## 功能结构 ##
 
 
-<img src="/images/file_structure.jpg"/>
+<img src="/articles/iuap-develop/9-/iuap-file/3.1.0-RELEASE/images/file_structure.jpg"/>
 
 组件封装了三种文件系统，并暴露出了常用的文件操作接口，用户通过这些接口，去操作组件所管理的对应文件系统。
 
@@ -610,14 +610,14 @@ fdfs权限模块是用来解决fdfs文件的权限验证问题的nginx模块，�
 
 如下图所示通过一个主nginx管理fdfs文件系统，在主nginx上部署fdfs权限模块就可以对fdfs文件的访问作权限控制了，再鉴权的同时也不会影响文件缓存。用户请求发给主nginx，由主nginx的fdfs权限模块判断该请求是否具有权限，如果有权限则发给fdfs tracker处理，tracker再从storage处取得图片。
 
-<img src="/images/fdfs-auth1.jpg"/>
+<img src="/articles/iuap-develop/9-/iuap-file/3.1.0-RELEASE/images/fdfs-auth1.jpg"/>
 
 
 
 
 请求具体流程，其中文件鉴权服务器可以为webapp的controller或者servlet（可以参见示例工程example_iuap_file的FdfsAuthController类）。
 
-<img src="/images/fdfs-auth2.jpg"/>
+<img src="/articles/iuap-develop/9-/iuap-file/3.1.0-RELEASE/images/fdfs-auth2.jpg"/>
 
 
 3.安装
@@ -713,7 +713,7 @@ fdfs权限模块配置文件/etc/fdfs/fdfs_auth.conf，该文件决定了鉴权�
 
 可以通过部署多台鉴权服务器的方式，来提高系统性能
 
-<img src="/images/fdfs-auth3.jpg"/>
+<img src="/articles/iuap-develop/9-/iuap-file/3.1.0-RELEASE/images/fdfs-auth3.jpg"/>
 
 
 

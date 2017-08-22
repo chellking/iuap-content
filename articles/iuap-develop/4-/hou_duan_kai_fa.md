@@ -23,23 +23,23 @@ CREATE TABLE
 
 1）右键工程，选择iuap tools下的快速代码生成
 
-![](image/image17.png)
+![](/articles/iuap-develop/4-/image/image17.png)
 
 2）选择从数据库导入，点击下一步按钮
 
-![](image/image18.png)
+![](/articles/iuap-develop/4-/image/image18.png)
 
 3）选择数据表，选中需要生成代码的列，调整不能识别的字段
 
-![](image/image19.png)
+![](/articles/iuap-develop/4-/image/image19.png)
 
 4）点击下一步，选择代码要生成的包名和类名
 
-![](image/image20.png)
+![](/articles/iuap-develop/4-/image/image20.png)
 
 5）点击完成，生成对应的代码如下
 
-![](image/image21.png)
+![](/articles/iuap-develop/4-/image/image21.png)
 
 6）在productid上添加主键的注解如下
 
@@ -64,9 +64,9 @@ import com.yonyou.iuap.persistence.jdbc.framework.annotation.Stragegy;
 
 1）在repository包下新建数据库操作类ProductDao并添加@Repository注解
 
-![](image/image23.png)
+![](/articles/iuap-develop/4-/image/image23.png)
 
-![](image/image24.png)
+![](/articles/iuap-develop/4-/image/image24.png)
 
 ```
 @Repository
@@ -84,7 +84,7 @@ private BaseDAO dao;
 
 3）编写增改删查需要的几个方法，完整代码如下
 
-![](image/image25.png)
+![](/articles/iuap-develop/4-/image/image25.png)
 
 ``` 
 package com.yonyou.iuap.example.repository;
@@ -247,7 +247,7 @@ public class ProductService {
 
 ```
 
-![](image/image27.png)
+![](/articles/iuap-develop/4-/image/image27.png)
 
 ## 编写Controller类
 
@@ -279,7 +279,7 @@ private ProductService productService;
 
 4）参考示例，编写分页查询、详情、保存、删除等方法，完成代码如下 
 
-![](image/image28.png)
+![](/articles/iuap-develop/4-/image/image28.png)
 
 ```
 package com.yonyou.iuap.example.web;

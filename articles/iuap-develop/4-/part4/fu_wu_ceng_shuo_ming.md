@@ -4,5 +4,5 @@
 示例采用的是平台建议的Spring的方式利用注解控制事务。示例如下：  
 
 
-![](../img/image024.jpg)
+![](/articles/iuap-develop/4-/img/image024.jpg)
  

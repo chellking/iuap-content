@@ -4,7 +4,7 @@
 
 ## 功能架构
 
-![iuap 功能架构图](../image/gong_neng_jia_gou.png)
+![iuap 功能架构图](/articles/iuap-develop/7-/image/gong_neng_jia_gou.png)
 
 iuap 平台为应用提供以下关键组件，应用可以按需选择，灵活组装。
 
@@ -25,4 +25,4 @@ iuap 系统部署架构遵循互联网架构设计原则：
 5. 尽可能的异步与缓存：考虑服务间的松耦合设计，利用缓存提高性能，事务的最终一致性等。
 
 以下是典型的 iuap 系统部署架构方案，供参考。
-![iuap 部署架构图](../image/image1.png)
+![iuap 部署架构图](/articles/iuap-develop/7-/image/image1.png)

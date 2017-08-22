@@ -3,7 +3,7 @@
 创建完成工程后，目录结构和示例工程结构类似：  
 
 
-![](../img/image012.jpg)
+![](/articles/iuap-develop/4-/img/image012.jpg)
 
 
 工程的pom文件中已经修改成用户的指定名称： 

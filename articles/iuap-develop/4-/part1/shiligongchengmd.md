@@ -2,7 +2,7 @@
 
 运行开发工具盘根目录下的startDevTool.bat，打开iUAP_STUDIO，环境默认携带一个示例工程，示例工程结构如下：
 
-![开发工程示例](../img/image002.jpg)
+![开发工程示例](/articles/iuap-develop/4-/img/image002.jpg)
  
 示例工程中，包含一个最简单的增删改查的示例功能以及前后端代码，开发人员可以参考此功能，熟悉开发方式。
 

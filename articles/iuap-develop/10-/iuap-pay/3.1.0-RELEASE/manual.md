@@ -45,7 +45,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 ### 支付宝支付的数据交互流程 ###
 
 
-![img001](img/image001.gif)
+![img001](/articles/iuap-develop/10-/iuap-pay/3.1.0-RELEASE/imgimage001.gif)
 
 1. 构造请求数据  
 商户根据【[支付宝提供的接口规则](https://doc.open.alipay.com/doc2/detail.htm?spm=0.0.0.0.ZyTzkF&treeId=62&articleId=103740&docType=1)】传入数据，程序根据传入的数据进行数据签名加密等操作，构造出符合支付宝接口规则的数据。
@@ -738,8 +738,8 @@ bgUrl=&notifyUrl=&businessId=&platIdtfy=&merchantId=&orderId=&orderDate=&bankTyp
 
 ** 1. 将配置文件和相应JSP文件放到指定目录  **
 
-![img002](img/image002.jpg)  
-![img003](img/image003.jpg)  
+![img002](/articles/iuap-develop/10-/iuap-pay/3.1.0-RELEASE/imgimage002.jpg)  
+![img003](/articles/iuap-develop/10-/iuap-pay/3.1.0-RELEASE/imgimage003.jpg)  
 配置文件说明：  
 IEOPPayConfig.properties：支付组件的配置信息，基本不用修改  
 ReceiverAccountInfo.properties：收款方账户信息，需要将组件支持的支付渠道用户信息填充  

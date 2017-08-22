@@ -5,11 +5,11 @@
 
 # 安装向导
 
-1.安装盘下载地址请看“[下载页面](#/platform3/articles/iuap-develop/2-/mian_fei_shi_yong.html)”
- 
-2.将下载下来的安装盘解压(建议解压到D盘根目录).
 
-3.启动DevTool
+ 
+1.将下载下来的安装盘解压(建议解压到D盘根目录).
+
+2.启动DevTool
 
 ```
     1.首次运行，需要执行\DevTool\initDevTool.bat

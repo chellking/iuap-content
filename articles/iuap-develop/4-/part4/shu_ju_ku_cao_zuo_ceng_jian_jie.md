@@ -4,7 +4,7 @@
 
 
 
-![](../img/image023.jpg)
+![](/articles/iuap-develop/4-/img/image023.jpg)
 
 
 开发者也可以采用JPA或者Mybatis的方式替代此层的操作。

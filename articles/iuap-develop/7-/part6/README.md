@@ -16,18 +16,18 @@ iuap 基础技术组件主要包括认证组件、缓存组件、持久化组件
 下文以iuap-cache组件的集成为示例，介绍一下组件的基本集成过程，更加详细的组件使用方式，请参考第八节的基础技术组件和第九节的应用支撑组件部分。
 
 iuap平台的技术组件和示例工程统一采用maven工程的方式构建，首先需要在自身的工程中，引入对组件的依赖，如下图：
- ![](../image/image96.png)
+ ![](/articles/iuap-develop/7-/image/image96.png)
 在web.xml中引入组件对应的spring的配置文件，如下：
- ![](../image/image97.png)
+ ![](/articles/iuap-develop/7-/image/image97.png)
 在Spring的配置文件中，会以变量的方式引入properties文件中的值，所以，需要在Spring的主文件中定义对属性文件的引入：
- ![](../image/image98.png)
+ ![](/articles/iuap-develop/7-/image/image98.png)
 	在spring的配置文件中，声明bean，按照组件的示例配置适当调整：
- ![](../image/image99.png)
+ ![](/articles/iuap-develop/7-/image/image99.png)
     在属性文件中，定义需要引用的变量和值：
- ![](../image/image100.png)
+ ![](/articles/iuap-develop/7-/image/image100.png)
 注意事项：部分组件中会使用java代码从属性文件中利用iuap-util组件中的PropertyUtil类获取键值，默认会从classpath下的application.properties文件读取，如果用户需要修改默认属性文件的位置和名称，需要利用环境变量或者系统属性的方式传入，或者定义容器启动时的监听器，在监听中调用静态方法，指定属性文件的地址和名称，如下：
- ![](../image/image101.png)
+ ![](/articles/iuap-develop/7-/image/image101.png)
 	
 在业务代码中利用spring的注入，调用bean中的方法即可。注意，如果同类型的bean有多个声明，不能简单用@Autowired注解，请利用@Resource或者其他的方式，使用bean名称的方式注入，如下：
- ![](../image/image102.png)
- ![](../image/image103.png)
+ ![](/articles/iuap-develop/7-/image/image102.png)
+ ![](/articles/iuap-develop/7-/image/image103.png)

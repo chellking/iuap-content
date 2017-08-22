@@ -16,7 +16,7 @@ License Server 位于安装盘的“DevTool\LicenseServer”目录下。
 
 点击左树的License节点，打开右侧License界面。
 
-![](./images/serverview.jpg)
+![](/articles/iuap-develop/9-/licenseserver/3.0.0-RELEASE/images/serverview.jpg)
 
 ###2生成硬件锁###
 
@@ -24,21 +24,21 @@ License Server 位于安装盘的“DevTool\LicenseServer”目录下。
 
 ######注意：选择网卡时，请选择物理网卡。######
 
-![](./images/generatehardkey.jpg)
+![](/articles/iuap-develop/9-/licenseserver/3.0.0-RELEASE/images/generatehardkey.jpg)
 
 ###3打开“网上注册”页面###
 
 在“用友UAP平台权限申请”页面，填写客户信息，并上传硬件锁文件。申请License授权请访问如下地址：
 Http://udn.yyuap.com
-![](./images/applyhardkey.jpg)
+![](/articles/iuap-develop/9-/licenseserver/3.0.0-RELEASE/images/applyhardkey.jpg)
 上传硬件锁成功后提示等待邮件。
-![](./images/waitemail.jpg)
+![](/articles/iuap-develop/9-/licenseserver/3.0.0-RELEASE/images/waitemail.jpg)
 
 ###4导入License 文件###
 
 License Server导入授权文件后应该显示授权产品名称，授权产品点数，有效期和硬件锁信息。导入成功后须重新启动License Server才能生效。
 
-![](./images/importlicense.jpg)
+![](/articles/iuap-develop/9-/licenseserver/3.0.0-RELEASE/images/importlicense.jpg)
 
 ## 二、启动License Server ##
 
@@ -48,5 +48,5 @@ License Server导入授权文件后应该显示授权产品名称，授权产品
 
 当客户端注册成功后，License Server将显示License信息表和License信息分配表。License信息表主要显示当前产品的可分配已分配和失效时间；License信息分配表显示正在使用当前产品的客户端明细。
 
-![](./images/displayclient.jpg)
+![](/articles/iuap-develop/9-/licenseserver/3.0.0-RELEASE/images/displayclient.jpg)
 #### 另外，授权服务器和客户端时区和时间请务必保持一致，对于不一致情况导致的授权失败问题，后果自负 ####

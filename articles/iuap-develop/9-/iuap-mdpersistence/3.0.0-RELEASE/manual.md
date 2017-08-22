@@ -218,7 +218,7 @@ iuap元数据持久化组件是遵循元数据设计规范，基于iuap-jdbc的�
 
 ## 工程样例 ##
 
-<img src="/images/mdjdbc_example.jpg"/>
+<img src="/articles/iuap-develop/9-/iuap-mdpersistence/3.1.0-RELEASE/images/mdjdbc_example.jpg"/>
 
 ## 常用接口 ##
 
