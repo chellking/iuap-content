@@ -4,22 +4,22 @@
     "list": [
         {
             "title": "快速入门",
-            "link": "#",
+            "link": "#/md-build/cloud_service_approval/articles/approval/2-/yingyongchangjing.md",
             "desc": "本文从配置开发工具开始，讲解了开发和部署过程"
         },
         {
             "title": "服务端开发详解",
-            "link": "#",
+            "link": "#/md-build/iuap-content/articles/iuap-develop/7-/part1/README.md",
             "desc": "讲解了服务端整体框架以及持久化、事务、日志等组件"
         },
         {
             "title": "前端开发详解",
-            "link": "#",
+            "link": "#/md-build/iuap-content/articles/iuap-develop/8-/README.md",
             "desc": "讲解了前端页面的开发过程和前端开发框架"
         },
         {
             "title": "应用支撑组件",
-            "link": "#",
+            "link": "#/md-build/iuap-content/articles/iuap-develop/10-/iuap-authrbac-core/3.1.0-RELEASE/manual.md",
             "desc": "讲解了编码规则、业务日志等企业应用所需组件的开发"
         }
     ]
