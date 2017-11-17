@@ -81,10 +81,4 @@
    * [安全日志同步SDK](articles/iuap-develop/10-/iuap-securitylog-local-sdk/3.1.0-RELEASE/manual.md)
    * [安全日志异步SDK](articles/iuap-develop/10-/iuap-securitylog-rest-sdk/3.1.0-RELEASE/manual.md)
    * [安全日志服务](articles/iuap-develop/10-/iuap-securitylog-service/3.1.0-RELEASE/manual.md)
-* [互联网连接器](articles/iuap-develop/10-/hu_lian_wang_lian_jie_qi.md)
-   * [分享](articles/iuap-develop/10-/iuap-share/3.1.0-RELEASE/manual.md)
-   * [第三方登录](articles/iuap-develop/10-/iuap-sso/3.1.0-RELEASE/manual.md)
-   * [电商连接器](articles/iuap-develop/10-/iuap-ecadapter/3.1.0-RELEASE/manual.md)
-   * [消息推送](articles/iuap-develop/10-/iuap-message/3.1.0-RELEASE/manual.md)
-   * [支付集成](articles/iuap-develop/10-/iuap-pay/3.1.0-RELEASE/manual.md)
 
