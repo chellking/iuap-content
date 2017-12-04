@@ -98,7 +98,7 @@ ${iuap.modules.version} 为平台在maven私服上发布的组件的version。
 
 **权限控制流程**
 
-![img004](/articles/iuap-develop/10-/iuap-authrbac-core/3.1.0-RELEASE/imgimage004.jpg)  
+![img004](/articles/iuap-develop/10-/iuap-authrbac-core/3.1.0-RELEASE/img/image004.jpg)  
 1. 首先调用Subject.isPermitted\*/hasRole\*接口，其会委托给SecurityManager，而SecurityManager接着会委托给Authorizer；  
 2. Authorizer是真正的授权者，如果我们调用如isPermitted("user:view")，其首先会通过PermissionResolver把字符串转换成相应的Permission实例；  
 3. 在进行授权之前，其会调用相应的Realm获取Subject相应的角色/权限用于匹配传入的角色/权限；  
