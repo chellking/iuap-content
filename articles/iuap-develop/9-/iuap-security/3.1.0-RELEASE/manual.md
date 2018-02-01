@@ -51,12 +51,28 @@ application.properties配置示例：
 	UAP.AUTH.ALG=HMAC
 	
 	#客户端身份文件路径
-	bpm.client.credential.path=/etc/authfile_bpm.txt
+	bpm.client.credential.path=/etc/authfile.txt
 	
-	#如果客户端需要用多个服务提供的证书，可以通过appid来区分不同的证书目录
-	#appid.client.credential.path=/etc/authfile_appid.txt
+	#如果客户端需要用多个服务提供的证书，可以通过业务或者应用分类来区分不同的证书目录，如authfile_bpm.txt、authfile_usercenter.txt等
+	#appid.client.credential.path=/etc/authfile_bpm.txt
 	  
 示例工程中的antisamy-esapi.xml、ESAPI.properties、validation.properties在jar包中已经包含，如果没有需要覆盖的属性，则不需要添加。ESAPI.properties中如果需要覆盖Encryptor.MasterKey和Encryptor.MasterSalt的值，请参考示例工程中的setMasterKey.bat，生成新值，并覆盖到classpath中的ESAPI.properties中。
+
+证书的示例格式为：
+
+	appId=3c8242c9467d059f9b718a890c9932ca
+	key=seed
+	expiredTs=1471776321654
+	expiredDate=2016-08-21 18:45:21
+
+其中关键项的说明如下：
+
+- appId:证书的唯一标识，服务端颁发证书时生成，后续根据此id查找证书；
+- key:签名时加密算法使用的种子，服务端颁发证书生成，可以为随机串；
+- expiredTs：证书的过期时间；
+
+各个需要验签的业务服务端，需要给各个客户端颁发证书，生成上述的文件，发送给各客户端，服务端可以将颁发给客户端的证书存储在数据库中，也可以存储在分布式文件系统，由业务决定。
+
 
 ## API接口 ##
 ### RestAPI签名 ###
@@ -70,9 +86,10 @@ application.properties配置示例：
 	signProp.setPostParamsStr(PostParamsHelper.genParamsStrByMap(parameter));
 	signProp.setContentLength(ContentLength);
 	
-	String sign = ClientSignFactory.getSigner(cert).sign(prop);
+	//bpm为证书的前缀标识，客户端可以利用前缀区分多个不同的证书，如bpm、usercenter等
+	String sign = ClientSignFactory.getSigner(bpm).sign(prop);
 
-注意：如果配置多份客户端证书，需要在getSinger的时候指定前缀,示例如下：
+注意：如果客户端需要配置多份证书，调用加签算法时可以根据标识选择不同的证书，需在getSinger的时候指定前缀,示例如下：
 
 	ClientSignFactory.getSigner("bpm")
 
@@ -138,7 +155,8 @@ sign 生成的验证签名,类型为字符串。
 	signProp.setContentLength(contentLength);
 
 	DemoServerVirifyFactory factory = new DemoServerVirifyFactory();
-	Boolean result = factory.getVerifier(appid).verify(sign, prop);
+	// bpm为证书的业务类型
+	Boolean result = factory.getVerifier(bpm).verify(sign, prop);
 
 DemoServerVirifyFactory为开发者实现的类，需要实现获取证书的方法。
 
